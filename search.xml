@@ -900,6 +900,385 @@
       </tags>
   </entry>
   <entry>
+    <title>Rust性能分析-迭代器的enumerate方法是否会影响程序性能</title>
+    <url>/2022/01/29/rust_enumerate_performance_analysis_20220129/</url>
+    <content><![CDATA[<p>Rust编程语言融合了多种编程法(programming paradigm)，其中的命令式编程(imperative programming)所用的循环和函数式编程(functional programming)所提供的迭代器(iterator)可以加强数组或是切片的访问性能。</p>
+<p>然而，在访问数组或是切片时，迭代器在每次迭代时只会回传元素的值或引用，而不会将索引值也跟着回传出来。这个问题虽然可以通过迭代器的<code>enumerate</code>方法来轻松解决，<code>enumerate</code>会让迭代器回传目前是第几次的迭代(从0开始数)，这个次数值可以当作是目前访问到的元素的索引值，只是这样的作法会对程序性能有什么不良的影响呢？</p>
+<span id="more"></span>
+
+<p>我们先来看看以下代码：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..array.len() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;array[&#123;&#125;] = &#123;&#125;&quot;</span>, i, array[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上程序，会利用for循环来遍历<code>array</code>这个存在于堆栈内的数组，并将其所有索引值所对应的元素值通通印在屏幕上。</p>
+<p>我们知道用for循环来遍历堆栈内的数组，性能跟和用for迭代器循环或是迭代器是一样的。那么如果现在我们是将以上程序改用for迭代器循环和<code>enumerate</code>方法来完成呢？程序如下：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> (i, &amp;n) <span class="keyword">in</span> array.iter().enumerate() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;array[&#123;&#125;] = &#123;&#125;&quot;</span>, i, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>enumerate</code>方法来枚举数组，会影响到性能吗？</p>
+<h3 id="性能实测"><a href="#性能实测" class="headerlink" title="性能实测"></a>性能实测</h3><p>直接实际写一段程序来测试运算性能吧！这段程序可以在GitHub上取得：</p>
+<blockquote>
+<p><a href="https://github.com/magiclen/rust-performance-measurement/blob/master/benches/iter_enumerate.rs">https://github.com/magiclen/rust-performance-measurement/blob/master/benches/iter_enumerate.rs</a></p>
+</blockquote>
+<p>根据测试结果，可以发现使用<code>enumerate</code>方法和使用for循环的性能是差不多的，所以可以放心使用～</p>
+<p><code>enumerate</code>枚举和原本迭代遍历只差在前者用<code>Enumerate</code>结构体包裹了后者，并且多了一个计数变量字段，在每次调用<code>next</code>方法时都会把该计数变量的值以元组(tuple)的方式与元素保存在一起，然后在计数变量加1后，回传该元组。<code>next</code>方法的代码如下：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">next</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="built_in">Option</span>&lt;(<span class="built_in">usize</span>, &lt;I <span class="keyword">as</span> <span class="built_in">Iterator</span>&gt;::Item)&gt; &#123;</span><br><span class="line">    <span class="keyword">self</span>.iter.next().map(|a| &#123;</span><br><span class="line">        <span class="keyword">let</span> ret = (<span class="keyword">self</span>.count, a);</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        ret</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以它的性能才会和for计数循环差不多。而如果遍历的对象不是堆栈内的数组，它的性能还会比for循环更好呢！</p>
+]]></content>
+      <categories>
+        <category>Rust</category>
+      </categories>
+      <tags>
+        <tag>Rust</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Rust备忘录</title>
+    <url>/2022/01/29/rust_quickref_me_20220129/</url>
+    <content><![CDATA[<blockquote>
+<p>From: <a href="https://quickref.me/rust">https://quickref.me/rust</a></p>
+</blockquote>
+<h2 id="Getting-Started-cols-3"><a href="#Getting-Started-cols-3" class="headerlink" title="Getting Started  {.cols-3}"></a>Getting Started  {.cols-3}</h2><h3 id="Hello-World-rs"><a href="#Hello-World-rs" class="headerlink" title="Hello_World.rs"></a>Hello_World.rs</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="Compiling-and-Running"><a href="#Compiling-and-Running" class="headerlink" title="Compiling and Running"></a>Compiling and Running</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rustc Hello_World.rs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./Hello_World</span></span><br><span class="line">Hello, World!</span><br></pre></td></tr></table></figure>
+
+<h3 id="Primitive-types"><a href="#Primitive-types" class="headerlink" title="Primitive types"></a>Primitive types</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bool</code></td>
+<td>Boolean (<code>true</code> <em>/</em> <code>false</code>)</td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>character</td>
+</tr>
+<tr>
+<td><code>f32</code>, <code>f64</code></td>
+<td>32-bits, 64-bits floats</td>
+</tr>
+<tr>
+<td><code>i64</code>, <code>i32</code>, <code>i16</code>, <code>i8</code></td>
+<td>signed 16- … integers</td>
+</tr>
+<tr>
+<td><code>u64</code>, <code>u32</code>, <code>u16</code>, <code>u8</code></td>
+<td>unsigned 16-bits, …  integers</td>
+</tr>
+<tr>
+<td><code>isize</code></td>
+<td>pointer-sized signed integers</td>
+</tr>
+<tr>
+<td><code>usize</code></td>
+<td>pointer-sized unsigned integers</td>
+</tr>
+</tbody></table>
+<p>See: <a href="#rust-types">Rust Types</a></p>
+<h3 id="Formatting-row-span-2"><a href="#Formatting-row-span-2" class="headerlink" title="Formatting {.row-span-2}"></a>Formatting {.row-span-2}</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Single Placeholder</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Multiple Placeholder</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125; &#123;&#125;&quot;</span>, <span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Positional Arguments</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;0&#125; is &#123;1&#125; &#123;2&#125;, also &#123;0&#125; is a &#123;3&#125; programming language&quot;</span>, <span class="string">&quot;Rust&quot;</span>, <span class="string">&quot;cool&quot;</span>, <span class="string">&quot;language&quot;</span>, <span class="string">&quot;safe&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Named Arguments</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;country&#125; is an diverse nation with unity.&quot;</span>, country = <span class="string">&quot;India&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Placeholder traits :b for binary, :0x is for hex and :o is octal</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Let us print 76 is binary which is &#123;:b&#125; , and hex equivalent is &#123;:0x&#125; and octal equivalent is &#123;:o&#125;&quot;</span>, <span class="number">76</span>, <span class="number">76</span>, <span class="number">76</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Debug Trait</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Print whatever we want to here using debug trait &#123;:?&#125;&quot;</span>, (<span class="number">76</span>, <span class="string">&#x27;A&#x27;</span>, <span class="number">90</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// New Format Strings in 1.58</span></span><br><span class="line"><span class="keyword">let</span> x = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Hello &#123;x&#125;!&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Printing-Styles"><a href="#Printing-Styles" class="headerlink" title="Printing Styles"></a>Printing Styles</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prints the output</span></span><br><span class="line"><span class="built_in">print!</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Appends a new line after printing</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Appending a new line&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints as an error</span></span><br><span class="line">eprint!(<span class="string">&quot;This is an error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints as an error with new line</span></span><br><span class="line">eprintln!(<span class="string">&quot;This is an error with new line&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Initializing and declaring a variable</span></span><br><span class="line"><span class="keyword">let</span> some_variable = <span class="string">&quot;This_is_a_variable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Making a variable mutable</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mutable_variable = <span class="string">&quot;Mutable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assigning multiple variables</span></span><br><span class="line"><span class="keyword">let</span> (name, age) = (<span class="string">&quot;ElementalX&quot;</span>, <span class="number">20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// (Global) constant</span></span><br><span class="line"><span class="keyword">const</span> SCREAMING_SNAKE_CASE:<span class="built_in">i64</span> = <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Line Comments</span></span><br><span class="line"><span class="comment">/*.............Block Comments */</span></span><br><span class="line"><span class="comment">/// Outer doc comments</span></span><br><span class="line"><span class="comment">//! Inner doc comments</span></span><br></pre></td></tr></table></figure>
+<p>See: <a href="https://doc.rust-lang.org/reference/comments.html">Comment</a></p>
+<h3 id="Functions"><a href="#Functions" class="headerlink" title="Functions"></a>Functions</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test</span></span>()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;This is a function!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  test();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>See: <a href="#rust-functions">Functions</a></p>
+<h2 id="Rust-Types-cols-3"><a href="#Rust-Types-cols-3" class="headerlink" title="Rust Types {.cols-3}"></a>Rust Types {.cols-3}</h2><h3 id="Integer"><a href="#Integer" class="headerlink" title="Integer"></a>Integer</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> a: <span class="built_in">u32</span> = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> b: <span class="built_in">u64</span> = <span class="number">877</span>;</span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">i64</span> = <span class="number">8999</span>;</span><br><span class="line"><span class="keyword">let</span> d = -<span class="number">90</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating-Point"></a>Floating-Point</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> sixty_bit_float: <span class="built_in">f64</span> = <span class="number">89.90</span>;</span><br><span class="line"><span class="keyword">let</span> thirty_two_bit_float: <span class="built_in">f32</span> = <span class="number">7.90</span>;</span><br><span class="line"><span class="keyword">let</span> just_a_float = <span class="number">69.69</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> true_val: <span class="built_in">bool</span> = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> false_val: <span class="built_in">bool</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">let</span> just_a_bool = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> is_true = <span class="number">8</span> &lt; <span class="number">5</span>;  <span class="comment">// =&gt; false</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Character"><a href="#Character" class="headerlink" title="Character"></a>Character</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> first_letter_of_alphabet = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> explicit_char: <span class="built_in">char</span> = <span class="string">&#x27;F&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> implicit_char = <span class="string">&#x27;8&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> emoji = <span class="string">&quot;\u&#123;1f600&#125;&quot;</span>;   <span class="comment">// =&gt; 😀</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="String-Literal"><a href="#String-Literal" class="headerlink" title="String Literal"></a>String Literal</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> community_name = <span class="string">&quot;AXIAL&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> no_of_members: &amp;<span class="built_in">str</span> = <span class="string">&quot;ten&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The name of the community is &#123;community_name&#125; and it has &#123;no_of_members&#125; members&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>See: <a href="#rust-strings">Strings</a></p>
+<h3 id="Arrays"><a href="#Arrays" class="headerlink" title="Arrays"></a>Arrays</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">┌─────┬─────┬─────┬─────┬─────┬─────┐</span><br><span class="line">| <span class="number">92</span>  | <span class="number">97</span>  | <span class="number">98</span>  | <span class="number">99</span>  | <span class="number">98</span>  | <span class="number">94</span>  |</span><br><span class="line">└─────┴─────┴─────┴─────┴─────┴─────┘</span><br><span class="line">   <span class="number">0</span>     <span class="number">1</span>     <span class="number">2</span>     <span class="number">3</span>     <span class="number">4</span>     <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [<span class="built_in">i64</span>; <span class="number">6</span>] = [<span class="number">92</span>,<span class="number">97</span>,<span class="number">98</span>,<span class="number">99</span>,<span class="number">98</span>,<span class="number">94</span>];</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Multi-Dimensional-Array-row-span-2"><a href="#Multi-Dimensional-Array-row-span-2" class="headerlink" title="Multi-Dimensional Array {.row-span-2}"></a>Multi-Dimensional Array {.row-span-2}</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">     j0   j1   j2   j3   j4   j5</span><br><span class="line">   ┌────┬────┬────┬────┬────┬────┐</span><br><span class="line">i0 | <span class="number">1</span>  | <span class="number">2</span>  | <span class="number">3</span>  | <span class="number">4</span>  | <span class="number">5</span>  | <span class="number">6</span>  |</span><br><span class="line">   ├────┼────┼────┼────┼────┼────┤</span><br><span class="line">i1 | <span class="number">6</span>  | <span class="number">5</span>  | <span class="number">4</span>  | <span class="number">3</span>  | <span class="number">2</span>  | <span class="number">1</span>  |</span><br><span class="line">   └────┴────┴────┴────┴────┴────┘</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [[<span class="built_in">i64</span>; <span class="number">6</span>] ;<span class="number">2</span>] = [</span><br><span class="line">            [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>],</span><br><span class="line">            [<span class="number">6</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>]];</span><br></pre></td></tr></table></figure>
+
+<h3 id="Mutable-Array"><a href="#Mutable-Array" class="headerlink" title="Mutable Array"></a>Mutable Array</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> array: [<span class="built_in">i32</span> ; <span class="number">3</span>] = [<span class="number">2</span>,<span class="number">6</span>,<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">array[<span class="number">1</span>] = <span class="number">4</span>;</span><br><span class="line">array[<span class="number">2</span>] = <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
+<p>Use the <code>mut</code> keyword to make it mutable.</p>
+<h3 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> array: [ <span class="built_in">i64</span>; <span class="number">4</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> slices: &amp;[<span class="built_in">i64</span>] = &amp;array[<span class="number">0</span>..<span class="number">3</span>] <span class="comment">// Lower range is inclusive and upper range is exclusive</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The elements of the slices are : &#123;slices:?&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Vectors"><a href="#Vectors" class="headerlink" title="Vectors"></a>Vectors</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> some_vector = <span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]; </span><br></pre></td></tr></table></figure>
+<p>A vector is declared using the <code>vec!</code> macro.</p>
+<h3 id="Tuples"><a href="#Tuples" class="headerlink" title="Tuples"></a>Tuples</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> tuple = (<span class="number">1</span>, <span class="string">&#x27;A&#x27;</span> , <span class="string">&quot;Cool&quot;</span>, <span class="number">78</span>, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Rust-Strings-cols-3"><a href="#Rust-Strings-cols-3" class="headerlink" title="Rust Strings {.cols-3}"></a>Rust Strings {.cols-3}</h2><h3 id="String-Literal-1"><a href="#String-Literal-1" class="headerlink" title="String Literal"></a>String Literal</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> cs:&amp;<span class="built_in">str</span> = <span class="string">&quot;cheat sheet&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; Share cheat sheet for developers</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Share &#123;cs&#125; for developers&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="String-Object"><a href="#String-Object" class="headerlink" title="String Object"></a>String Object</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Creating an empty string object</span></span><br><span class="line"><span class="keyword">let</span> my_string = <span class="built_in">String</span>::new;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Converting to a string object</span></span><br><span class="line"><span class="keyword">let</span> S_string = a_string.to_string()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Creating an initialized string object</span></span><br><span class="line"><span class="keyword">let</span> lang = <span class="built_in">String</span>::from(<span class="string">&quot;Rust&quot;</span>);  </span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;First language is &#123;lang&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="capacity"><a href="#capacity" class="headerlink" title=".capacity()"></a>.capacity()</h3> <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> rand = <span class="built_in">String</span>::from(<span class="string">&quot;Random String&quot;</span>);</span><br><span class="line">rand.capacity()  <span class="comment">// =&gt; 13</span></span><br></pre></td></tr></table></figure>
+<p>Calculates the capacity of the string in bytes.</p>
+<h3 id="contains"><a href="#contains" class="headerlink" title=".contains()"></a>.contains()</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="built_in">String</span>::from(<span class="string">&quot;ElementalX&quot;</span>);</span><br><span class="line">name.contains(<span class="string">&quot;Element&quot;</span>) <span class="comment">// =&gt; true</span></span><br></pre></td></tr></table></figure>
+<p>Checks if the substring is contained inside the original string or not.</p>
+<h3 id="Pushing-a-single-character"><a href="#Pushing-a-single-character" class="headerlink" title="Pushing a single character"></a>Pushing a single character</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> half_text = <span class="built_in">String</span>::from(<span class="string">&quot;Hal&quot;</span>);</span><br><span class="line">half_text.push(<span class="string">&#x27;f&#x27;</span>);    <span class="comment">// =&gt; Half</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Pushing-an-entire-String"><a href="#Pushing-an-entire-String" class="headerlink" title="Pushing an entire String"></a>Pushing an entire String</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> hi = <span class="built_in">String</span>::from(<span class="string">&quot;Hey there...&quot;</span>);</span><br><span class="line">hi.push_str(<span class="string">&quot;How are you doing??&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; Hey there...How are you doing??</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;hi&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Rust-Operators-cols-3"><a href="#Rust-Operators-cols-3" class="headerlink" title="Rust Operators {.cols-3}"></a>Rust Operators {.cols-3}</h2><h3 id="Comparison-Operators"><a href="#Comparison-Operators" class="headerlink" title="Comparison Operators"></a>Comparison Operators</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>e == f</code></td>
+<td><code>e</code> is equal to <code>f</code></td>
+</tr>
+<tr>
+<td><code>e != f</code></td>
+<td><code>e</code> is NOT equal to <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &lt; f</code></td>
+<td><code>e</code> is less than <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &gt; f</code></td>
+<td><code>e</code> is greater <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &lt;= f</code></td>
+<td><code>e</code> is less than or equal to <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &gt;= f</code></td>
+<td><code>e</code> is greater or equal to <code>f</code></td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (e, f) = (<span class="number">1</span>, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greater = f &gt; e;        <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> less = f &lt; e;           <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> greater_equal = f &gt;= e; <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> less_equal = e &lt;= f;    <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> equal_to = e == f;      <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> not_equal_to = e != f;  <span class="comment">// =&gt; true</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Arithmetic-Operators"><a href="#Arithmetic-Operators" class="headerlink" title="Arithmetic Operators"></a>Arithmetic Operators</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>a +  b</code></td>
+<td><code>a</code> is added to <code>b</code></td>
+</tr>
+<tr>
+<td><code>a -  b</code></td>
+<td><code>b</code> is subtracted from <code>a</code></td>
+</tr>
+<tr>
+<td><code>a /  b</code></td>
+<td><code>a</code> is divided by <code>b</code></td>
+</tr>
+<tr>
+<td><code>a % b</code></td>
+<td>Gets remainder of <code>a</code> by dividing with <code>b</code></td>
+</tr>
+<tr>
+<td><code>a * b</code></td>
+<td><code>a</code> is multiplied with <code>b</code></td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (a, b) = (<span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> sum: <span class="built_in">i32</span> = a + b;            <span class="comment">// =&gt; 9</span></span><br><span class="line"><span class="keyword">let</span> subtractions: <span class="built_in">i32</span> = a - b;   <span class="comment">// =&gt; -1</span></span><br><span class="line"><span class="keyword">let</span> multiplication: <span class="built_in">i32</span> = a * b; <span class="comment">// =&gt; 20</span></span><br><span class="line"><span class="keyword">let</span> division: <span class="built_in">i32</span> = a / b;       <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> modulus: <span class="built_in">i32</span> = a % b;        <span class="comment">// =&gt; 4</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="Bitwise-Operators"><a href="#Bitwise-Operators" class="headerlink" title="Bitwise Operators"></a>Bitwise Operators</h3><table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>g &amp; h</code></td>
+<td>Binary AND</td>
+</tr>
+<tr>
+<td>`g</td>
+<td>h`</td>
+</tr>
+<tr>
+<td><code>g ^ h</code></td>
+<td>Binary XOR</td>
+</tr>
+<tr>
+<td><code>g ~ h</code></td>
+<td>Binary one’s complement</td>
+</tr>
+<tr>
+<td><code>g &lt;&lt; h</code></td>
+<td>Binary shift left</td>
+</tr>
+<tr>
+<td><code>g &gt;&gt; h</code></td>
+<td>Binary shift right</td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (g, h) = (<span class="number">0x1</span>, <span class="number">0x2</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bitwise_and = g &amp; h;  <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> bitwise_or = g | h;   <span class="comment">// =&gt; 3</span></span><br><span class="line"><span class="keyword">let</span> bitwise_xor = g ^ h;  <span class="comment">// =&gt; 3</span></span><br><span class="line"><span class="keyword">let</span> right_shift = g &gt;&gt; <span class="number">2</span>; <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> left_shift = h &lt;&lt; <span class="number">4</span>;  <span class="comment">// =&gt; 32 </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Logical-Operators"><a href="#Logical-Operators" class="headerlink" title="Logical Operators"></a>Logical Operators</h3><table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>c &amp;&amp; d</code></td>
+<td>Both are true <em>(AND)</em></td>
+</tr>
+<tr>
+<td><code>c OR d</code></td>
+<td>Either is true <em>(OR)</em></td>
+</tr>
+<tr>
+<td><code>!c</code></td>
+<td><code>c</code> is false <em>(NOT)</em></td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (c, d) = (<span class="literal">true</span>, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> and = c &amp;&amp; d;  <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> or  = c || d;  <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> not = !c;      <span class="comment">// =&gt; false</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Compound-Assignment-Operator"><a href="#Compound-Assignment-Operator" class="headerlink" title="Compound Assignment Operator"></a>Compound Assignment Operator</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> k = <span class="number">9</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> l = k;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>k += l</code></td>
+<td>Add a value and assign, then k=9</td>
+</tr>
+<tr>
+<td><code>k -= l</code></td>
+<td>Substrate a value and assign, then k=18</td>
+</tr>
+<tr>
+<td><code>k /= l</code></td>
+<td>Divide a value and assign, then k=9</td>
+</tr>
+<tr>
+<td><code>k *= l</code></td>
+<td>Multiply a value and assign, then k=81</td>
+</tr>
+<tr>
+<td>`k</td>
+<td>= l`</td>
+</tr>
+</tbody></table>
+<h2 id="Rust-Flow-Control-cols-3"><a href="#Rust-Flow-Control-cols-3" class="headerlink" title="Rust Flow Control {.cols-3}"></a>Rust Flow Control {.cols-3}</h2><h3 id="If-Expression"><a href="#If-Expression" class="headerlink" title="If Expression"></a>If Expression</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> case1: <span class="built_in">i32</span> = <span class="number">81</span>;</span><br><span class="line"><span class="keyword">let</span> case2: <span class="built_in">i32</span> = <span class="number">82</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> case1 &lt; case2 &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case1 is greater than case2&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="If…Else-Expression"><a href="#If…Else-Expression" class="headerlink" title="If…Else Expression"></a>If…Else Expression</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> case3 = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> case4 = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> case3 &gt;= case4 &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case3 is better than case4&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case4 is greater than case3&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="If…Else…if…Else-Expression"><a href="#If…Else…if…Else-Expression" class="headerlink" title="If…Else…if…Else Expression"></a>If…Else…if…Else Expression</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">let</span> bar = <span class="number">13</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> foo == bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo is equal to bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> foo &lt; bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo less than bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> foo != bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo is not equal to bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Nothing&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="If…Let-Expression-row-span-3"><a href="#If…Let-Expression-row-span-3" class="headerlink" title="If…Let Expression {.row-span-3}"></a>If…Let Expression {.row-span-3}</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> arr1:[<span class="built_in">i64</span> ; <span class="number">3</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>[<span class="number">1</span>,<span class="number">2</span>,_] = arr1&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works with array&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> arr2:[&amp;<span class="built_in">str</span>; <span class="number">2</span>] = [<span class="string">&quot;one&quot;</span>, <span class="string">&quot;two&quot;</span>];</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>[<span class="string">&quot;Apple&quot;</span>, _] = arr2&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works with str array too&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> tuple_1 = (<span class="string">&quot;India&quot;</span>, <span class="number">7</span>, <span class="number">90</span>, <span class="number">90.432</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(_, <span class="number">7</span>, <span class="number">9</span>, <span class="number">78.99</span>) = tuple_1&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works woth tuples too&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple_2 = ( <span class="number">9</span>, <span class="number">7</span>, <span class="number">89</span>, <span class="number">12</span>, <span class="string">&quot;Okay&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(<span class="number">9</span>, <span class="number">7</span>,<span class="number">89</span>, <span class="number">12</span>, blank) = tuple_2 &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Everything &#123;blank&#125; mate?&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple_3 = (<span class="number">89</span>, <span class="number">90</span>, <span class="string">&quot;Yes&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(<span class="number">9</span>, <span class="number">89</span>, <span class="string">&quot;Yes&quot;</span>) = tuple_3&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Pattern did match&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Pattern did not match&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Match-Expression-row-span-3"><a href="#Match-Expression-row-span-3" class="headerlink" title="Match Expression {.row-span-3}"></a>Match Expression {.row-span-3}</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> day_of_week = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">match</span> day_of_week &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;Its Monday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">2</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Tuesday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">3</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Wednesday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">4</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Thursday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">5</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Friday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">6</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Saturday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">7</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Sunday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    _ =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;Default!&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Nested...If Expression</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">let</span> nested_conditions = <span class="number">89</span>;</span><br><span class="line"><span class="keyword">if</span> nested_conditions == <span class="number">89</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> just_a_value = <span class="number">98</span>;</span><br><span class="line">    <span class="keyword">if</span> just_a_value &gt;= <span class="number">97</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;Greater than 97&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### For Loop</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">for</span> <span class="keyword">mut</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">15</span> &#123;</span><br><span class="line">  i-=<span class="number">1</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The value of i is : &#123;i&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="While-Loop"><a href="#While-Loop" class="headerlink" title="While Loop"></a>While Loop</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> check =  <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> check &lt; <span class="number">11</span>&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Check is : &#123;check&#125;&quot;</span>);</span><br><span class="line">  check+=<span class="number">1</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;After incrementing: &#123;check&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> check == <span class="number">10</span>&#123;</span><br><span class="line">    <span class="keyword">break</span>; <span class="comment">// stop while</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Loop-keyword"><a href="#Loop-keyword" class="headerlink" title="Loop keyword"></a>Loop keyword</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;hello world forever!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The infinite loop indicated.</p>
+<h3 id="Break-Statement"><a href="#Break-Statement" class="headerlink" title="Break Statement"></a>Break Statement</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;i is &#123;i&#125;&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> i &gt; <span class="number">100</span> &#123;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  i *= <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Continue Statement</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">for</span> (v, c) <span class="keyword">in</span> (<span class="number">0</span>..<span class="number">10</span>+<span class="number">1</span>).enumerate()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The &#123;c&#125; number loop&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> v == <span class="number">9</span>&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Here we go continue?&quot;</span>);</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">println!</span>&#123;<span class="string">&quot;The value of v is : &#123;v&#125;&quot;</span>&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Rust-Functions-cols-3"><a href="#Rust-Functions-cols-3" class="headerlink" title="Rust Functions {.cols-3}"></a>Rust Functions {.cols-3}</h2><h3 id="Basic-function"><a href="#Basic-function" class="headerlink" title="Basic function"></a>Basic function</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_message</span></span>()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Hello, QuickRef.ME!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="comment">//Invoking a function in Rust.</span></span><br><span class="line">  print_message();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pass-by-Value"><a href="#Pass-by-Value" class="headerlink" title="Pass by Value"></a>Pass by Value</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">let</span> x:<span class="built_in">u32</span> = <span class="number">10</span>;</span><br><span class="line">  <span class="keyword">let</span> y:<span class="built_in">u32</span> = <span class="number">20</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// =&gt; 200</span></span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Calc: &#123;&#125;&quot;</span>, cal_rect(x, y));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">cal_rect</span></span>(x:<span class="built_in">u32</span>, y:<span class="built_in">u32</span>) -&gt; <span class="built_in">u32</span></span><br><span class="line">&#123;</span><br><span class="line">  x * y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pass-by-Reference"><a href="#Pass-by-Reference" class="headerlink" title="Pass by Reference"></a>Pass by Reference</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> by_ref = <span class="number">3</span>;      <span class="comment">// =&gt; 3</span></span><br><span class="line">  power_of_three(&amp;<span class="keyword">mut</span> by_ref);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;by_ref&#125;&quot;</span>);  <span class="comment">// =&gt; 9</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">power_of_three</span></span>(by_ref: &amp;<span class="keyword">mut</span> <span class="built_in">i32</span>)&#123;</span><br><span class="line">  <span class="comment">// de-referencing is important</span></span><br><span class="line">  *by_ref = *by_ref * *by_ref;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;by_ref&#125;&quot;</span>);  <span class="comment">// =&gt; 9</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Returns"><a href="#Returns" class="headerlink" title="Returns"></a>Returns</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> (<span class="keyword">mut</span> radius, <span class="keyword">mut</span> pi) = (<span class="number">3.0</span>, <span class="number">3.14</span>);</span><br><span class="line">  <span class="keyword">let</span>(area, _perimeter) = calculate (</span><br><span class="line">      &amp;<span class="keyword">mut</span> radius,</span><br><span class="line">      &amp;<span class="keyword">mut</span> pi</span><br><span class="line">  );</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The area and the perimeter of the circle are: &#123;area&#125; &amp; &#123;_perimeter&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">calculate</span></span>(radius : &amp;<span class="keyword">mut</span> <span class="built_in">f64</span>, pi: &amp;<span class="keyword">mut</span> <span class="built_in">f64</span>) -&gt; (<span class="built_in">f64</span>, <span class="built_in">f64</span>)&#123;</span><br><span class="line">  <span class="keyword">let</span> perimeter = <span class="number">2.0</span> * *pi * *radius;</span><br><span class="line">  <span class="keyword">let</span> area = *pi * *radius * *radius;</span><br><span class="line">  <span class="keyword">return</span> (area, perimeter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Arrays-as-Arguments"><a href="#Arrays-as-Arguments" class="headerlink" title="Arrays as Arguments"></a>Arrays as Arguments</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> array: [<span class="built_in">i32</span> ; <span class="number">5</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">6</span>];</span><br><span class="line">  print_arrays(array);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The elements: &#123;array:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_arrays</span></span>(<span class="keyword">mut</span> array:[<span class="built_in">i32</span>; <span class="number">5</span>]) &#123;</span><br><span class="line">  array[<span class="number">0</span>] = <span class="number">89</span>;</span><br><span class="line">  array[<span class="number">1</span>] = <span class="number">90</span>;</span><br><span class="line">  array[<span class="number">2</span>] = <span class="number">91</span>;</span><br><span class="line">  array[<span class="number">3</span>] = <span class="number">92</span>;</span><br><span class="line">  array[<span class="number">4</span>] = <span class="number">93</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The elements: &#123;array:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Returning-Arrays"><a href="#Returning-Arrays" class="headerlink" title="Returning Arrays"></a>Returning Arrays</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> arr:[<span class="built_in">i32</span>; <span class="number">5</span>] = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>];</span><br><span class="line">  multiply(arr);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The array is : &#123;:?&#125;&quot;</span>, multiply(arr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">multiply</span> </span>(<span class="keyword">mut</span> arr: [<span class="built_in">i32</span> ; <span class="number">5</span>]) -&gt; [<span class="built_in">i32</span> ; <span class="number">5</span>]&#123;</span><br><span class="line">  arr[<span class="number">2</span>] = <span class="number">90</span>;</span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">mut</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">5</span> &#123;</span><br><span class="line">      arr[i] = arr[i] * arr[<span class="number">2</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Misc-cols-3"><a href="#Misc-cols-3" class="headerlink" title="Misc {.cols-3}"></a>Misc {.cols-3}</h2><h3 id="Type-Casting"><a href="#Type-Casting" class="headerlink" title="Type Casting"></a>Type Casting</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a_int = <span class="number">90</span>; <span class="comment">// int</span></span><br><span class="line"><span class="comment">// int to float</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> type_cast = (a_int <span class="keyword">as</span> <span class="built_in">f64</span>);</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> orginal: <span class="built_in">char</span> = <span class="string">&#x27;I&#x27;</span>;</span><br><span class="line"><span class="comment">// char to int =&gt; 73</span></span><br><span class="line"><span class="keyword">let</span> type_casted: <span class="built_in">i64</span> = orginal <span class="keyword">as</span> <span class="built_in">i64</span>;</span><br></pre></td></tr></table></figure>
+
+<p>To perform type-casting in Rust one must use the <code>as</code> keyword.</p>
+<h3 id="Borrowing"><a href="#Borrowing" class="headerlink" title="Borrowing"></a>Borrowing</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> foo = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> borrowed_foo = &amp;foo;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;borrowed_foo&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> bar = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mutable_borrowed_bar = &amp;<span class="keyword">mut</span> bar;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;mutable_borrowed_bar&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Here borrowed value borrows the value from value one using <code>&amp;</code> operator.</p>
+<h3 id="De-referencing"><a href="#De-referencing" class="headerlink" title="De-referencing"></a>De-referencing</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> borrow = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">let</span> deref = &amp;<span class="keyword">mut</span> borrow;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, *deref);</span><br></pre></td></tr></table></figure>
+
+<p>De-referencing in rust can be done using the <code>*</code> operator</p>
+<h3 id="Variable-Scope"><a href="#Variable-Scope" class="headerlink" title="Variable Scope"></a>Variable Scope</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// The scope limited to this braces</span></span><br><span class="line">  <span class="keyword">let</span> a_number = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;a_number&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>This will produce error as the scope of the variable <code>a_number</code> ends at the braces</p>
+<h2 id="Also-see"><a href="#Also-see" class="headerlink" title="Also see"></a>Also see</h2><ul>
+<li><a href="https://doc.rust-lang.org/book/ch00-00-introduction.html">The Rust Document</a> <em>(doc.rust-lang.org)</em></li>
+<li><a href="https://doc.rust-lang.org/reference/introduction.html">The Rust Reference</a> <em>(doc.rust-lang.org)</em></li>
+<li><a href="https://phaiax.github.io/rust-cheatsheet/">Rust Cheatsheet</a> <em>(phaiax.github.io)</em></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Rust</category>
+      </categories>
+      <tags>
+        <tag>Rust</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>软件架构模式简介</title>
     <url>/2022/01/16/software_architecture_patterns_20220116/</url>
     <content><![CDATA[<p>当我们进入软件工程的世界，有一天需要学习软件架构模式的基本知识。当我刚开始编码的时候，我不知道从哪里获得资源来简单介绍现有的架构模式，不是那种太详细和混乱的，而是非常抽象和简单的理解。</p>
@@ -1510,385 +1889,6 @@
       </categories>
       <tags>
         <tag>虚拟化技术</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Rust备忘录</title>
-    <url>/2022/01/29/rust_quickref_me_20220129/</url>
-    <content><![CDATA[<blockquote>
-<p>From: <a href="https://quickref.me/rust">https://quickref.me/rust</a></p>
-</blockquote>
-<h2 id="Getting-Started-cols-3"><a href="#Getting-Started-cols-3" class="headerlink" title="Getting Started  {.cols-3}"></a>Getting Started  {.cols-3}</h2><h3 id="Hello-World-rs"><a href="#Hello-World-rs" class="headerlink" title="Hello_World.rs"></a>Hello_World.rs</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h4 id="Compiling-and-Running"><a href="#Compiling-and-Running" class="headerlink" title="Compiling and Running"></a>Compiling and Running</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rustc Hello_World.rs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./Hello_World</span></span><br><span class="line">Hello, World!</span><br></pre></td></tr></table></figure>
-
-<h3 id="Primitive-types"><a href="#Primitive-types" class="headerlink" title="Primitive types"></a>Primitive types</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>bool</code></td>
-<td>Boolean (<code>true</code> <em>/</em> <code>false</code>)</td>
-</tr>
-<tr>
-<td><code>char</code></td>
-<td>character</td>
-</tr>
-<tr>
-<td><code>f32</code>, <code>f64</code></td>
-<td>32-bits, 64-bits floats</td>
-</tr>
-<tr>
-<td><code>i64</code>, <code>i32</code>, <code>i16</code>, <code>i8</code></td>
-<td>signed 16- … integers</td>
-</tr>
-<tr>
-<td><code>u64</code>, <code>u32</code>, <code>u16</code>, <code>u8</code></td>
-<td>unsigned 16-bits, …  integers</td>
-</tr>
-<tr>
-<td><code>isize</code></td>
-<td>pointer-sized signed integers</td>
-</tr>
-<tr>
-<td><code>usize</code></td>
-<td>pointer-sized unsigned integers</td>
-</tr>
-</tbody></table>
-<p>See: <a href="#rust-types">Rust Types</a></p>
-<h3 id="Formatting-row-span-2"><a href="#Formatting-row-span-2" class="headerlink" title="Formatting {.row-span-2}"></a>Formatting {.row-span-2}</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Single Placeholder</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Multiple Placeholder</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125; &#123;&#125;&quot;</span>, <span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Positional Arguments</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;0&#125; is &#123;1&#125; &#123;2&#125;, also &#123;0&#125; is a &#123;3&#125; programming language&quot;</span>, <span class="string">&quot;Rust&quot;</span>, <span class="string">&quot;cool&quot;</span>, <span class="string">&quot;language&quot;</span>, <span class="string">&quot;safe&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Named Arguments</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;country&#125; is an diverse nation with unity.&quot;</span>, country = <span class="string">&quot;India&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Placeholder traits :b for binary, :0x is for hex and :o is octal</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Let us print 76 is binary which is &#123;:b&#125; , and hex equivalent is &#123;:0x&#125; and octal equivalent is &#123;:o&#125;&quot;</span>, <span class="number">76</span>, <span class="number">76</span>, <span class="number">76</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Debug Trait</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Print whatever we want to here using debug trait &#123;:?&#125;&quot;</span>, (<span class="number">76</span>, <span class="string">&#x27;A&#x27;</span>, <span class="number">90</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// New Format Strings in 1.58</span></span><br><span class="line"><span class="keyword">let</span> x = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Hello &#123;x&#125;!&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Printing-Styles"><a href="#Printing-Styles" class="headerlink" title="Printing Styles"></a>Printing Styles</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prints the output</span></span><br><span class="line"><span class="built_in">print!</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Appends a new line after printing</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Appending a new line&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints as an error</span></span><br><span class="line">eprint!(<span class="string">&quot;This is an error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints as an error with new line</span></span><br><span class="line">eprintln!(<span class="string">&quot;This is an error with new line&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Initializing and declaring a variable</span></span><br><span class="line"><span class="keyword">let</span> some_variable = <span class="string">&quot;This_is_a_variable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Making a variable mutable</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mutable_variable = <span class="string">&quot;Mutable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assigning multiple variables</span></span><br><span class="line"><span class="keyword">let</span> (name, age) = (<span class="string">&quot;ElementalX&quot;</span>, <span class="number">20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// (Global) constant</span></span><br><span class="line"><span class="keyword">const</span> SCREAMING_SNAKE_CASE:<span class="built_in">i64</span> = <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Line Comments</span></span><br><span class="line"><span class="comment">/*.............Block Comments */</span></span><br><span class="line"><span class="comment">/// Outer doc comments</span></span><br><span class="line"><span class="comment">//! Inner doc comments</span></span><br></pre></td></tr></table></figure>
-<p>See: <a href="https://doc.rust-lang.org/reference/comments.html">Comment</a></p>
-<h3 id="Functions"><a href="#Functions" class="headerlink" title="Functions"></a>Functions</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test</span></span>()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;This is a function!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  test();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>See: <a href="#rust-functions">Functions</a></p>
-<h2 id="Rust-Types-cols-3"><a href="#Rust-Types-cols-3" class="headerlink" title="Rust Types {.cols-3}"></a>Rust Types {.cols-3}</h2><h3 id="Integer"><a href="#Integer" class="headerlink" title="Integer"></a>Integer</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> a: <span class="built_in">u32</span> = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> b: <span class="built_in">u64</span> = <span class="number">877</span>;</span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">i64</span> = <span class="number">8999</span>;</span><br><span class="line"><span class="keyword">let</span> d = -<span class="number">90</span>;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating-Point"></a>Floating-Point</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> sixty_bit_float: <span class="built_in">f64</span> = <span class="number">89.90</span>;</span><br><span class="line"><span class="keyword">let</span> thirty_two_bit_float: <span class="built_in">f32</span> = <span class="number">7.90</span>;</span><br><span class="line"><span class="keyword">let</span> just_a_float = <span class="number">69.69</span>;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> true_val: <span class="built_in">bool</span> = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> false_val: <span class="built_in">bool</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">let</span> just_a_bool = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> is_true = <span class="number">8</span> &lt; <span class="number">5</span>;  <span class="comment">// =&gt; false</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Character"><a href="#Character" class="headerlink" title="Character"></a>Character</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> first_letter_of_alphabet = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> explicit_char: <span class="built_in">char</span> = <span class="string">&#x27;F&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> implicit_char = <span class="string">&#x27;8&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> emoji = <span class="string">&quot;\u&#123;1f600&#125;&quot;</span>;   <span class="comment">// =&gt; 😀</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="String-Literal"><a href="#String-Literal" class="headerlink" title="String Literal"></a>String Literal</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> community_name = <span class="string">&quot;AXIAL&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> no_of_members: &amp;<span class="built_in">str</span> = <span class="string">&quot;ten&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The name of the community is &#123;community_name&#125; and it has &#123;no_of_members&#125; members&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>See: <a href="#rust-strings">Strings</a></p>
-<h3 id="Arrays"><a href="#Arrays" class="headerlink" title="Arrays"></a>Arrays</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">┌─────┬─────┬─────┬─────┬─────┬─────┐</span><br><span class="line">| <span class="number">92</span>  | <span class="number">97</span>  | <span class="number">98</span>  | <span class="number">99</span>  | <span class="number">98</span>  | <span class="number">94</span>  |</span><br><span class="line">└─────┴─────┴─────┴─────┴─────┴─────┘</span><br><span class="line">   <span class="number">0</span>     <span class="number">1</span>     <span class="number">2</span>     <span class="number">3</span>     <span class="number">4</span>     <span class="number">5</span></span><br></pre></td></tr></table></figure>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [<span class="built_in">i64</span>; <span class="number">6</span>] = [<span class="number">92</span>,<span class="number">97</span>,<span class="number">98</span>,<span class="number">99</span>,<span class="number">98</span>,<span class="number">94</span>];</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Multi-Dimensional-Array-row-span-2"><a href="#Multi-Dimensional-Array-row-span-2" class="headerlink" title="Multi-Dimensional Array {.row-span-2}"></a>Multi-Dimensional Array {.row-span-2}</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">     j0   j1   j2   j3   j4   j5</span><br><span class="line">   ┌────┬────┬────┬────┬────┬────┐</span><br><span class="line">i0 | <span class="number">1</span>  | <span class="number">2</span>  | <span class="number">3</span>  | <span class="number">4</span>  | <span class="number">5</span>  | <span class="number">6</span>  |</span><br><span class="line">   ├────┼────┼────┼────┼────┼────┤</span><br><span class="line">i1 | <span class="number">6</span>  | <span class="number">5</span>  | <span class="number">4</span>  | <span class="number">3</span>  | <span class="number">2</span>  | <span class="number">1</span>  |</span><br><span class="line">   └────┴────┴────┴────┴────┴────┘</span><br></pre></td></tr></table></figure>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [[<span class="built_in">i64</span>; <span class="number">6</span>] ;<span class="number">2</span>] = [</span><br><span class="line">            [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>],</span><br><span class="line">            [<span class="number">6</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>]];</span><br></pre></td></tr></table></figure>
-
-<h3 id="Mutable-Array"><a href="#Mutable-Array" class="headerlink" title="Mutable Array"></a>Mutable Array</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> array: [<span class="built_in">i32</span> ; <span class="number">3</span>] = [<span class="number">2</span>,<span class="number">6</span>,<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">array[<span class="number">1</span>] = <span class="number">4</span>;</span><br><span class="line">array[<span class="number">2</span>] = <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
-<p>Use the <code>mut</code> keyword to make it mutable.</p>
-<h3 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> array: [ <span class="built_in">i64</span>; <span class="number">4</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> slices: &amp;[<span class="built_in">i64</span>] = &amp;array[<span class="number">0</span>..<span class="number">3</span>] <span class="comment">// Lower range is inclusive and upper range is exclusive</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The elements of the slices are : &#123;slices:?&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Vectors"><a href="#Vectors" class="headerlink" title="Vectors"></a>Vectors</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> some_vector = <span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]; </span><br></pre></td></tr></table></figure>
-<p>A vector is declared using the <code>vec!</code> macro.</p>
-<h3 id="Tuples"><a href="#Tuples" class="headerlink" title="Tuples"></a>Tuples</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> tuple = (<span class="number">1</span>, <span class="string">&#x27;A&#x27;</span> , <span class="string">&quot;Cool&quot;</span>, <span class="number">78</span>, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="Rust-Strings-cols-3"><a href="#Rust-Strings-cols-3" class="headerlink" title="Rust Strings {.cols-3}"></a>Rust Strings {.cols-3}</h2><h3 id="String-Literal-1"><a href="#String-Literal-1" class="headerlink" title="String Literal"></a>String Literal</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> cs:&amp;<span class="built_in">str</span> = <span class="string">&quot;cheat sheet&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; Share cheat sheet for developers</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Share &#123;cs&#125; for developers&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="String-Object"><a href="#String-Object" class="headerlink" title="String Object"></a>String Object</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Creating an empty string object</span></span><br><span class="line"><span class="keyword">let</span> my_string = <span class="built_in">String</span>::new;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Converting to a string object</span></span><br><span class="line"><span class="keyword">let</span> S_string = a_string.to_string()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Creating an initialized string object</span></span><br><span class="line"><span class="keyword">let</span> lang = <span class="built_in">String</span>::from(<span class="string">&quot;Rust&quot;</span>);  </span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;First language is &#123;lang&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="capacity"><a href="#capacity" class="headerlink" title=".capacity()"></a>.capacity()</h3> <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> rand = <span class="built_in">String</span>::from(<span class="string">&quot;Random String&quot;</span>);</span><br><span class="line">rand.capacity()  <span class="comment">// =&gt; 13</span></span><br></pre></td></tr></table></figure>
-<p>Calculates the capacity of the string in bytes.</p>
-<h3 id="contains"><a href="#contains" class="headerlink" title=".contains()"></a>.contains()</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="built_in">String</span>::from(<span class="string">&quot;ElementalX&quot;</span>);</span><br><span class="line">name.contains(<span class="string">&quot;Element&quot;</span>) <span class="comment">// =&gt; true</span></span><br></pre></td></tr></table></figure>
-<p>Checks if the substring is contained inside the original string or not.</p>
-<h3 id="Pushing-a-single-character"><a href="#Pushing-a-single-character" class="headerlink" title="Pushing a single character"></a>Pushing a single character</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> half_text = <span class="built_in">String</span>::from(<span class="string">&quot;Hal&quot;</span>);</span><br><span class="line">half_text.push(<span class="string">&#x27;f&#x27;</span>);    <span class="comment">// =&gt; Half</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Pushing-an-entire-String"><a href="#Pushing-an-entire-String" class="headerlink" title="Pushing an entire String"></a>Pushing an entire String</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> hi = <span class="built_in">String</span>::from(<span class="string">&quot;Hey there...&quot;</span>);</span><br><span class="line">hi.push_str(<span class="string">&quot;How are you doing??&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; Hey there...How are you doing??</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;hi&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="Rust-Operators-cols-3"><a href="#Rust-Operators-cols-3" class="headerlink" title="Rust Operators {.cols-3}"></a>Rust Operators {.cols-3}</h2><h3 id="Comparison-Operators"><a href="#Comparison-Operators" class="headerlink" title="Comparison Operators"></a>Comparison Operators</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>e == f</code></td>
-<td><code>e</code> is equal to <code>f</code></td>
-</tr>
-<tr>
-<td><code>e != f</code></td>
-<td><code>e</code> is NOT equal to <code>f</code></td>
-</tr>
-<tr>
-<td><code>e &lt; f</code></td>
-<td><code>e</code> is less than <code>f</code></td>
-</tr>
-<tr>
-<td><code>e &gt; f</code></td>
-<td><code>e</code> is greater <code>f</code></td>
-</tr>
-<tr>
-<td><code>e &lt;= f</code></td>
-<td><code>e</code> is less than or equal to <code>f</code></td>
-</tr>
-<tr>
-<td><code>e &gt;= f</code></td>
-<td><code>e</code> is greater or equal to <code>f</code></td>
-</tr>
-</tbody></table>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (e, f) = (<span class="number">1</span>, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greater = f &gt; e;        <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> less = f &lt; e;           <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> greater_equal = f &gt;= e; <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> less_equal = e &lt;= f;    <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> equal_to = e == f;      <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> not_equal_to = e != f;  <span class="comment">// =&gt; true</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Arithmetic-Operators"><a href="#Arithmetic-Operators" class="headerlink" title="Arithmetic Operators"></a>Arithmetic Operators</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>a +  b</code></td>
-<td><code>a</code> is added to <code>b</code></td>
-</tr>
-<tr>
-<td><code>a -  b</code></td>
-<td><code>b</code> is subtracted from <code>a</code></td>
-</tr>
-<tr>
-<td><code>a /  b</code></td>
-<td><code>a</code> is divided by <code>b</code></td>
-</tr>
-<tr>
-<td><code>a % b</code></td>
-<td>Gets remainder of <code>a</code> by dividing with <code>b</code></td>
-</tr>
-<tr>
-<td><code>a * b</code></td>
-<td><code>a</code> is multiplied with <code>b</code></td>
-</tr>
-</tbody></table>
-<hr>
-<figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (a, b) = (<span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> sum: <span class="built_in">i32</span> = a + b;            <span class="comment">// =&gt; 9</span></span><br><span class="line"><span class="keyword">let</span> subtractions: <span class="built_in">i32</span> = a - b;   <span class="comment">// =&gt; -1</span></span><br><span class="line"><span class="keyword">let</span> multiplication: <span class="built_in">i32</span> = a * b; <span class="comment">// =&gt; 20</span></span><br><span class="line"><span class="keyword">let</span> division: <span class="built_in">i32</span> = a / b;       <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> modulus: <span class="built_in">i32</span> = a % b;        <span class="comment">// =&gt; 4</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-<h3 id="Bitwise-Operators"><a href="#Bitwise-Operators" class="headerlink" title="Bitwise Operators"></a>Bitwise Operators</h3><table>
-<thead>
-<tr>
-<th>Operator</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>g &amp; h</code></td>
-<td>Binary AND</td>
-</tr>
-<tr>
-<td>`g</td>
-<td>h`</td>
-</tr>
-<tr>
-<td><code>g ^ h</code></td>
-<td>Binary XOR</td>
-</tr>
-<tr>
-<td><code>g ~ h</code></td>
-<td>Binary one’s complement</td>
-</tr>
-<tr>
-<td><code>g &lt;&lt; h</code></td>
-<td>Binary shift left</td>
-</tr>
-<tr>
-<td><code>g &gt;&gt; h</code></td>
-<td>Binary shift right</td>
-</tr>
-</tbody></table>
-<hr>
-<figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (g, h) = (<span class="number">0x1</span>, <span class="number">0x2</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bitwise_and = g &amp; h;  <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> bitwise_or = g | h;   <span class="comment">// =&gt; 3</span></span><br><span class="line"><span class="keyword">let</span> bitwise_xor = g ^ h;  <span class="comment">// =&gt; 3</span></span><br><span class="line"><span class="keyword">let</span> right_shift = g &gt;&gt; <span class="number">2</span>; <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> left_shift = h &lt;&lt; <span class="number">4</span>;  <span class="comment">// =&gt; 32 </span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Logical-Operators"><a href="#Logical-Operators" class="headerlink" title="Logical Operators"></a>Logical Operators</h3><table>
-<thead>
-<tr>
-<th>Example</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>c &amp;&amp; d</code></td>
-<td>Both are true <em>(AND)</em></td>
-</tr>
-<tr>
-<td><code>c OR d</code></td>
-<td>Either is true <em>(OR)</em></td>
-</tr>
-<tr>
-<td><code>!c</code></td>
-<td><code>c</code> is false <em>(NOT)</em></td>
-</tr>
-</tbody></table>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (c, d) = (<span class="literal">true</span>, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> and = c &amp;&amp; d;  <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> or  = c || d;  <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> not = !c;      <span class="comment">// =&gt; false</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Compound-Assignment-Operator"><a href="#Compound-Assignment-Operator" class="headerlink" title="Compound Assignment Operator"></a>Compound Assignment Operator</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> k = <span class="number">9</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> l = k;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<table>
-<thead>
-<tr>
-<th>Operator</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>k += l</code></td>
-<td>Add a value and assign, then k=9</td>
-</tr>
-<tr>
-<td><code>k -= l</code></td>
-<td>Substrate a value and assign, then k=18</td>
-</tr>
-<tr>
-<td><code>k /= l</code></td>
-<td>Divide a value and assign, then k=9</td>
-</tr>
-<tr>
-<td><code>k *= l</code></td>
-<td>Multiply a value and assign, then k=81</td>
-</tr>
-<tr>
-<td>`k</td>
-<td>= l`</td>
-</tr>
-</tbody></table>
-<h2 id="Rust-Flow-Control-cols-3"><a href="#Rust-Flow-Control-cols-3" class="headerlink" title="Rust Flow Control {.cols-3}"></a>Rust Flow Control {.cols-3}</h2><h3 id="If-Expression"><a href="#If-Expression" class="headerlink" title="If Expression"></a>If Expression</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> case1: <span class="built_in">i32</span> = <span class="number">81</span>;</span><br><span class="line"><span class="keyword">let</span> case2: <span class="built_in">i32</span> = <span class="number">82</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> case1 &lt; case2 &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case1 is greater than case2&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="If…Else-Expression"><a href="#If…Else-Expression" class="headerlink" title="If…Else Expression"></a>If…Else Expression</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> case3 = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> case4 = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> case3 &gt;= case4 &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case3 is better than case4&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case4 is greater than case3&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="If…Else…if…Else-Expression"><a href="#If…Else…if…Else-Expression" class="headerlink" title="If…Else…if…Else Expression"></a>If…Else…if…Else Expression</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">let</span> bar = <span class="number">13</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> foo == bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo is equal to bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> foo &lt; bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo less than bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> foo != bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo is not equal to bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Nothing&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="If…Let-Expression-row-span-3"><a href="#If…Let-Expression-row-span-3" class="headerlink" title="If…Let Expression {.row-span-3}"></a>If…Let Expression {.row-span-3}</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> arr1:[<span class="built_in">i64</span> ; <span class="number">3</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>[<span class="number">1</span>,<span class="number">2</span>,_] = arr1&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works with array&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> arr2:[&amp;<span class="built_in">str</span>; <span class="number">2</span>] = [<span class="string">&quot;one&quot;</span>, <span class="string">&quot;two&quot;</span>];</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>[<span class="string">&quot;Apple&quot;</span>, _] = arr2&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works with str array too&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> tuple_1 = (<span class="string">&quot;India&quot;</span>, <span class="number">7</span>, <span class="number">90</span>, <span class="number">90.432</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(_, <span class="number">7</span>, <span class="number">9</span>, <span class="number">78.99</span>) = tuple_1&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works woth tuples too&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple_2 = ( <span class="number">9</span>, <span class="number">7</span>, <span class="number">89</span>, <span class="number">12</span>, <span class="string">&quot;Okay&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(<span class="number">9</span>, <span class="number">7</span>,<span class="number">89</span>, <span class="number">12</span>, blank) = tuple_2 &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Everything &#123;blank&#125; mate?&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple_3 = (<span class="number">89</span>, <span class="number">90</span>, <span class="string">&quot;Yes&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(<span class="number">9</span>, <span class="number">89</span>, <span class="string">&quot;Yes&quot;</span>) = tuple_3&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Pattern did match&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Pattern did not match&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Match-Expression-row-span-3"><a href="#Match-Expression-row-span-3" class="headerlink" title="Match Expression {.row-span-3}"></a>Match Expression {.row-span-3}</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> day_of_week = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">match</span> day_of_week &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;Its Monday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">2</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Tuesday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">3</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Wednesday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">4</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Thursday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">5</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Friday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">6</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Saturday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">7</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Sunday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    _ =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;Default!&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Nested...If Expression</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">let</span> nested_conditions = <span class="number">89</span>;</span><br><span class="line"><span class="keyword">if</span> nested_conditions == <span class="number">89</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> just_a_value = <span class="number">98</span>;</span><br><span class="line">    <span class="keyword">if</span> just_a_value &gt;= <span class="number">97</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;Greater than 97&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### For Loop</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">for</span> <span class="keyword">mut</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">15</span> &#123;</span><br><span class="line">  i-=<span class="number">1</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The value of i is : &#123;i&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="While-Loop"><a href="#While-Loop" class="headerlink" title="While Loop"></a>While Loop</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> check =  <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> check &lt; <span class="number">11</span>&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Check is : &#123;check&#125;&quot;</span>);</span><br><span class="line">  check+=<span class="number">1</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;After incrementing: &#123;check&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> check == <span class="number">10</span>&#123;</span><br><span class="line">    <span class="keyword">break</span>; <span class="comment">// stop while</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Loop-keyword"><a href="#Loop-keyword" class="headerlink" title="Loop keyword"></a>Loop keyword</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;hello world forever!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>The infinite loop indicated.</p>
-<h3 id="Break-Statement"><a href="#Break-Statement" class="headerlink" title="Break Statement"></a>Break Statement</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;i is &#123;i&#125;&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> i &gt; <span class="number">100</span> &#123;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  i *= <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Continue Statement</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">for</span> (v, c) <span class="keyword">in</span> (<span class="number">0</span>..<span class="number">10</span>+<span class="number">1</span>).enumerate()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The &#123;c&#125; number loop&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> v == <span class="number">9</span>&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Here we go continue?&quot;</span>);</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">println!</span>&#123;<span class="string">&quot;The value of v is : &#123;v&#125;&quot;</span>&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="Rust-Functions-cols-3"><a href="#Rust-Functions-cols-3" class="headerlink" title="Rust Functions {.cols-3}"></a>Rust Functions {.cols-3}</h2><h3 id="Basic-function"><a href="#Basic-function" class="headerlink" title="Basic function"></a>Basic function</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_message</span></span>()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Hello, QuickRef.ME!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="comment">//Invoking a function in Rust.</span></span><br><span class="line">  print_message();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Pass-by-Value"><a href="#Pass-by-Value" class="headerlink" title="Pass by Value"></a>Pass by Value</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">let</span> x:<span class="built_in">u32</span> = <span class="number">10</span>;</span><br><span class="line">  <span class="keyword">let</span> y:<span class="built_in">u32</span> = <span class="number">20</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// =&gt; 200</span></span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Calc: &#123;&#125;&quot;</span>, cal_rect(x, y));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">cal_rect</span></span>(x:<span class="built_in">u32</span>, y:<span class="built_in">u32</span>) -&gt; <span class="built_in">u32</span></span><br><span class="line">&#123;</span><br><span class="line">  x * y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Pass-by-Reference"><a href="#Pass-by-Reference" class="headerlink" title="Pass by Reference"></a>Pass by Reference</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> by_ref = <span class="number">3</span>;      <span class="comment">// =&gt; 3</span></span><br><span class="line">  power_of_three(&amp;<span class="keyword">mut</span> by_ref);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;by_ref&#125;&quot;</span>);  <span class="comment">// =&gt; 9</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">power_of_three</span></span>(by_ref: &amp;<span class="keyword">mut</span> <span class="built_in">i32</span>)&#123;</span><br><span class="line">  <span class="comment">// de-referencing is important</span></span><br><span class="line">  *by_ref = *by_ref * *by_ref;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;by_ref&#125;&quot;</span>);  <span class="comment">// =&gt; 9</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Returns"><a href="#Returns" class="headerlink" title="Returns"></a>Returns</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> (<span class="keyword">mut</span> radius, <span class="keyword">mut</span> pi) = (<span class="number">3.0</span>, <span class="number">3.14</span>);</span><br><span class="line">  <span class="keyword">let</span>(area, _perimeter) = calculate (</span><br><span class="line">      &amp;<span class="keyword">mut</span> radius,</span><br><span class="line">      &amp;<span class="keyword">mut</span> pi</span><br><span class="line">  );</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The area and the perimeter of the circle are: &#123;area&#125; &amp; &#123;_perimeter&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">calculate</span></span>(radius : &amp;<span class="keyword">mut</span> <span class="built_in">f64</span>, pi: &amp;<span class="keyword">mut</span> <span class="built_in">f64</span>) -&gt; (<span class="built_in">f64</span>, <span class="built_in">f64</span>)&#123;</span><br><span class="line">  <span class="keyword">let</span> perimeter = <span class="number">2.0</span> * *pi * *radius;</span><br><span class="line">  <span class="keyword">let</span> area = *pi * *radius * *radius;</span><br><span class="line">  <span class="keyword">return</span> (area, perimeter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Arrays-as-Arguments"><a href="#Arrays-as-Arguments" class="headerlink" title="Arrays as Arguments"></a>Arrays as Arguments</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> array: [<span class="built_in">i32</span> ; <span class="number">5</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">6</span>];</span><br><span class="line">  print_arrays(array);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The elements: &#123;array:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_arrays</span></span>(<span class="keyword">mut</span> array:[<span class="built_in">i32</span>; <span class="number">5</span>]) &#123;</span><br><span class="line">  array[<span class="number">0</span>] = <span class="number">89</span>;</span><br><span class="line">  array[<span class="number">1</span>] = <span class="number">90</span>;</span><br><span class="line">  array[<span class="number">2</span>] = <span class="number">91</span>;</span><br><span class="line">  array[<span class="number">3</span>] = <span class="number">92</span>;</span><br><span class="line">  array[<span class="number">4</span>] = <span class="number">93</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The elements: &#123;array:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Returning-Arrays"><a href="#Returning-Arrays" class="headerlink" title="Returning Arrays"></a>Returning Arrays</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> arr:[<span class="built_in">i32</span>; <span class="number">5</span>] = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>];</span><br><span class="line">  multiply(arr);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The array is : &#123;:?&#125;&quot;</span>, multiply(arr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">multiply</span> </span>(<span class="keyword">mut</span> arr: [<span class="built_in">i32</span> ; <span class="number">5</span>]) -&gt; [<span class="built_in">i32</span> ; <span class="number">5</span>]&#123;</span><br><span class="line">  arr[<span class="number">2</span>] = <span class="number">90</span>;</span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">mut</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">5</span> &#123;</span><br><span class="line">      arr[i] = arr[i] * arr[<span class="number">2</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-<h2 id="Misc-cols-3"><a href="#Misc-cols-3" class="headerlink" title="Misc {.cols-3}"></a>Misc {.cols-3}</h2><h3 id="Type-Casting"><a href="#Type-Casting" class="headerlink" title="Type Casting"></a>Type Casting</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a_int = <span class="number">90</span>; <span class="comment">// int</span></span><br><span class="line"><span class="comment">// int to float</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> type_cast = (a_int <span class="keyword">as</span> <span class="built_in">f64</span>);</span><br></pre></td></tr></table></figure>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> orginal: <span class="built_in">char</span> = <span class="string">&#x27;I&#x27;</span>;</span><br><span class="line"><span class="comment">// char to int =&gt; 73</span></span><br><span class="line"><span class="keyword">let</span> type_casted: <span class="built_in">i64</span> = orginal <span class="keyword">as</span> <span class="built_in">i64</span>;</span><br></pre></td></tr></table></figure>
-
-<p>To perform type-casting in Rust one must use the <code>as</code> keyword.</p>
-<h3 id="Borrowing"><a href="#Borrowing" class="headerlink" title="Borrowing"></a>Borrowing</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> foo = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> borrowed_foo = &amp;foo;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;borrowed_foo&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
-<hr>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> bar = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mutable_borrowed_bar = &amp;<span class="keyword">mut</span> bar;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;mutable_borrowed_bar&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>Here borrowed value borrows the value from value one using <code>&amp;</code> operator.</p>
-<h3 id="De-referencing"><a href="#De-referencing" class="headerlink" title="De-referencing"></a>De-referencing</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> borrow = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">let</span> deref = &amp;<span class="keyword">mut</span> borrow;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, *deref);</span><br></pre></td></tr></table></figure>
-
-<p>De-referencing in rust can be done using the <code>*</code> operator</p>
-<h3 id="Variable-Scope"><a href="#Variable-Scope" class="headerlink" title="Variable Scope"></a>Variable Scope</h3><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// The scope limited to this braces</span></span><br><span class="line">  <span class="keyword">let</span> a_number = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;a_number&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>This will produce error as the scope of the variable <code>a_number</code> ends at the braces</p>
-<h2 id="Also-see"><a href="#Also-see" class="headerlink" title="Also see"></a>Also see</h2><ul>
-<li><a href="https://doc.rust-lang.org/book/ch00-00-introduction.html">The Rust Document</a> <em>(doc.rust-lang.org)</em></li>
-<li><a href="https://doc.rust-lang.org/reference/introduction.html">The Rust Reference</a> <em>(doc.rust-lang.org)</em></li>
-<li><a href="https://phaiax.github.io/rust-cheatsheet/">Rust Cheatsheet</a> <em>(phaiax.github.io)</em></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Rust</category>
-      </categories>
-      <tags>
-        <tag>Rust</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Rust性能分析-迭代器的enumerate方法是否会影响程序性能</title>
-    <url>/2022/01/29/rust_enumerate_performance_analysis_20220129/</url>
-    <content><![CDATA[<p>Rust编程语言融合了多种编程法(programming paradigm)，其中的命令式编程(imperative programming)所用的循环和函数式编程(functional programming)所提供的迭代器(iterator)可以加强数组或是切片的访问性能。</p>
-<p>然而，在访问数组或是切片时，迭代器在每次迭代时只会回传元素的值或引用，而不会将索引值也跟着回传出来。这个问题虽然可以通过迭代器的<code>enumerate</code>方法来轻松解决，<code>enumerate</code>会让迭代器回传目前是第几次的迭代(从0开始数)，这个次数值可以当作是目前访问到的元素的索引值，只是这样的作法会对程序性能有什么不良的影响呢？</p>
-<span id="more"></span>
-
-<p>我们先来看看以下代码：</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..array.len() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;array[&#123;&#125;] = &#123;&#125;&quot;</span>, i, array[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以上程序，会利用for循环来遍历<code>array</code>这个存在于堆栈内的数组，并将其所有索引值所对应的元素值通通印在屏幕上。</p>
-<p>我们知道用for循环来遍历堆栈内的数组，性能跟和用for迭代器循环或是迭代器是一样的。那么如果现在我们是将以上程序改用for迭代器循环和<code>enumerate</code>方法来完成呢？程序如下：</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> (i, &amp;n) <span class="keyword">in</span> array.iter().enumerate() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;array[&#123;&#125;] = &#123;&#125;&quot;</span>, i, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过<code>enumerate</code>方法来枚举数组，会影响到性能吗？</p>
-<h3 id="性能实测"><a href="#性能实测" class="headerlink" title="性能实测"></a>性能实测</h3><p>直接实际写一段程序来测试运算性能吧！这段程序可以在GitHub上取得：</p>
-<blockquote>
-<p><a href="https://github.com/magiclen/rust-performance-measurement/blob/master/benches/iter_enumerate.rs">https://github.com/magiclen/rust-performance-measurement/blob/master/benches/iter_enumerate.rs</a></p>
-</blockquote>
-<p>根据测试结果，可以发现使用<code>enumerate</code>方法和使用for循环的性能是差不多的，所以可以放心使用～</p>
-<p><code>enumerate</code>枚举和原本迭代遍历只差在前者用<code>Enumerate</code>结构体包裹了后者，并且多了一个计数变量字段，在每次调用<code>next</code>方法时都会把该计数变量的值以元组(tuple)的方式与元素保存在一起，然后在计数变量加1后，回传该元组。<code>next</code>方法的代码如下：</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">next</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="built_in">Option</span>&lt;(<span class="built_in">usize</span>, &lt;I <span class="keyword">as</span> <span class="built_in">Iterator</span>&gt;::Item)&gt; &#123;</span><br><span class="line">    <span class="keyword">self</span>.iter.next().map(|a| &#123;</span><br><span class="line">        <span class="keyword">let</span> ret = (<span class="keyword">self</span>.count, a);</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        ret</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>所以它的性能才会和for计数循环差不多。而如果遍历的对象不是堆栈内的数组，它的性能还会比for循环更好呢！</p>
-]]></content>
-      <categories>
-        <category>Rust</category>
-      </categories>
-      <tags>
-        <tag>Rust</tag>
       </tags>
   </entry>
 </search>

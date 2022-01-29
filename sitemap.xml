@@ -267,14 +267,14 @@
   </url>
   
   <url>
-    <loc>https://www.rayylee.xyz/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
+    <loc>https://www.rayylee.xyz/tags/Rust/</loc>
     <lastmod>2022-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.rayylee.xyz/tags/Rust/</loc>
+    <loc>https://www.rayylee.xyz/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
     <lastmod>2022-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -332,14 +332,14 @@
   </url>
   
   <url>
-    <loc>https://www.rayylee.xyz/categories/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
+    <loc>https://www.rayylee.xyz/categories/Rust/</loc>
     <lastmod>2022-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.rayylee.xyz/categories/Rust/</loc>
+    <loc>https://www.rayylee.xyz/categories/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
     <lastmod>2022-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
