@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CLGwJbU8jWqDUNV65d7JW65vqOgp2zSwbfCCVjhZcXo">
+  <meta name="baidu-site-verification" content="code-NqxVcgKLLc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.rayylee.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="编写长期可靠和可维护的软件，有很多障碍。其中之一就是软件的复杂性。在最近结束的2021年KVM论坛上，Paolo Bonzini以开源虚拟化QEMU仿真软件为例，探讨了这个话题。根据他作为几个QEMU子系统的维护者的经验，他就如何抵御不受欢迎的复杂性提出了一些具体建议。Bonzini在整个演讲中使用QEMU作为例子，希望让未来的贡献者更容易修改QEMU。然而，他所分享的经验也同样适用于其他许多项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以QEMU为例，探讨软件&quot;基本&quot;和&quot;意外“的复杂性">
+<meta property="og:url" content="https://www.rayylee.xyz/2021/10/22/virtualization_qemu_study_complex_20211022/index.html">
+<meta property="og:site_name" content="Rayy Lee">
+<meta property="og:description" content="编写长期可靠和可维护的软件，有很多障碍。其中之一就是软件的复杂性。在最近结束的2021年KVM论坛上，Paolo Bonzini以开源虚拟化QEMU仿真软件为例，探讨了这个话题。根据他作为几个QEMU子系统的维护者的经验，他就如何抵御不受欢迎的复杂性提出了一些具体建议。Bonzini在整个演讲中使用QEMU作为例子，希望让未来的贡献者更容易修改QEMU。然而，他所分享的经验也同样适用于其他许多项目">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-10-22T12:10:54.000Z">
+<meta property="article:modified_time" content="2022-01-26T11:32:36.994Z">
+<meta property="article:author" content="Rayy Lee">
+<meta property="article:tag" content="Virtualization">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.rayylee.xyz/2021/10/22/virtualization_qemu_study_complex_20211022/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>以QEMU为例，探讨软件"基本"和"意外“的复杂性 | Rayy Lee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rayy Lee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>书籍</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/10/22/virtualization_qemu_study_complex_20211022/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          以QEMU为例，探讨软件"基本"和"意外“的复杂性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-22 20:10:54" itemprop="dateCreated datePublished" datetime="2021-10-22T20:10:54+08:00">2021-10-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-26 19:32:36" itemprop="dateModified" datetime="2022-01-26T19:32:36+08:00">2022-01-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Virtualization/" itemprop="url" rel="index"><span itemprop="name">Virtualization</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/10/22/virtualization_qemu_study_complex_20211022/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/10/22/virtualization_qemu_study_complex_20211022/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>编写长期可靠和可维护的软件，有很多障碍。其中之一就是软件的复杂性。在最近结束的2021年KVM论坛上，Paolo Bonzini以开源虚拟化QEMU仿真软件为例，探讨了这个话题。根据他作为几个QEMU子系统的维护者的经验，他就如何抵御不受欢迎的复杂性提出了一些具体建议。Bonzini在整个演讲中使用QEMU作为例子，希望让未来的贡献者更容易修改QEMU。然而，他所分享的经验也同样适用于其他许多项目。</p>
+<span id="more"></span>
+
+
+<p>为什么软件的复杂性会成为一个问题？首先，毫不奇怪，它导致了各种类型的错误，包括安全缺陷。对于复杂的软件来说，代码审查变得更加困难；它也使得对项目的贡献和维护更加痛苦。很明显，这些都是不可取的。</p>
+<p>Bonzini旨在回答的问题是 “我们能在多大程度上消除复杂性?”；为了做到这一点，他首先区分了 “基本 “和 “意外 “复杂性。这两类复杂性的概念源于1987年Fred Brooks的经典论文《没有银弹》。可以看出，Brooks本人正在回顾亚里士多德的本质和意外的概念。</p>
+<p>正如Bonzini所说，基本复杂性是 “一个软件程序试图解决的问题的属性”。而意外的复杂性，则是 “正在解决手头问题的程序的属性”（由于困难不是被解决的问题所固有的）。为了进一步解释这些概念，他指出了QEMU正在解决的问题，这些问题构成了QEMU的基本复杂性。</p>
+<h2 id="QEMU复杂性的本质和意外"><a href="#QEMU复杂性的本质和意外" class="headerlink" title="QEMU复杂性的本质和意外"></a>QEMU复杂性的本质和意外</h2><p>QEMU在可移植性、可配置性、性能和安全性方面有大量的要求。除了模拟设备并提供保存和恢复其状态的方法外，它还有一个强大的存储层，并且还嵌入了一些网络服务器，如VNC服务器。QEMU还必须确保暴露给虚拟机的CPU和设备模型保持稳定，无论底层硬件或QEMU本身是否被更新。对于许多用户来说，使用QEMU的发行版内核而不是定制的内核很重要。对于许多QEMU用户来说，能够启动非Linux操作系统也是一个必要的功能；这些被认为是必要的复杂性。</p>
+<p>QEMU提供了一个管理界面，通常称为监视器。事实上有两个，HMP和QMP，因为用户需要一个简单的方法来与监控器互动，不会被QMP提供的基于JSON的接口所服务，外部程序使用QEMU来管理。因此，QEMU包含了一个对象模型和一个代码生成器，它可以处理C结构的集合和解集。由于这个代码生成器，同样的代码可以很容易地对JSON字典或命令行选项进行操作。</p>
+<p>开发人员也看到了复杂性的另一面，这是由作为构建过程一部分的工具带来的。工具使普通的任务变得更容易，但当它们发生故障时，也使调试变得更难。例如，QEMU曾经有一个手动配置机制，需要逐一列出它所模拟的主板上的所有设备。现在，只需要指定主板，构建系统将自动启用它所支持的设备。它还能确保不可能的配置不会被构建–这很有用，但是，当然，开发者必须学会如何处理这些故障。</p>
+<h2 id="复杂性的来源"><a href="#复杂性的来源" class="headerlink" title="复杂性的来源"></a>复杂性的来源</h2><p>Bonzini确定了两个主要的意外复杂性的来源。第一个是 “不完整的过渡”（受一篇关于GCC维护的论文启发），它发生在一个新的和更好的方法被引入，但它没有在整个代码库中被一致应用。这可能是由于多种原因造成的：开发人员可能没有时间或相关的专业知识；或者他们根本没有发现其余的情况。</p>
+<p>作为一个例子，他列举了在QEMU中报告错误的两种截然不同的方式：基于传播的API，以及将错误写入标准输出的特设函数（如<code>error_report()</code>）。基于传播的API是为了向QMP接口报告错误而引入的。它有两个优点：它将错误发生的地方与报告的地方分开，并允许优雅的错误恢复。另一个不完全过渡的例子是，尽管现在QEMU的构建系统大多使用Meson，但仍有一些预先存在的编译测试是用Bourne shell编写的，是QEMU的配置脚本的一部分。</p>
+<p>然而，QEMU在完成转换方面也有一个不错的记录。其中有几个是使用Coccinelle完成的–这是一个模式匹配和源码转换工具，允许创建一个 “语义补丁”，它可以统一应用于整个代码库。例如，Coccinelle被用来取代过时的API，简化那些要经过不必要的圈套的代码，或者甚至引入全新的API（如设备的创建和 “实现”）。</p>
+<p>偶然复杂性的第二个来源是重复的逻辑和缺失抽象。在编写临时性的代码与设计可重用的数据结构和API之间，有一个权衡。Bonzini提到了命令行解析，并将使用strtol()或scanf()等函数的临时代码与QEMU特定的API，如QemuOpts或keyval进行了对比。后者确保了命令行的一致性，有时还负责打印帮助信息。</p>
+<p>另一个例子是最近努力将QEMU的更多部分组织成可以单独安装的共享对象。随着这类模块数量的增加，我们建立了一个新的机制，将模块提供的功能及其依赖关系与实现的功能列在同一个源文件中，而不是让它们散落在QEMU源代码中。Bonzini建议，一旦审查员注意到过多的重复，或者功能散落在许多文件中，他们就应该制定一个如何消除这些功能的计划。</p>
+<h2 id="QEMU-命令行的复杂性"><a href="#QEMU-命令行的复杂性" class="headerlink" title="QEMU 命令行的复杂性"></a>QEMU 命令行的复杂性</h2><p>接下来是对QEMU中意外复杂性的案例研究，即命令行处理代码。QEMU有117个选项，在大约3000行的代码中实现，有 “一些基本的复杂性，但意外的复杂性太多”。Bonzini概述了简化事情的方法，或者说在处理QEMU的命令行解析代码时如何不使其变得更糟。他首先问道：到底是什么导致了QEMU命令行选项的意外复杂性？众多的选项在实现上有很大的不同，所以将它们归为六类，并按照意外复杂性增加的顺序进行了讨论：灵活、命令、组合、快捷、一次性和遗留。</p>
+<p>灵活选项是最复杂的，因为它们满足了广泛的需求。它们提供了对QEMU基本复杂性的很大一部分的访问，QEMU的新功能通常是通过这些选项来实现的。灵活选项的工作方式是将尽可能多的功能委托给通用的QEMU APIs，因此启用新功能不需要编写或修改任何命令行解析代码。这就是一个单一的选项，-object可以配置诸如加密密钥、TLS的证书、虚拟机与主机上的NUMA节点的关联等信息。三个选项，<code>-cpu</code>、<code>-device</code>和<code>-machine</code>，配置了虚拟硬件的几乎所有方面。然而，这些选项也不能避免意外的复杂性：至少有四个解析器用于此类选项。QemuOpts、keyval、JSON解析器，以及一个被-cpu选项使用的定制解析器。四个解析器至少比应该有的多两个。</p>
+<p>命令选项是在QEMU命令行上指定的，但它通常也对应于可以在运行时调用的QMP命令之一。一个例子是在客户启动时不启动vCPU的选项（<code>qemu-kvm -S</code>命令行使用；<code>stop</code>在运行中使用），但是在启动的时候（通过QMP <code>cont</code>，表示 “继续”）。另一个例子是<code>-loadvm</code>，从一个保存有虚拟机文件中启动QEMU；或者trace，启用跟踪点（假设QEMU是用可用的跟踪后端构建的）。这些选项给QEMU的维护者带来了相对较小的负担；但Bonzini建议在添加新的命令行选项时保持较高的标准–在运行时从QMP接口调用这些选项会更容易。</p>
+<p>有了组合选项，”我们开始进入意外的复杂性地狱”：这些选项在一个命令行选项中同时创建设备的前端和后端。例如，QEMU的<code>-drive</code>选项在一个选项中创建了一个设备，如<code>virtio-blk</code>和一个虚拟机的磁盘镜像。更加粗略的选项变体对于普通用户来说已经很不方便了，所以组合选项确实有真正的用处，但它们的维护负担很重。解析代码很复杂，而且这些选项也往往会对代码的其他部分产生影响–包括后台代码和虚拟芯片组创建代码。这些选项使QEMU的代码不那么模块化，因此，如果不了解命令行的一些细节，就无法增加对主板的支持。</p>
+<p>快捷选项语法糖复杂性排在前三。例如，<code>-kernel path</code>是<code>-machine pc,kernel=path</code>的缩写。它们很方便–许多用户可能甚至没有意识到较长形式的存在–而且它们的维护负担很小，因为它们的实现完全在命令行解析代码中。然而，考虑到已经存在的大量选项，最好不要再增加。</p>
+<p>最后，对于传统的命令行选项，”我们跌到了谷底”。其中许多都是失败的实验（比如<code>-readconfig</code>和<code>-writeconfig</code>选项），或者根本就不应该出现在QEMU中的东西。例如，<code>-daemonize</code>在初始化后对QEMU进程进行守护，而libvirt等工具则为用户提供了更好的服务。这些东西的未来就是废弃并最终删除它们。</p>
+<h2 id="改进的方法"><a href="#改进的方法" class="headerlink" title="改进的方法"></a>改进的方法</h2><p>QEMU命令行带来了什么教训，开发者可以从中得到什么指导？他说：”不要在空白处设计”–要利用现有的基本复杂性。在开始添加一个新的命令行标志之前，问问自己是否有必要。也许可以使用QEMU中的一个现有的集成，如QEMU API和QMP命令。这样一来，就可以充分利用QEMU的子系统之间现有的互动。</p>
+<p>其次，Bonzini强调了补丁审查员的责任：理解复杂性的基本部分，不要把它误认为是意外–这是识别上升的意外复杂性的前提条件。而且不要让意外的复杂性占据项目。对于那些从事大型代码库重构的人，他鼓励学习Coccinelle。</p>
+<p>不完整的过渡期并不总是可怕的：从一个旧的API过渡到一个新的、更好的API是软件改进的一个自然部分。就QEMU而言，有时一个新功能无论如何都需要一个过渡期，因为它影响到命令行或管理工具，因此需要一个废弃周期。在这种情况下，利用不完整的过渡期，分阶段工作。找出可以被认为是改进的最小的工作块，并为以后的工作做计划。</p>
+<p>此外，确保执行一项开发任务或使用一项功能的新的、优雅的方法被记录下来 - “应该有一种明显的方法来完成一项任务。如果没有，也要有一个记录在案的方法。” 不完整的或零散的过渡不应该阻止人们对程序进行改进。评估重复代码和添加更多抽象概念之间的权衡。有些情况可能需要重复代码；但当事情变得更糟时，不要使情况恶化。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>构建本质上复杂且可维护的软件已经很困难了。如果这里讨论的意外复杂性的因素–不完整的过渡、过度的抽象、组件之间不明确的逻辑边界和工具的复杂性–不加以控制，问题就会随着时间的推移而变得复杂。从QEMU的经验中提炼出来的教训，为其他面临类似障碍的项目提供了充分的指导。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Virtualization/" rel="tag"># Virtualization</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/13/data_structures_algorithm_14_common_model/" rel="prev" title="14种常用算法模式">
+      <i class="fa fa-chevron-left"></i> 14种常用算法模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/24/virtualization_vduse_introduction__20211024/" rel="next" title="VDUSE（vDPA Device in Userspace）技术简介">
+      VDUSE（vDPA Device in Userspace）技术简介 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#QEMU%E5%A4%8D%E6%9D%82%E6%80%A7%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%92%8C%E6%84%8F%E5%A4%96"><span class="nav-number">1.</span> <span class="nav-text">QEMU复杂性的本质和意外</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%80%A7%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">复杂性的来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QEMU-%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">QEMU 命令行的复杂性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">改进的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rayy Lee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Rayy Lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://beachboyy.blog.csdn.net/" title="CSDN → https:&#x2F;&#x2F;beachboyy.blog.csdn.net" rel="noopener" target="_blank"><i class="fab fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/hbuxiaofei" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;hbuxiaofei" rel="noopener" target="_blank"><i class="fab fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rayy Lee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '54xrQrftK3ognC5fpUdicEVY-gzGzoHsz',
+      appKey     : 'jNGhKta5gAoDO4cYs1hPORoH',
+      placeholder: "Add your comments",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

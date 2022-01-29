@@ -1,0 +1,1515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>C语言的构造函数与析构函数</title>
+    <url>/2020/11/20/c_constructor_destructor_function/</url>
+    <content><![CDATA[<p>C++和JAVA中有构造/析构函数，C语言中也有实现的方法，在gcc下可以使用关键字 <code>__attribute__</code>指定<strong>构造函数</strong>或者<strong>析构函数</strong>。他们由编译器在编译阶段进行处理。</p>
+<ul>
+<li>声明构造函数：<br><code>void __attribute__((constructor))  function(void)</code></li>
+<li>声明析构函数：<br><code>void __attribute__((destructor))  function(void)</code></li>
+</ul>
+<span id="more"></span>
+
+<p>例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> __attribute__((constructor)) init(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;constructor run...\n&quot;</span>);;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> __attribute__((destructor)) fini(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;destructor run...\n&quot;</span>);;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello world!\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># gcc main.c</span></span><br><span class="line"><span class="comment"># ./a.out</span></span><br><span class="line">constructor run...</span><br><span class="line">Hello world!</span><br><span class="line">destructor run...</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>14种常用算法模式</title>
+    <url>/2021/03/13/data_structures_algorithm_14_common_model/</url>
+    <content><![CDATA[<p>下面列出最常见的 14 种算法模式，它们可被用于解决常见的问题。另外还会说明如何识别每种模式，并会为每种模式提供一些问题示例。<br><a href="#1%EF%BC%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3">1．滑动窗口</a><br><a href="#2%EF%BC%8E%E4%BA%8C%E6%8C%87%E9%92%88%E6%88%96%E8%BF%AD%E4%BB%A3%E5%99%A8">2．二指针或迭代器</a><br><a href="#3%EF%BC%8E%E5%BF%AB%E9%80%9F%E5%92%8C%E6%85%A2%E9%80%9F%E6%8C%87%E9%92%88">3．快速和慢速指针</a><br><a href="#4%EF%BC%8E%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4">4．合并区间</a><br><a href="#5%EF%BC%8E%E5%BE%AA%E7%8E%AF%E6%8E%92%E5%BA%8F">5．循环排序</a><br><a href="#6%EF%BC%8E%E5%8E%9F%E5%9C%B0%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8">6．原地反转链表</a><br><a href="#7%EF%BC%8E%E6%A0%91%E7%9A%84%E5%AE%BD%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2">7．树的宽度优先搜索（Tree BFS）</a><br><a href="#8%EF%BC%8E%E6%A0%91%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2">8．树的深度优先搜索（Tree DFS）</a><br><a href="#9%EF%BC%8ETwoHeaps">9．Two Heaps</a><br><a href="#10%EF%BC%8E%E5%AD%90%E9%9B%86">10．子集</a><br><a href="#11%EF%BC%8E%E7%BB%8F%E8%BF%87%E4%BF%AE%E6%94%B9%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2">11．经过修改的二叉搜索</a><br><a href="#12%EF%BC%8E%E5%89%8DK%E4%B8%AA%E5%85%83%E7%B4%A0">12．前 K 个元素</a><br><a href="#13%EF%BC%8EK%E8%B7%AF%E5%90%88%E5%B9%B6">13．K 路合并</a><br><a href="#14%EF%BC%8E%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F">14．拓扑排序</a></p>
+<span id="more"></span>
+
+<h2 id="1．滑动窗口"><a href="#1．滑动窗口" class="headerlink" title="1．滑动窗口"></a>1．滑动窗口</h2><p>滑动窗口模式是用于在给定数组或链表的特定窗口大小上执行所需的操作，比如寻找包含所有 1 的最长子数组。从第一个元素开始滑动窗口并逐个元素地向右滑，并根据你所求解的问题调整窗口的长度。在某些情况下窗口大小会保持恒定，在其它情况下窗口大小会增大或减小。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    Sliding window --&gt;</span><br><span class="line">+------------------------+</span><br><span class="line">|                        |</span><br><span class="line">+----+----+----+----+----+----+----+----+----+</span><br><span class="line">|  1 |  3 |  2 |  6 | -1 |  4 |  1 |  8 |  2 |</span><br><span class="line">+----+----+----+----+----+----+----+----+----+</span><br><span class="line">|                        |</span><br><span class="line">+------------------------+</span><br><span class="line"></span><br><span class="line">     Slide one element forward</span><br><span class="line">     +------------------------+</span><br><span class="line">     |                        |</span><br><span class="line">+----+----+----+----+----+----+----+----+----+</span><br><span class="line">|  1 |  3 |  2 |  6 | -1 |  4 |  1 |  8 |  2 |</span><br><span class="line">+----+----+----+----+----+----+----+----+----+</span><br><span class="line">     |                        |</span><br><span class="line">     +------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>下面是一些你可以用来确定给定问题可能需要滑动窗口的方法：</p>
+<ul>
+<li>问题的输入是一种线性数据结构，比如链表、数组或字符串</li>
+<li>你被要求查找最长/最短的子字符串、子数组或所需的值</li>
+</ul>
+<p>可以使用滑动窗口模式处理的常见问题：</p>
+<ul>
+<li>大小为 K 的子数组的最大和（简单）</li>
+<li>带有 K 个不同字符的最长子字符串（中等）</li>
+<li>寻找字符相同但排序不一样的字符串（困难）</li>
+</ul>
+<h2 id="2．二指针或迭代器"><a href="#2．二指针或迭代器" class="headerlink" title="2．二指针或迭代器"></a>2．二指针或迭代器</h2><p>二指针（Two Pointers）是这样一种模式：两个指针以一前一后的模式在数据结构中迭代，直到一个或两个指针达到某种特定条件。二指针通常在排序数组或链表中搜索配对时很有用；比如当你必须将一个数组的每个元素与其它元素做比较时。</p>
+<p>二指针是很有用的，因为如果只有一个指针，你必须继续在数组中循环回来才能找到答案。这种使用单个迭代器进行来回在时间和空间复杂度上都很低效——这个概念被称为「渐进分析（asymptotic analysis）」。尽管使用 1 个指针进行暴力搜索或简单普通的解决方案也有效果，但这会沿 O(n²) 线得到一些东西。在很多情况中，二指针有助于你寻找有更好空间或运行时间复杂度的解决方案。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                Pointer1            Pointer2</span><br><span class="line">                   |                   |</span><br><span class="line">                   V                   V</span><br><span class="line">                +----+----+----+----+----+</span><br><span class="line">target sum &#x3D; 6  |  1 |  2 |  3 |  4 |  6 |</span><br><span class="line">                +----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">1 + 6 &gt; target sum, therefore let&#39;s decrement Pointer2</span><br><span class="line"></span><br><span class="line">                Pointer1       Pointer2</span><br><span class="line">                   |              |</span><br><span class="line">                   V              V</span><br><span class="line">                +----+----+----+----+----+</span><br><span class="line">                |  1 |  2 |  3 |  4 |  6 |</span><br><span class="line">                +----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">1 + 4 &lt; target sum, therefore let&#39;s increment Pointer1</span><br><span class="line"></span><br><span class="line">                     Pointer1  Pointer2</span><br><span class="line">                        |         |</span><br><span class="line">                        V         V</span><br><span class="line">                +----+----+----+----+----+</span><br><span class="line">                |  1 |  2 |  3 |  4 |  6 |</span><br><span class="line">                +----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">2 + 4 &#x3D;&#x3D; target sum, we have found our pair!</span><br></pre></td></tr></table></figure>
+<p>用于识别使用二指针的时机的方法：</p>
+<ul>
+<li>可用于你要处理排序数组（或链接列表）并需要查找满足某些约束的一组元素的问题</li>
+<li>数组中的元素集是配对、三元组甚至子数组</li>
+</ul>
+<p>下面是一些满足二指针模式的问题：</p>
+<ul>
+<li>求一个排序数组的平方（简单）</li>
+<li>求总和为零的三元组（中等）</li>
+<li>比较包含回退（backspace）的字符串（中等）</li>
+</ul>
+<h2 id="3．快速和慢速指针"><a href="#3．快速和慢速指针" class="headerlink" title="3．快速和慢速指针"></a>3．快速和慢速指针</h2><p>快速和慢速指针方法也被称为 Hare &amp; Tortoise 算法，该算法会使用两个在数组（或序列/链表）中以不同速度移动的指针。该方法在处理循环链表或数组时非常有用。</p>
+<p>通过以不同的速度进行移动（比如在一个循环链表中），该算法证明这两个指针注定会相遇。只要这两个指针在同一个循环中，快速指针就会追赶上慢速指针。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fast,slow</span><br><span class="line">  |</span><br><span class="line">  |    +----+    +----+    +----+    +----+    +----+    +----+</span><br><span class="line">  +--&gt; |  1 | -&gt; |  2 | -&gt; |  3 | -&gt; |  4 | -&gt; |  5 | -&gt; |  6 | --+</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+   |</span><br><span class="line">                              ^                                   |</span><br><span class="line">                              |                                   |</span><br><span class="line">                              +-----------------------------------+</span><br><span class="line"></span><br><span class="line">                 slow       fast</span><br><span class="line">                   |          |</span><br><span class="line">                   V          V</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+</span><br><span class="line">       |  1 | -&gt; |  2 | -&gt; |  3 | -&gt; |  4 | -&gt; |  5 | -&gt; |  6 | --+</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+   |</span><br><span class="line">                              ^                                   |</span><br><span class="line">                              |                                   |</span><br><span class="line">                              +-----------------------------------+</span><br><span class="line"></span><br><span class="line">                            slow                fast</span><br><span class="line">                              |                   |</span><br><span class="line">                              V                   V</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+</span><br><span class="line">       |  1 | -&gt; |  2 | -&gt; |  3 | -&gt; |  4 | -&gt; |  5 | -&gt; |  6 | --+</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+   |</span><br><span class="line">                              ^                                   |</span><br><span class="line">                              |                                   |</span><br><span class="line">                              +-----------------------------------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                            fast       slow</span><br><span class="line">                              |         |</span><br><span class="line">                              V         V</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+</span><br><span class="line">       |  1 | -&gt; |  2 | -&gt; |  3 | -&gt; |  4 | -&gt; |  5 | -&gt; |  6 | --+</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+   |</span><br><span class="line">                              ^                                   |</span><br><span class="line">                              |                                   |</span><br><span class="line">                              +-----------------------------------+</span><br><span class="line"></span><br><span class="line">                                              fast,slow</span><br><span class="line">                                                 |</span><br><span class="line">                                                 V</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+</span><br><span class="line">       |  1 | -&gt; |  2 | -&gt; |  3 | -&gt; |  4 | -&gt; |  5 | -&gt; |  6 | --+</span><br><span class="line">       +----+    +----+    +----+    +----+    +----+    +----+   |</span><br><span class="line">                              ^                                   |</span><br><span class="line">                              |                                   |</span><br><span class="line">                              +-----------------------------------+</span><br></pre></td></tr></table></figure>
+<p>如何判别使用快速和慢速模式的时机？</p>
+<ul>
+<li>处理链表或数组中的循环的问题</li>
+<li>当你需要知道特定元素的位置或链表的总长度时</li>
+</ul>
+<p>何时应该优先选择这种方法，而不是上面提到的二指针方法？</p>
+<ul>
+<li>有些情况不适合使用二指针方法，比如在不能反向移动的单链接链表中。使用快速和慢速模式的一个案例是当你想要确定一个链表是否为回文（palindrome）时。</li>
+</ul>
+<p>下面是一些满足快速和慢速指针模式的问题：</p>
+<ul>
+<li>链表循环（简单）</li>
+<li>回文链表（中等）</li>
+<li>环形数组中的循环（困难）</li>
+</ul>
+<h2 id="4．合并区间"><a href="#4．合并区间" class="headerlink" title="4．合并区间"></a>4．合并区间</h2><p>合并区间模式是一种处理重叠区间的有效技术。在很多涉及区间的问题中，你既需要找到重叠的区间，也需要在这些区间重叠时合并它们。该模式的工作方式为：</p>
+<p>给定两个区间（a 和 b），这两个区间有 6 种不同的互相关联的方式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">       +----------+    +------+</span><br><span class="line">1)     |    a     |    |   b  |   &#39;a&#39; and &#39;b&#39; do not overlap</span><br><span class="line">       +----------+    +------+</span><br><span class="line"></span><br><span class="line">       +----------+</span><br><span class="line">2)     |    a  +--+-----+         &#39;a&#39; and &#39;b&#39; overlap, &#39;b&#39; ends after &#39;a&#39;</span><br><span class="line">       +-------|--+     |</span><br><span class="line">               |    b   |</span><br><span class="line">               +--------+</span><br><span class="line"></span><br><span class="line">       +----------+</span><br><span class="line">3)     |    a     |</span><br><span class="line">       +-+------+-+               &#39;a&#39; completely overlap &#39;b&#39;</span><br><span class="line">         |   b  |</span><br><span class="line">         +------+</span><br><span class="line"></span><br><span class="line">            +----------+</span><br><span class="line">4)    +-----+--+   a   |          &#39;a&#39; and &#39;b&#39; overlap, &#39;a&#39; ends after &#39;b&#39;</span><br><span class="line">      |     +--+-------+</span><br><span class="line">      |   b    |</span><br><span class="line">      +--------+</span><br><span class="line"></span><br><span class="line">         +------+</span><br><span class="line">         |  a   |</span><br><span class="line">5)     +-+------+-+                &#39;b&#39; completely overlap &#39;a&#39;</span><br><span class="line">       |    b     |</span><br><span class="line">       +----------+</span><br><span class="line"></span><br><span class="line">       +----------+    +------+</span><br><span class="line">6)     |    b     |    |   a  |    &#39;b&#39; and &#39;a&#39; do not overlap</span><br><span class="line">       +----------+    +------+</span><br></pre></td></tr></table></figure>
+
+<p>理解并识别这六种情况有助于你求解范围广泛的问题，从插入区间到优化区间合并等。</p>
+<p>那么如何确定何时该使用合并区间模式呢？</p>
+<ul>
+<li>如果你被要求得到一个仅含互斥区间的列表</li>
+<li>如果你听到了术语「重叠区间（overlapping intervals）</li>
+</ul>
+<p>合并区间模式的问题：</p>
+<ul>
+<li>区间交叉（中等）</li>
+<li>最大 CPU 负载（困难）</li>
+</ul>
+<h2 id="5．循环排序"><a href="#5．循环排序" class="headerlink" title="5．循环排序"></a>5．循环排序</h2><p>这一模式描述了一种有趣的方法，处理的是涉及包含给定范围内数值的数组的问题。循环排序模式一次会在数组上迭代一个数值，如果所迭代的当前数值不在正确的索引处，就将其与其正确索引处的数值交换。你可以尝试替换其正确索引处的数值，但这会带来 O(n^2) 的复杂度，这不是最优的，因此要用循环排序模式。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1) Number &#39;2&#39; is not at it&#39;s correct place, let&#39;s swap it with the correect index.</span><br><span class="line">      start</span><br><span class="line">        |</span><br><span class="line">        V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  2 |  6 |  4 |  3 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">      start</span><br><span class="line">        |</span><br><span class="line">        V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  2 |  6 |  4 |  3 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">        ^     ^</span><br><span class="line">        |     |</span><br><span class="line">        +-----+</span><br><span class="line"></span><br><span class="line">2) After the swap, number &#39;2&#39; is placed at it&#39;s correct index.</span><br><span class="line">      start</span><br><span class="line">        |</span><br><span class="line">        V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  6 |  2 |  4 |  3 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">3) Let&#39;s move on to the next number.</span><br><span class="line">            start</span><br><span class="line">              |</span><br><span class="line">              V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  6 |  2 |  4 |  3 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">4) Number &#39;2&#39; is at it&#39;s correct place, Let&#39;s move on the next number.</span><br><span class="line">                 start</span><br><span class="line">                   |</span><br><span class="line">                   V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  6 |  2 |  4 |  3 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">                  ^     ^</span><br><span class="line">                  |     |</span><br><span class="line">                  +-----+</span><br><span class="line"></span><br><span class="line">5) Number &#39;4&#39; is not at it&#39;s corrrect place, lets swap it with the next index.</span><br><span class="line">                      start</span><br><span class="line">                        |</span><br><span class="line">                        V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  6 |  2 |  3 |  4 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">6) Number &#39;4&#39; is at it&#39;s correct place, Let&#39;t move on to the next number.</span><br><span class="line">                          start</span><br><span class="line">                            |</span><br><span class="line">                            V</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line">      |  6 |  2 |  3 |  4 |  1 |  5 |</span><br><span class="line">      +----+----+----+----+----+----+</span><br><span class="line"></span><br><span class="line">      ...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如何识别这种模式？</p>
+<ul>
+<li>涉及数值在给定范围内的排序数组的问题</li>
+<li>如果问题要求你在一个排序/旋转的数组中找到缺失值/重复值/最小值</li>
+</ul>
+<p>循环排序模式的问题：</p>
+<ul>
+<li>找到缺失值（简单）</li>
+<li>找到最小的缺失的正数值（中等）</li>
+</ul>
+<h2 id="6．原地反转链表"><a href="#6．原地反转链表" class="headerlink" title="6．原地反转链表"></a>6．原地反转链表</h2><p>在很多问题中，你可能会被要求反转一个链表中一组节点之间的链接。通常而言，你需要原地完成这一任务，即使用已有的节点对象且不占用额外的内存。这就是这个模式的用武之地。该模式会从一个指向链表头的变量（current）开始一次反转一个节点，然后一个变量（previous）将指向已经处理过的前一个节点。以锁步的方式，在移动到下一个节点之前将其指向前一个节点，可实现对当前节点的反转。另外，也将更新变量「previous」，使其总是指向已经处理过的前一个节点。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    current       previous &#x3D; null</span><br><span class="line">      |</span><br><span class="line">      +-&gt; +----+    +----+    +----+    +----+    +----+    +------+</span><br><span class="line">          |  2 | -&gt; |  4 | -&gt; |  6 | -&gt; |  8 | -&gt; | 10 | -&gt; | null |</span><br><span class="line">          +----+    +----+    +----+    +----+    +----+    +------+</span><br><span class="line"></span><br><span class="line">         previous      current</span><br><span class="line">            |             |</span><br><span class="line">+------+    +-&gt; +----+    +-&gt; +----+    +----+    +----+    +----+    +------+</span><br><span class="line">| null | &lt;----- |  2 |        |  4 | -&gt; |  6 | -&gt; |  8 | -&gt; | 10 | -&gt; | null |</span><br><span class="line">+------+        +----+        +----+    +----+    +----+    +----+    +------+</span><br><span class="line"></span><br><span class="line">                   previous      current</span><br><span class="line">                      |             |</span><br><span class="line">+------+    +----+    +-&gt; +----+    +-&gt; +----+    +----+    +----+    +------+</span><br><span class="line">| null | &lt;- |  2 | &lt;----- |  4 |        |  6 | -&gt; |  8 | -&gt; | 10 | -&gt; | null |</span><br><span class="line">+------+    +----+        +----+        +----+    +----+    +----+    +------+</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如何识别使用该模式的时机：</p>
+<ul>
+<li>如果你被要求在不使用额外内存的前提下反转一个链表</li>
+</ul>
+<p>原地反转链表模式的问题：</p>
+<ul>
+<li>反转一个子列表（中等）</li>
+<li>反转每个 K 个元素的子列表（中等）</li>
+</ul>
+<h2 id="7．树的宽度优先搜索"><a href="#7．树的宽度优先搜索" class="headerlink" title="7．树的宽度优先搜索"></a>7．树的宽度优先搜索</h2><p>该模式基于宽度优先搜索（BFS）技术，可遍历一个树并使用一个队列来跟踪一个层级的所有节点，之后再跳转到下一个层级。任何涉及到以逐层级方式遍历树的问题都可以使用这种方法有效解决。</p>
+<p>Tree BFS 模式的工作方式是：将根节点推至队列，然后连续迭代知道队列为空。在每次迭代中，我们移除队列头部的节点并「访问」该节点。在移除了队列中的每个节点之后，我们还将其所有子节点插入到队列中。</p>
+<p>如何识别 Tree BFS 模式：</p>
+<ul>
+<li>如果你被要求以逐层级方式遍历（或按层级顺序遍历）一个树</li>
+</ul>
+<p>Tree BFS 模式的问题：</p>
+<ul>
+<li>二叉树层级顺序遍历（简单）</li>
+<li>之字型遍历（Zigzag Traversal）（中等）</li>
+</ul>
+<h2 id="8．树的深度优先搜索"><a href="#8．树的深度优先搜索" class="headerlink" title="8．树的深度优先搜索"></a>8．树的深度优先搜索</h2><p>Tree DFS 是基于深度优先搜索（DFS）技术来遍历树。</p>
+<p>你可以使用递归（或该迭代方法的技术栈）来在遍历期间保持对所有之前的（父）节点的跟踪。</p>
+<p>Tree DFS 模式的工作方式是从树的根部开始，如果这个节点不是一个叶节点，则需要：</p>
+<ol>
+<li>决定现在是处理当前的节点（pre-order），或是在处理两个子节点之间（in-order），还是在处理两个子节点之后（post-order）</li>
+<li>为当前节点的两个子节点执行两次递归调用以处理它们</li>
+</ol>
+<p>如何识别 Tree DFS 模式：</p>
+<ul>
+<li>如果你被要求用 in-order、pre-order 或 post-order DFS 来遍历一个树</li>
+<li>如果问题需要搜索其中节点更接近叶节点的东西</li>
+</ul>
+<p>Tree DFS 模式的问题：</p>
+<ul>
+<li>路径数量之和（中等）</li>
+<li>一个和的所有路径（中等）</li>
+</ul>
+<h2 id="9．TwoHeaps"><a href="#9．TwoHeaps" class="headerlink" title="9．TwoHeaps"></a>9．TwoHeaps</h2><p>在很多问题中，我们要将给定的一组元素分为两部分。为了求解这个问题，我们感兴趣的是了解一部分的最小元素以及另一部分的最大元素。这一模式是求解这类问题的一种有效方法。该模式要使用两个堆（heap）：一个用于寻找最小元素的 Min Heap 和一个用于寻找最大元素的 Max Heap。该模式的工作方式是：先将前一半的数值存储到 Max Heap，这是由于你要寻找前一半中的最大数值。然后再将另一半存储到 Min Heap，因为你要寻找第二半的最小数值。在任何时候，当前数值列表的中间值都可以根据这两个 heap 的顶部元素计算得到。</p>
+<p>识别 Two Heaps 模式的方法：</p>
+<ul>
+<li>在优先级队列、调度等场景中有用</li>
+<li>如果问题说你需要找到一个集合的最小/最大/中间元素</li>
+<li>有时候可用于具有二叉树数据结构的问题</li>
+</ul>
+<p>Two Heaps 模式的问题：</p>
+<ul>
+<li>查找一个数值流的中间值（中等）</li>
+</ul>
+<h2 id="10．子集"><a href="#10．子集" class="headerlink" title="10．子集"></a>10．子集</h2><p>很多编程面试问题都涉及到处理给定元素集合的排列和组合。子集（Subsets）模式描述了一种用于有效处理所有这些问题的宽度优先搜索（BFS）方法。</p>
+<p>该模式看起来是这样：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一个集合 [1, 5, 3]</span><br><span class="line">1．从一个空集开始：[[]]</span><br><span class="line">2．向所有已有子集添加第一个数 (1)，从而创造新的子集：[[], [1]]</span><br><span class="line">3．向所有已有子集添加第二个数 (5)：[[], [1], [5], [1,5]]</span><br><span class="line">4．向所有已有子集添加第三个数 (3)：[[], [1], [5], [1,5], [3], [1,3], [5,3], [1,5,3]]</span><br></pre></td></tr></table></figure>
+
+<p>下面是这种子集模式的一种视觉表示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Given set:</span><br><span class="line">      +----+----+----+</span><br><span class="line">      |  1 |  5 |  3 |</span><br><span class="line">      +----+----+----+</span><br><span class="line"></span><br><span class="line">                              +-----+</span><br><span class="line">                              | []  |</span><br><span class="line">                              +-----+</span><br><span class="line">                           copy &#x2F;  \ add 1</span><br><span class="line">                               V    V</span><br><span class="line">                           +-----+-----+</span><br><span class="line">                           | []  | [1] |</span><br><span class="line">                           +-----+-----+</span><br><span class="line">                       copy &#x2F;         \ add 5</span><br><span class="line">                           V           V</span><br><span class="line">                      +----+-----+-----+-------+</span><br><span class="line">                      | [] | [1] | [5] | [1,5] |</span><br><span class="line">                      +----+-----+-----+-------+</span><br><span class="line">                      copy &#x2F;            \ add 3</span><br><span class="line">                          V              V</span><br><span class="line">      +----+-----+-----+-------+-----+-------+-------+---------+</span><br><span class="line">      | [] | [1] | [5] | [1,5] | [3] | [1,3] | [5,3] | [1,5,3] |</span><br><span class="line">      +----+-----+-----+-------+-----+-------+-------+---------+</span><br></pre></td></tr></table></figure>
+<p>如何识别子集模式：</p>
+<ul>
+<li>你需要找到给定集合的组合或排列的问题</li>
+</ul>
+<p>子集模式的问题：</p>
+<ul>
+<li>带有重复项的子集（简单）</li>
+<li>通过改变大小写的字符串排列（中等）</li>
+</ul>
+<h2 id="11．经过修改的二叉搜索"><a href="#11．经过修改的二叉搜索" class="headerlink" title="11．经过修改的二叉搜索"></a>11．经过修改的二叉搜索</h2><p>只要给定了排序数组、链表或矩阵，并要求寻找一个特定元素，你可以使用的最佳算法就是二叉搜索。这一模式描述了一种用于处理所有涉及二叉搜索的问题的有效方法。</p>
+<p>对于一个升序的集合，该模式看起来是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1．首先，找到起点和终点的中间位置。寻找中间位置的一种简单方法是：middle &#x3D; (start + end) &#x2F; 2。但这很有可能造成整数溢出，所以推荐你这样表示中间位置：middle &#x3D; start + (end — start) &#x2F; 2。</span><br><span class="line">2．如果键值（key）等于中间索引处的值，那么返回这个中间位置。</span><br><span class="line">3．如果键值不等于中间索引处的值：</span><br><span class="line">4．检查 key &lt; arr[middle] 是否成立。如果成立，将搜索约简到 end &#x3D; middle — 15．检查 key &gt; arr[middle] 是否成立。如果成立，将搜索约简到 end &#x3D; middle + 1</span><br></pre></td></tr></table></figure>
+
+<p>下面给出了这种经过修改的二叉搜索模式的视觉表示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Search &#39;key&#39; &#x3D; &#39;5&#39;</span><br><span class="line"></span><br><span class="line">      start          middle          end</span><br><span class="line">        |              |              |</span><br><span class="line">        V              V              V</span><br><span class="line">      +----+----+----+----+----+----+----+</span><br><span class="line">      |  1 |  2 |  3 |  4 |  5 |  6 | 7  |</span><br><span class="line">      +----+----+----+----+----+----+----+</span><br><span class="line">As key &gt; arr[middle], therefore start &#x3D; middle + 1</span><br><span class="line"></span><br><span class="line">                         start middle end</span><br><span class="line">                            |    |     |</span><br><span class="line">                            V    V     V</span><br><span class="line">      +----+----+----+----+----+----+----+</span><br><span class="line">      |  1 |  2 |  3 |  4 |  5 |  6 | 7  |</span><br><span class="line">      +----+----+----+----+----+----+----+</span><br><span class="line">As key &lt; arr[middle], therefore end &#x3D; middle - 1</span><br><span class="line"></span><br><span class="line">                    start,middle,end</span><br><span class="line">                            |</span><br><span class="line">                            V</span><br><span class="line">      +----+----+----+----+----+----+----+</span><br><span class="line">      |  1 |  2 |  3 |  4 |  5 |  6 | 7  |</span><br><span class="line">      +----+----+----+----+----+----+----+</span><br><span class="line">As key &#x3D;&#x3D; arr[middle], return middle as the required index</span><br></pre></td></tr></table></figure>
+<p>经过修改的二叉搜索模式的问题：</p>
+<ul>
+<li>与顺序无关的二叉搜索（简单）</li>
+<li>在经过排序的无限数组中搜索（中等）</li>
+</ul>
+<h2 id="12．前K个元素"><a href="#12．前K个元素" class="headerlink" title="12．前K个元素"></a>12．前K个元素</h2><p>任何要求我们找到一个给定集合中前面的/最小的/最常出现的 K 的元素的问题都在这一模式的范围内。</p>
+<p>跟踪 K 个元素的最佳的数据结构是 Heap。这一模式会使用 Heap 来求解多个一次性处理一个给定元素集中 K 个元素的问题。该模式是这样工作的：</p>
+<p>1．根据问题的不同，将 K 个元素插入到 min-heap 或 max-heap 中<br>2．迭代处理剩余的数，如果你找到一个比 heap 中数更大的数，那么就移除那个数并插入这个更大的数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(1)   +----+----+----+----+----+----+            +----+</span><br><span class="line">      |  3 |  1 |  5 | 12 |  2 | 11 |            |  1 |</span><br><span class="line">      +----+----+----+----+----+----+            +----+</span><br><span class="line">                                                 &#x2F;     \</span><br><span class="line">                                                V       V</span><br><span class="line">      Insert the first three                 +----+   +----+</span><br><span class="line">      numbers in the heap                    |  5 |   |  3 |</span><br><span class="line">                                             +----+   +----+</span><br><span class="line"></span><br><span class="line">(2)   +----+----+----+----+----+----+            +----+</span><br><span class="line">      |  3 |  1 |  5 | 12 |  2 | 11 |            |  3 |</span><br><span class="line">      +----+----+----+----+----+----+            +----+</span><br><span class="line">                                                 &#x2F;     \</span><br><span class="line">                                                V       V</span><br><span class="line">      The root is smaller than &#39;12&#39;          +----+   +----+</span><br><span class="line">      so take &#39;1&#39; out and inset &#39;12&#39;         |  5 |   | 12 |</span><br><span class="line">                                             +----+   +----+</span><br><span class="line"></span><br><span class="line">(3)   +----+----+----+----+----+----+            +----+</span><br><span class="line">      |  3 |  1 |  5 | 12 |  2 | 11 |            |  3 |</span><br><span class="line">      +----+----+----+----+----+----+            +----+</span><br><span class="line">                                                 &#x2F;     \</span><br><span class="line">                                                V       V</span><br><span class="line">      Skip &#39;2&#39;, as it is not bigger          +----+   +----+</span><br><span class="line">      than the root &#39;3&#39;                      |  5 |   | 12 |</span><br><span class="line">                                             +----+   +----+</span><br><span class="line"></span><br><span class="line">(4)   +----+----+----+----+----+----+            +----+</span><br><span class="line">      |  3 |  1 |  5 | 12 |  2 | 11 |            |  5 |</span><br><span class="line">      +----+----+----+----+----+----+            +----+</span><br><span class="line">                                                 &#x2F;     \</span><br><span class="line">                                                V       V</span><br><span class="line">      The root is smaller than &#39;12&#39;          +----+   +----+</span><br><span class="line">      so take &#39;5&#39; out and inset &#39;12&#39;         | 11 |   | 12 |</span><br><span class="line">                                             +----+   +----+</span><br></pre></td></tr></table></figure>
+
+<p>这里无需排序算法，因为 heap 将为你跟踪这些元素。</p>
+<p>如何识别前 K 个元素模式：</p>
+<ul>
+<li>如果你被要求寻找一个给定集合中前面的/最小的/最常出现的 K 的元素</li>
+<li>如果你被要求对一个数值进行排序以找到一个确定元素</li>
+</ul>
+<p>前 K 个元素模式的问题：</p>
+<ul>
+<li>前面的 K 个数（简单）</li>
+<li>最常出现的 K 个数（中等）</li>
+</ul>
+<h2 id="13．K路合并"><a href="#13．K路合并" class="headerlink" title="13．K路合并"></a>13．K路合并</h2><p>K 路合并能帮助你求解涉及一组经过排序的数组的问题。</p>
+<p>当你被给出了 K 个经过排序的数组时，你可以使用 Heap 来有效地执行所有数组的所有元素的排序遍历。你可以将每个数组的最小元素推送至 Min Heap 以获得整体最小值。在获得了整体最小值后，将来自同一个数组的下一个元素推送至 heap。然后，重复这一过程以得到所有元素的排序遍历结果。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(1)      +----+----+----+           +----+</span><br><span class="line">     L1  |-2--| 6  | 8  |           |  1 |</span><br><span class="line">         +----+----+----+           +----+</span><br><span class="line">         +----+----+----+           &#x2F;     \</span><br><span class="line">     L2  |-3--| 6  | 7  |          V       V</span><br><span class="line">         +----+----+----+        +----+   +----+</span><br><span class="line">         +----+----+----+        |  2 |   |  3 |</span><br><span class="line">     L3  |-1--| 3  | 4  |        +----+   +----+</span><br><span class="line">         +----+----+----+</span><br><span class="line">      Inset the first number from each array in the teap</span><br><span class="line"></span><br><span class="line">(2)      +----+----+----+           +----+</span><br><span class="line">     L1  |-2--| 6  | 8  |          |  2 |</span><br><span class="line">         +----+----+----+           +----+</span><br><span class="line">         +----+----+----+           &#x2F;     \</span><br><span class="line">     L2  |-3--| 6  | 7  |          V       V</span><br><span class="line">         +----+----+----+        +----+   +----+</span><br><span class="line">         +----+----+----+        |  3 |   |  3 |</span><br><span class="line">     L3  |-1--|-3--| 4  |        +----+   +----+</span><br><span class="line">         +----+----+----+</span><br><span class="line">                    +----+</span><br><span class="line">      Merged List:  | 1  |</span><br><span class="line">                    +----+</span><br><span class="line"></span><br><span class="line">(3)      +----+----+----+           +----+</span><br><span class="line">     L1  |-2--|-6--| 8  |           |  3 |</span><br><span class="line">         +----+----+----+           +----+</span><br><span class="line">         +----+----+----+           &#x2F;     \</span><br><span class="line">     L2  |-3--| 6  | 7  |          V       V</span><br><span class="line">         +----+----+----+        +----+   +----+</span><br><span class="line">         +----+----+----+        |  6 |   |  3 |</span><br><span class="line">     L3  |-1--|-3--| 4  |        +----+   +----+</span><br><span class="line">         +----+----+----+</span><br><span class="line">                    +----+----+</span><br><span class="line">      Merged List:  | 1  | 2  |</span><br><span class="line">                    +----+----+</span><br></pre></td></tr></table></figure>
+
+<p>该模式看起来像这样：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1．将每个数组的第一个元素插入 Min Heap</span><br><span class="line">2．之后，从该 Heap 取出最小（顶部的）元素，将其加入到合并的列表。</span><br><span class="line">3．在从 Heap 移除了最小的元素之后，将同一列表的下一个元素插入该 Heap</span><br><span class="line">4．重复步骤 2 和 3，以排序的顺序填充合并的列表</span><br></pre></td></tr></table></figure>
+<p>如何识别 K 路合并模式：</p>
+<ul>
+<li>具有排序数组、列表或矩阵的问题</li>
+<li>如果问题要求你合并排序的列表，找到一个排序列表中的最小元素</li>
+</ul>
+<p>K 路合并模式的问题：</p>
+<ul>
+<li>合并 K 个排序的列表（中等）</li>
+<li>找到和最大的 K 个配对（困难）</li>
+</ul>
+<h2 id="14．拓扑排序"><a href="#14．拓扑排序" class="headerlink" title="14．拓扑排序"></a>14．拓扑排序</h2><p>拓扑排序可用于寻找互相依赖的元素的线性顺序。比如，如果事件 B 依赖于事件 A，那么 A 在拓扑排序时位于 B 之前。</p>
+<p>这个模式定义了一种简单方法来理解执行一组元素的拓扑排序的技术。</p>
+<p>该模式看起来是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1．初始化。a）使用 HashMap 将图（graph）存储到邻接的列表中；b）为了查找所有源，使用 HashMap 记录 in-degree 的数量</span><br><span class="line">2．构建图并找到所有顶点的 in-degree。a）根据输入构建图并填充 in-degree HashMap</span><br><span class="line">3．寻找所有的源。a）所有 in-degree 为 0 的顶点都是源，并会被存入一个队列</span><br><span class="line">4．排序。</span><br><span class="line">  a）对于每个源，执行以下操作：</span><br><span class="line">      i）将其加入到排序的列表；</span><br><span class="line">      ii）根据图获取其所有子节点；</span><br><span class="line">      iii）将每个子节点的 in-degree 减少 1；</span><br><span class="line">      iv）如果一个子节点的 in-degree 变为 0，将其加入到源队列。</span><br><span class="line">  b）重复 (a)，直到源队列为空。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                    +----+    +----+</span><br><span class="line">                    | 1  |    | 1  |</span><br><span class="line">                    +----+    +----+</span><br><span class="line">                    &#x2F;    \   &#x2F;     |</span><br><span class="line">                   V      V V      |</span><br><span class="line">              +----+     +----+    |</span><br><span class="line">              | 2  |-\   | 3  |    |</span><br><span class="line">              +----+  \  +----+    |</span><br><span class="line">              &#x2F;    \   \&#x2F;          |</span><br><span class="line">            &#x2F;       \  &#x2F;\          |</span><br><span class="line">           V        V  V \         V</span><br><span class="line">         +----+    +----+ \--&gt; +----+</span><br><span class="line">         | 2  |    | 3  |      | 3  |</span><br><span class="line">         +----+    +----+      +----+</span><br><span class="line">Add all sources to the sorted list.</span><br><span class="line">Remove all sources and their edges to find new souorces</span><br><span class="line"></span><br><span class="line">                                +----+     +----+</span><br><span class="line">                                | 2  |     | 2  |</span><br><span class="line">                                +----+     +----+</span><br><span class="line">                               &#x2F;  |   \      |</span><br><span class="line">                              V   V    V     V</span><br><span class="line">Sources: [3,4]            +----+  +----+  +----+</span><br><span class="line">Topological Sort: &quot;5,6&quot;   | 2  |  | 3  |  | 3  |</span><br><span class="line">                          +----+  +----+  +----+</span><br><span class="line"></span><br><span class="line">Add all sources to the sorted list.</span><br><span class="line">Remove all sources and their edges to find new souorces</span><br><span class="line">                          +----+  +----+  +----+</span><br><span class="line">                          | 2  |  | 3  |  | 3  |</span><br><span class="line">                          +----+  +----+  +----+</span><br><span class="line">Sources: [0,1,2]</span><br><span class="line">Topological Sort: &quot;5,6,3,4&quot;</span><br><span class="line"></span><br><span class="line">All remaining vertices are souce,</span><br><span class="line">so we will and them in the sourted list</span><br><span class="line"></span><br><span class="line">Sources: []</span><br><span class="line">Topological Sort: &quot;5,6,3,4,0,1,2&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如何识别拓扑排序模式：</p>
+<ul>
+<li>处理无向有环图的问题</li>
+<li>如果你被要求以排序顺序更新所有对象</li>
+<li>如果你有一类遵循特定顺序的对象</li>
+</ul>
+<p>拓扑排序模式的问题：</p>
+<ul>
+<li>任务调度（中等）</li>
+<li>一个树的最小高度</li>
+</ul>
+<blockquote>
+<p>参考:<br><a href="https://mp.weixin.qq.com/s/B3hGJcqLgCyvUpTZw1nJDg">Facebook 工程师总结的 14 种算法面试模式</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>graph-easy使用简介</title>
+    <url>/2020/11/22/grapheasy_basic_using_20201122/</url>
+    <content><![CDATA[<p>Graph::Easy 是一个处理图形DSL的Perl模块，它有如下功能：</p>
+<ul>
+<li>提供了一种易懂，可读性很强的图形描述语言</li>
+<li>一种支持 ASCII Art 的基于网格的布局器</li>
+<li>可以导出为 Graphviz, VCG (Visualizing Compiler Graphs), GDL (Graph Description LAnguages) 和 GraphML 格式。</li>
+<li>可以从 Graphviz, VCG 和 GDL 导入图像。</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="1-graph-easy-安装"><a href="#1-graph-easy-安装" class="headerlink" title="1. graph-easy 安装"></a>1. graph-easy 安装</h2><h3 id="1-1-安装perl"><a href="#1-1-安装perl" class="headerlink" title="1.1 安装perl"></a>1.1 安装perl</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># yum install perl</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-安装Graph-Easy"><a href="#1-2-安装Graph-Easy" class="headerlink" title="1.2 安装Graph::Easy"></a>1.2 安装Graph::Easy</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># perl -MCPAN -e shell</span><br><span class="line">cpan[1]&gt; install Graph::Easy</span><br><span class="line"></span><br><span class="line"># graph-easy -version</span><br><span class="line">Graph::Easy v0.76  (c) by Tels 2004-2008.  Released under the GPL 2.0 or later.</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-graph-easy-语法"><a href="#2-graph-easy-语法" class="headerlink" title="2. graph-easy 语法"></a>2. graph-easy 语法</h2><p>graph-easy 语法都是基于 Graph::Easy::Parser</p>
+<h3 id="2-1-节点"><a href="#2-1-节点" class="headerlink" title="2.1 节点"></a>2.1 节点</h3><ul>
+<li><p>单节点：即单个节点，用[xx]表示，比如[a]那出来的就一个节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+</span><br><span class="line">| a |</span><br><span class="line">+---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>复合节点：由多个节点组成的一个符合节点，用[xx | xx | xx]表示，节点之间使用|分隔，比如[a | b | c | d]</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+---+---+---+</span><br><span class="line">| a | b | c | d |</span><br><span class="line">+---+---+---+---+</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-2-连接线"><a href="#2-2-连接线" class="headerlink" title="2.2 连接线"></a>2.2 连接线</h3><ul>
+<li><p>单向箭头：使用-&gt;表示，比如[a] -&gt; [b]（如果有多个节点）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+     +---+</span><br><span class="line">| a | --&gt; | b |</span><br><span class="line">+---+     +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>无方向连接线：使用–表示，比如[a] – [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+     +---+</span><br><span class="line">| a | --- | b |</span><br><span class="line">+---+     +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>双横线单向箭头：使用==&gt;表示，比如[a] ==&gt; [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+     +---+</span><br><span class="line">| a | &#x3D;&#x3D;&gt; | b |</span><br><span class="line">+---+     +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>点横线单向箭头：使用..&gt;表示，比如[a] ..&gt; [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+     +---+</span><br><span class="line">| a | ..&gt; | b |</span><br><span class="line">+---+     +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>波浪线单向箭头：使用<del>&gt;表示，比如[a] ~</del>&gt; [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+     +---+</span><br><span class="line">| a | ~~&gt; | b |</span><br><span class="line">+---+     +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>横线、点单向箭头：使用.-&gt;表示，比如[a] .-&gt; [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+     +---+</span><br><span class="line">| a | .-&gt; | b |</span><br><span class="line">+---+     +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>双向箭头：使用&lt;-&gt;表示，比如[a] &lt;-&gt; [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+      +---+</span><br><span class="line">| a | &lt;--&gt; | b |</span><br><span class="line">+---+      +---+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>双横线双向箭头：使用&lt;=&gt;表示，比如[a] &lt;=&gt; [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+      +---+</span><br><span class="line">| a | &lt;&#x3D;&#x3D;&gt; | b |</span><br><span class="line">+---+      +---+</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-3-注释"><a href="#2-3-注释" class="headerlink" title="2.3 注释"></a>2.3 注释</h3><ul>
+<li><p>文档注释：在输入文件中同样支持注释（和普通配置文件的注释没啥区别），使用#开始：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># top</span><br><span class="line">[a] &lt;&#x3D;&gt; [b] # mid</span><br><span class="line"># test</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>连接线注解：通常在节点之间连线时会在上面加一些说明表示行为说明，可以在连接线标签后面追加{label: “说明”}（建议加上双引号，如果注解中有空格的话可能会造成阅读上的困难），比如[a] – {label: “this is test line”} [b]：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---+  this is test line   +---+</span><br><span class="line">| a | -------------------- | b |</span><br><span class="line">+---+                      +---+</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="3-示例"><a href="#3-示例" class="headerlink" title="3. 示例"></a>3. 示例</h2><h3 id="3-1-画个分支"><a href="#3-1-画个分支" class="headerlink" title="3.1 画个分支"></a>3.1 画个分支</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># graph-easy &lt;&lt;&lt; &#39;[a]-&gt;[b]-&gt;[c][b]-&gt;[d]-&gt;[e]&#39;</span><br><span class="line">+---+     +---+     +---+     +---+</span><br><span class="line">| a | --&gt; | b | --&gt; | d | --&gt; | e |</span><br><span class="line">+---+     +---+     +---+     +---+</span><br><span class="line">            |</span><br><span class="line">            |</span><br><span class="line">            v</span><br><span class="line">          +---+</span><br><span class="line">          | c |</span><br><span class="line">          +---+</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-设置”宽度”"><a href="#3-2-设置”宽度”" class="headerlink" title="3.2 设置”宽度”"></a>3.2 设置”宽度”</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># graph-easy &lt;&lt;&lt; &#39;[a]&#123;rows:3&#125;-&gt;[b]-&gt;[c]-&gt;[a]&#39;</span><br><span class="line">+---+     +---+     +---+</span><br><span class="line">|   | --&gt; | b | --&gt; | c |</span><br><span class="line">| a |     +---+     +---+</span><br><span class="line">|   |                 |</span><br><span class="line">|   | &lt;---------------+</span><br><span class="line">+---+</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-环绕线框图"><a href="#3-3-环绕线框图" class="headerlink" title="3.3 环绕线框图"></a>3.3 环绕线框图</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># graph-easy &lt;&lt;&lt; &#39;(backend: [a]-&gt;[b])[b]-&gt;[c]&#39;</span><br><span class="line">+ - - - - - - - - - - -+</span><br><span class="line">&#39; backend:             &#39;</span><br><span class="line">&#39;                      &#39;</span><br><span class="line">&#39; +--------+     +---+ &#39;     +---+</span><br><span class="line">&#39; |   a    | --&gt; | b | &#39; --&gt; | c |</span><br><span class="line">&#39; +--------+     +---+ &#39;     +---+</span><br><span class="line">&#39;                      &#39;</span><br><span class="line">+ - - - - - - - - - - -+</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-graph文件方式"><a href="#3-4-graph文件方式" class="headerlink" title="3.4 graph文件方式"></a>3.4 graph文件方式</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># cat input.txt</span><br><span class="line">[task] -&gt; [Created] -&gt; [Audit 1] -&gt; [Audit 2] -&gt; [Execute Task]</span><br><span class="line">[Audit 1] ..&gt; [Created]</span><br><span class="line">[Audit 2] ..&gt; [Created]</span><br><span class="line"></span><br><span class="line"># graph-easy -i input.txt</span><br><span class="line"></span><br><span class="line">               .................</span><br><span class="line">               v               :</span><br><span class="line">+------+     +---------+     +---------+     +---------+     +--------------+</span><br><span class="line">| task | --&gt; | Created | --&gt; | Audit 1 | --&gt; | Audit 2 | --&gt; | Execute Task |</span><br><span class="line">+------+     +---------+     +---------+     +---------+     +--------------+</span><br><span class="line">               ^                               :</span><br><span class="line">               .................................</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/ironcamel/Graph-Easy/tree/master/t/txt">更多示例：</a><a href="https://github.com/ironcamel/Graph-Easy/tree/master/t/txt">https://github.com/ironcamel/Graph-Easy/tree/master/t/txt</a></p>
+<blockquote>
+<p>参考：<br><a href="https://metacpan.org/pod/Graph::Easy#NAME">Graph::Easy</a><br><a href="https://linux.die.net/man/1/graph-easy">man graph-easy</a><br><a href="https://github.com/ironcamel/Graph-Easy">Github Graph-Easy</a><br><a href="https://blog.csdn.net/jacksonary/article/details/89973952">关于GraphEasy的简单捣腾</a><br><a href="http://blog.leanote.com/post/coolgrinder@163.com/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E5%88%B6%E4%BD%9C%E5%B7%A5%E5%85%B7">有趣的图制作工具graph-easy</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>graph-easy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>怎样使用Hexo</title>
+    <url>/2020/10/29/how_to_use_hexo_20201029/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="0-Install-npm-and-hexo"><a href="#0-Install-npm-and-hexo" class="headerlink" title="0. Install npm and hexo"></a>0. Install npm and hexo</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># wget https://nodejs.org/dist/v15.0.0/node-v15.0.0-linux-x64.tar.xz</span></span><br><span class="line"><span class="comment"># npm 7.0.2</span></span><br><span class="line"><span class="comment"># node v15.0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># cat ~/.npmrc</span></span><br><span class="line"><span class="comment"># registry =https://registry.npm.taobao.org</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># npm install -g hexo-cli</span></span><br><span class="line"><span class="comment"># npm i</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-Create-a-new-post"><a href="#1-Create-a-new-post" class="headerlink" title="1. Create a new post"></a>1. Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="2-Generate-static-files"><a href="#2-Generate-static-files" class="headerlink" title="2. Generate static files"></a>2. Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="3-Run-server"><a href="#3-Run-server" class="headerlink" title="3. Run server"></a>3. Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="3-Deploy-to-remote-sites"><a href="#3-Deploy-to-remote-sites" class="headerlink" title="3. Deploy to remote sites"></a>3. Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux-0.11内核学习-添加系统调用</title>
+    <url>/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/</url>
+    <content><![CDATA[<h2 id="1、参考资料"><a href="#1、参考资料" class="headerlink" title="1、参考资料"></a>1、参考资料</h2><ul>
+<li>赵炯博士的网站<a href="http://www.oldlinux.org/">oldlinux</a></li>
+<li><a href="http://oldlinux.org/download/clk011c-1.9.5.pdf">Linux内核完全注释</a></li>
+<li>Linux0.11 <a href="https://github.com/public-fork/ustc_os">源码</a></li>
+</ul>
+<h2 id="2、概要"><a href="#2、概要" class="headerlink" title="2、概要"></a>2、概要</h2><p>操作系统作为软件应用层和底层硬件之间的部分，向下提供服务，向上提供接口。系统调用便是操作系统向上层应用提供的操作底层硬件的和核心服务的接口，也就是API（Application Programming Interface）。我们知道一般API实现的方法是提供函数接口，只需要调用函数就可以实现相应的功能，底层的原理是程序地址的跳转。因为操作系统和用户程序同时存在于内存中，我们当然是不希望操作系统的数据被随意的篡改和访问，有可能造成十分严重的后果，所以操作系统对内存做了区分：</p>
+<ul>
+<li>内核态（0）</li>
+<li>服务态（1,2）</li>
+<li>用户态（3）</li>
+</ul>
+<span id="more"></span>
+
+<p>数值越小，级别越高，低级别进程无权访问高级别的内存区域，由此隔离了系统程序和用户程序，提高了操作系统的安全性。</p>
+<p>因为CS:IP表示当前指令，所以用CS最低两位(CPL)来表示当前程序属于用户态还是核心态，访问的数据段DS最低两位(DPL)表示目标代码属于用户态还是核心态，在地址跳转时检查DPL和CPL，只有在CPL≤DPL时才允许跳转。但是对于系统调用来说，就需要找到一种方法穿透用户态和内核态的屏障，在x86处理器中，当用户代码想要调用内核代码时，硬件通过终端指令int将CPL改为0，从而穿透屏障实现调用。</p>
+<h2 id="3、系统调用write原理"><a href="#3、系统调用write原理" class="headerlink" title="3、系统调用write原理"></a>3、系统调用write原理</h2><blockquote>
+<p>选取write(…)指令进行分析，最典型调用write(…)的命令就是c中的printf(…)函数。write(…)定义在lib/write.c</p>
+</blockquote>
+<p>首先看_syscall3的定义：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> *  linux/lib/write.c</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *  (C) 1991  Linus Torvalds</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __LIBRARY__</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">_syscall3(<span class="keyword">int</span>,write,<span class="keyword">int</span>,fd,<span class="keyword">const</span> <span class="keyword">char</span> *,buf,<span class="keyword">off_t</span>,count)</span><br></pre></td></tr></table></figure>
+<p>_syscall3是一个宏，定义在include/unistd.h中，可以发现其中还有多个相似的_syscallx宏，x表示可传入的参数个数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _syscall3(type,name,atype,a,btype,b,ctype,c) \</span></span><br><span class="line">type name(atype a,btype b,ctype c) \</span><br><span class="line">&#123; \</span><br><span class="line"><span class="keyword">long</span> __res; \</span><br><span class="line"><span class="function">__asm__ <span class="title">volatile</span> <span class="params">(<span class="string">&quot;int $0x80&quot;</span> \</span></span></span><br><span class="line"><span class="function"><span class="params">    : <span class="string">&quot;=a&quot;</span> (__res) \</span></span></span><br><span class="line"><span class="function"><span class="params">    : <span class="string">&quot;0&quot;</span> (__NR_##name),<span class="string">&quot;b&quot;</span> ((<span class="keyword">long</span>)(a)),<span class="string">&quot;c&quot;</span> ((<span class="keyword">long</span>)(b)),<span class="string">&quot;d&quot;</span> ((<span class="keyword">long</span>)(c)))</span></span>; \</span><br><span class="line"><span class="keyword">if</span> (__res&gt;=<span class="number">0</span>) \</span><br><span class="line">    <span class="keyword">return</span> (type) __res; \</span><br><span class="line">errno=-__res; \</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>; \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>展开后可以看到是将传入宏的参数替换成了一个函数定义，主要内容是将传入的参数存入各个寄存器，之后调用了int 80的中断。其中__NR_##name被传入了eax，因为所有的调用都通过80号中断，显然这是区分不同函数的参数。同时发现在unistd.h中还定义了一系列类似的宏</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __LIBRARY__</span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __NR_write  4</span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>所以可以看出这是对系统调用的索引，而真正起作用的函数定义在fs/read_write.c中</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sys_write</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> fd,<span class="keyword">char</span> * buf,<span class="keyword">int</span> count)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">file</span> * <span class="title">file</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">m_inode</span> * <span class="title">inode</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fd&gt;=NR_OPEN || count &lt;<span class="number">0</span> || !(file=current-&gt;filp[fd]))</span><br><span class="line">        <span class="keyword">return</span> -EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (!count)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    inode=file-&gt;f_inode;</span><br><span class="line">    <span class="keyword">if</span> (inode-&gt;i_pipe)</span><br><span class="line">        <span class="keyword">return</span> (file-&gt;f_mode&amp;<span class="number">2</span>)?write_pipe(inode,buf,count):-EIO;</span><br><span class="line">    <span class="keyword">if</span> (S_ISCHR(inode-&gt;i_mode))</span><br><span class="line">        <span class="keyword">return</span> rw_char(WRITE,inode-&gt;i_zone[<span class="number">0</span>],buf,count,&amp;file-&gt;f_pos);</span><br><span class="line">    <span class="keyword">if</span> (S_ISBLK(inode-&gt;i_mode))</span><br><span class="line">        <span class="keyword">return</span> block_write(inode-&gt;i_zone[<span class="number">0</span>],&amp;file-&gt;f_pos,buf,count);</span><br><span class="line">    <span class="keyword">if</span> (S_ISREG(inode-&gt;i_mode))</span><br><span class="line">        <span class="keyword">return</span> file_write(inode,file,buf,count);</span><br><span class="line">    printk(<span class="string">&quot;(Write)inode-&gt;i_mode=%06o\n\r&quot;</span>,inode-&gt;i_mode);</span><br><span class="line">    <span class="keyword">return</span> -EINVAL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到sys_write(…)的函数原型与之前宏展开的一致，所以在调用write(…)后，实际是调用了sys_write(…)，要弄清这个原理，就要去看int 80的实现。</p>
+<p>在init/main.c中调用了sched_init()，sched_init()中有一句</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">set_system_gate(<span class="number">0x80</span>,&amp;system_call);</span><br></pre></td></tr></table></figure>
+<p>出现了80号中断，这是一句宏，在include/asm/system.h中，展开得</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _set_gate(gate_addr,type,dpl,addr) \</span></span><br><span class="line">__asm__ (<span class="string">&quot;movw %%dx,%%ax\n\t&quot;</span> \     <span class="comment">//将偏移地址低字与选择符组合成低4字节(eax)</span></span><br><span class="line">    <span class="string">&quot;movw %0,%%dx\n\t&quot;</span> \          <span class="comment">//将类型标识字与偏移高字组合成描述符高4字节</span></span><br><span class="line">    <span class="string">&quot;movl %%eax,%1\n\t&quot;</span> \         <span class="comment">//分别设置门描述符的低4字节和高4字节</span></span><br><span class="line">    <span class="string">&quot;movl %%edx,%2&quot;</span> \</span><br><span class="line">    : \</span><br><span class="line">    : <span class="string">&quot;i&quot;</span> ((<span class="keyword">short</span>) (<span class="number">0x8000</span>+(dpl&lt;&lt;<span class="number">13</span>)+(type&lt;&lt;<span class="number">8</span>))), \</span><br><span class="line">    <span class="string">&quot;o&quot;</span> (*((<span class="keyword">char</span> *) (gate_addr))), \</span><br><span class="line">    <span class="string">&quot;o&quot;</span> (*(<span class="number">4</span>+(<span class="keyword">char</span> *) (gate_addr))), \</span><br><span class="line">    <span class="string">&quot;d&quot;</span> ((<span class="keyword">char</span> *) (addr)),<span class="string">&quot;a&quot;</span> (<span class="number">0x00080000</span>))</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> set_system_gate(n,addr) \</span></span><br><span class="line">    _set_gate(&amp;idt[n],<span class="number">15</span>,<span class="number">3</span>,addr)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20210118180238933.png" alt="在这里插入图片描述"><br>idt是中断向量表基址，这里指定第80号中断，DPL被指定为3，同时在system_call为”处理函数入口点偏移“,之后进入kernel/system_call.s的system_call</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">nr_system_calls = <span class="number">74</span></span><br><span class="line">...</span><br><span class="line">.globl system_call</span><br><span class="line">...</span><br><span class="line">system_call:</span><br><span class="line">    cmpl $nr_system_calls<span class="number">-1</span>,%eax</span><br><span class="line">    ja bad_sys_call</span><br><span class="line">    push %ds</span><br><span class="line">    push %es</span><br><span class="line">    push %fs</span><br><span class="line">    pushl %edx</span><br><span class="line">    pushl %ecx      <span class="meta"># push %ebx,%ecx,%edx as parameters</span></span><br><span class="line">    pushl %ebx      <span class="meta"># to the system call</span></span><br><span class="line">    movl $<span class="number">0x10</span>,%edx        <span class="meta"># set up ds,es to kernel space</span></span><br><span class="line">    mov %dx,%ds</span><br><span class="line">    mov %dx,%es</span><br><span class="line">    movl $<span class="number">0x17</span>,%edx        <span class="meta"># fs points to local data space</span></span><br><span class="line">    mov %dx,%fs</span><br><span class="line">    call sys_call_table(,%eax,<span class="number">4</span>)</span><br><span class="line">    pushl %eax</span><br><span class="line">    movl current,%eax</span><br><span class="line">    cmpl $<span class="number">0</span>,state(%eax)        <span class="meta"># state</span></span><br><span class="line">    jne reschedule</span><br><span class="line">    cmpl $<span class="number">0</span>,counter(%eax)      <span class="meta"># counter</span></span><br><span class="line">    je reschedule</span><br></pre></td></tr></table></figure>
+<p>nr_system_calls表示总系统调用数，所以最先比较eax中的调用号是否小于总数，之后将各个参数推入堆栈，之后调用地址为sys_call_table + %eax × 4处的函数。sys_call_table在include/linux/sys.h中里面有包括sys_write在内的72个系统调用函数的函数地址表。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">sys_write</span><span class="params">()</span></span>;</span><br><span class="line">    ...</span><br><span class="line">    fn_ptr sys_call_table[] = &#123; ...</span><br><span class="line">sys_write, ...&#125;;</span><br></pre></td></tr></table></figure>
+<p>而sys_write()就是索引为4的函数。由此系统调用的过程结束，总结为<br><img src="https://img-blog.csdnimg.cn/20210119095101998.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hidXhpYW9mZWk=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="4、添加调用printval"><a href="#4、添加调用printval" class="headerlink" title="4、添加调用printval"></a>4、添加调用printval</h2><p>首先在<code> include/unistd.h</code>中添加系统调用编号：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __NR_printval   72</span></span><br></pre></td></tr></table></figure>
+<p>在<code>include/linux/sys.h</code>中添加:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">sys_printval</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">fn_ptr sys_call_table[] = &#123;..., sys_printval &#125;;</span><br></pre></td></tr></table></figure>
+<p>在<code>kernel/system_call.s</code>中修改<code>nr_system_calls</code>的值 ：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">nr_system_calls = <span class="number">73</span></span><br></pre></td></tr></table></figure>
+<p>在<code>kernel/sys.c</code>中实现系统调用函数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sys_printval</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    printk(<span class="string">&quot;in sys_printval\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此系统调用添加完成，重新编译，并启动内核，接下来我们在用户态编写测试代码。</p>
+<h2 id="5、用户态测试代码"><a href="#5、用户态测试代码" class="headerlink" title="5、用户态测试代码"></a>5、用户态测试代码</h2><p>修改系统头文件 <code>/usr/include/unistd.h</code> ，增加：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __NR_printval   72</span></span><br></pre></td></tr></table></figure>
+<p>编写用户态测试代码<code>main.c</code>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __LIBRARY__</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">_syscall0(<span class="keyword">int</span>, printval);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello World!\n&quot;</span>);</span><br><span class="line">    printval();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># gcc main.c</span></span><br><span class="line"><span class="comment"># ./a.out</span></span><br><span class="line">Hello World!</span><br><span class="line"><span class="keyword">in</span> sys_printval</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考：<br><a href="https://blog.csdn.net/u011452747/article/details/79771452">Linux-0.11内核学习笔记【2】：添加系统调用</a><br><a href="https://git.lug.ustc.edu.cn/gloomy/ustc_os">Linux-0.11源代码</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Kernel</category>
+      </categories>
+      <tags>
+        <tag>Kernel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>将vmlinuz解压为vmlinux的方法</title>
+    <url>/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113/</url>
+    <content><![CDATA[<ul>
+<li> vmlinux是一个包含linux kernel的静态链接的可执行文件，文件类型是可执行的ELF格式</li>
+<li>vmlinuz是可引导的，压缩的linux内核，”vm”代表的”virtual memory”。<br> vmlinuz是vmlinux经过gzip和objcopy(*)制作出来的压缩文件。<br> vmlinuz不仅是一个压缩文件，而且在文件的开头部分内嵌有gzip解压缩代码。<br> 所以你不能用gunzip 或 gzip –dc解包vmlinuz。<br> vmlinuz是一个统称，有两种具体的表现形式：zImage和bzImage(big zImage)。</li>
+</ul>
+<span id="more"></span>
+
+<p>zImage和bzImage的区别在于本身的大小和加载到内存的地址不同。zImage是0~640KB，bzImage是1M以上。<br>如果内核比较小，那么可以采用zImage 或bzImage之一，两种方式引导的系统运行时是相同的。大的内核采用bzImage，不能采用zImage。</p>
+<h2 id="将vmlinuz解压为vmlinux"><a href="#将vmlinuz解压为vmlinux" class="headerlink" title="将vmlinuz解压为vmlinux"></a>将vmlinuz解压为vmlinux</h2><p>➜  boot # od -t x1 -A d vmlinuz-3.10.0-957.el7.x86_64 | grep “1f 8b 08 00”<br>0018352 ac fe ff ff <strong>1f 8b 08 00</strong> 00 00 00 00 02 03 ec dd</p>
+<p>➜  boot # dd if=vmlinuz-3.10.0-957.el7.x86_64 bs=1 skip=0018356 | zcat &gt; vmlinux</p>
+<p>gzip: stdin: decompression OK, trailing garbage ignored</p>
+<blockquote>
+<p>skip=0018356 这个数是怎么算出来的呢？其实很简单，就是 0018352 这个数加上 0018352 到 1f 8b 08 00 的间隔<br>即: 0018352 + 4 = 0018356</p>
+</blockquote>
+<h2 id="查看vmlinx文件格式为ELF文件"><a href="#查看vmlinx文件格式为ELF文件" class="headerlink" title="查看vmlinx文件格式为ELF文件"></a>查看vmlinx文件格式为ELF文件</h2><p>➜  boot # file vmlinux<br>vmlinux: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=73d8d1ce9146a6e8db9be6d62c9f3fcb0e126dc4, stripped</p>
+]]></content>
+      <categories>
+        <category>Kernel</category>
+      </categories>
+      <tags>
+        <tag>Kernel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Markdown基本语法</title>
+    <url>/2020/10/29/markdown_basic_grammar_20201029/</url>
+    <content><![CDATA[<p>Markdown是一种纯文本格式的标记语言。通过简单的标记语法，它可以使普通文本内容具有一定的格式。</p>
+<span id="more"></span>
+
+<h2 id="一、标题"><a href="#一、标题" class="headerlink" title="一、标题"></a>一、标题</h2><p>在想要设置为标题的文字前面加#来表示<br>一个#是一级标题，二个#是二级标题，以此类推。支持六级标题。</p>
+<p>注：标准语法一般在#后跟个空格再写文字。</p>
+<p>示例:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 这是一级标题</span><br><span class="line">## 这是二级标题</span><br><span class="line">### 这是三级标题</span><br><span class="line">#### 这是四级标题</span><br><span class="line">##### 这是五级标题</span><br><span class="line">###### 这是六级标题</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、字体"><a href="#二、字体" class="headerlink" title="二、字体"></a>二、字体</h2><ul>
+<li><p>加粗<br>要加粗的文字左右分别用两个*号包起来</p>
+</li>
+<li><p>斜体<br>要倾斜的文字左右分别用一个*号包起来</p>
+</li>
+<li><p>斜体加粗<br>要倾斜和加粗的文字左右分别用三个*号包起来</p>
+</li>
+<li><p>删除线<br>要加删除线的文字左右分别用两个~~号包起来</p>
+</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">**这是加粗的文字**</span><br><span class="line">*这是倾斜的文字*&#96;</span><br><span class="line">***这是斜体加粗的文字***</span><br><span class="line">~~这是加删除线的文字~~</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：<br><strong>这是加粗的文字</strong><br><em>这是倾斜的文字</em>`<br><strong><em>这是斜体加粗的文字</em></strong><br><del>这是加删除线的文字</del></p>
+<h2 id="三、引用"><a href="#三、引用" class="headerlink" title="三、引用"></a>三、引用</h2><p>在引用的文字前加&gt;即可。引用也可以嵌套，如加两个&gt;&gt;三个&gt;&gt;&gt;<br>n个…</p>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt;这是引用的内容</span><br><span class="line">&gt;&gt;这是引用的内容</span><br><span class="line">&gt;&gt;&gt;&gt;这是引用的内容</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<blockquote>
+<p>这是引用的内容</p>
+<blockquote>
+<p>这是引用的内容</p>
+<blockquote>
+<blockquote>
+<p>这是引用的内容</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="四、分割线"><a href="#四、分割线" class="headerlink" title="四、分割线"></a>四、分割线</h2><p>三个或者三个以上的 - 或者 * 都可以。</p>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">----</span><br><span class="line">***</span><br><span class="line">*****</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：<br>可以看到，显示效果是一样的。</p>
+<hr>
+<hr>
+<hr>
+<hr>
+<h2 id="五、图片"><a href="#五、图片" class="headerlink" title="五、图片"></a>五、图片</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">![图片alt](图片地址 &#39;&#39;图片title&#39;&#39;)</span><br><span class="line"></span><br><span class="line">图片alt就是显示在图片下面的文字，相当于对图片内容的解释。</span><br><span class="line">图片title是图片的标题，当鼠标移到图片上时显示的内容。title可加可不加</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">![blockchain](https:&#x2F;&#x2F;ss0.bdstatic.com&#x2F;70cFvHSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;702257389,1274025419&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg &quot;区块链&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：<br><img src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=702257389,1274025419&fm=27&gp=0.jpg" alt="blockchain" title="区块链"></p>
+<h2 id="六、超链接"><a href="#六、超链接" class="headerlink" title="六、超链接"></a>六、超链接</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[超链接名](超链接地址 &quot;超链接title&quot;)</span><br><span class="line">title可加可不加</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[百度](http:&#x2F;&#x2F;baidu.com)</span><br><span class="line">[码云](https:&#x2F;&#x2F;gitee.com)</span><br></pre></td></tr></table></figure>
+<p>效果如下：<br><a href="http://baidu.com/">百度</a><br><a href="https://gitee.com/">码云</a></p>
+<blockquote>
+<p>注：Markdown本身语法不支持链接在新页面中打开，如果想要在新页面中打开的话可以用html语言的a标签代替。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;a href&#x3D;&quot;超链接地址&quot; target&#x3D;&quot;_blank&quot;&gt;超链接名&lt;&#x2F;a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例：<br><a href="http://baidu.com" target="_blank">百度</a></p>
+<h2 id="七、列表"><a href="#七、列表" class="headerlink" title="七、列表"></a>七、列表</h2><h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>语法：<br>无序列表用 - + * 任何一种都可以</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- 列表内容</span><br><span class="line">+ 列表内容</span><br><span class="line">* 列表内容</span><br><span class="line">注意：- + * 跟内容之间都要有一个空格</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<ul>
+<li>列表内容</li>
+</ul>
+<ul>
+<li>列表内容</li>
+</ul>
+<ul>
+<li>列表内容</li>
+</ul>
+<h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><p>语法：<br>数字加点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 列表内容</span><br><span class="line">2. 列表内容</span><br><span class="line">3. 列表内容</span><br><span class="line">注意：序号跟内容之间要有空格</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<ol>
+<li>列表内容</li>
+<li>列表内容</li>
+<li>列表内容</li>
+</ol>
+<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><p>上一级和下一级之间敲三个空格即可</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- 一级无序列表内容</span><br><span class="line">   + 二级无序列表内容</span><br><span class="line">   + 二级无序列表内容</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<ul>
+<li>一级无序列表内容<ul>
+<li>二级无序列表内容</li>
+<li>二级无序列表内容</li>
+</ul>
+</li>
+</ul>
+<h2 id="八、表格"><a href="#八、表格" class="headerlink" title="八、表格"></a>八、表格</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">表头|表头|表头</span><br><span class="line">---|:--:|---:</span><br><span class="line">内容|内容|内容</span><br><span class="line">内容|内容|内容</span><br><span class="line"></span><br><span class="line">第二行分割表头和内容。</span><br><span class="line">- 有一个就行，为了对齐，多加了几个</span><br><span class="line">文字默认居左</span><br><span class="line">-两边加：表示文字居中</span><br><span class="line">-右边加：表示文字居右</span><br><span class="line">注：原生的语法两边都要用 | 包起来。此处省略</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">姓名|技能|排行</span><br><span class="line">--|:--:|--:</span><br><span class="line">刘备|哭|大哥</span><br><span class="line">关羽|打|二哥</span><br><span class="line">张飞|骂|三弟</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th align="center">技能</th>
+<th align="right">排行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>刘备</td>
+<td align="center">哭</td>
+<td align="right">大哥</td>
+</tr>
+<tr>
+<td>关羽</td>
+<td align="center">打</td>
+<td align="right">二哥</td>
+</tr>
+<tr>
+<td>张飞</td>
+<td align="center">骂</td>
+<td align="right">三弟</td>
+</tr>
+</tbody></table>
+<h2 id="九、代码"><a href="#九、代码" class="headerlink" title="九、代码"></a>九、代码</h2><p>语法：<br>单行代码：代码之间分别用一个反引号包起来</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;代码内容&#96;</span><br></pre></td></tr></table></figure>
+<p>代码块：代码之间分别用三个反引号包起来，且两边的反引号单独占一行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(&#96;&#96;&#96;)</span><br><span class="line">  代码...</span><br><span class="line">  代码...</span><br><span class="line">  代码...</span><br><span class="line">(&#96;&#96;&#96;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注：为了防止转译，前后三个反引号处加了小括号，实际是没有的。这里只是用来演示，实际中去掉两边小括号即可。</p>
+</blockquote>
+<p>示例：<br>单行代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;create database hero;&#96;</span><br></pre></td></tr></table></figure>
+
+<p>代码块</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(&#96;&#96;&#96;)</span><br><span class="line">    function fun()&#123;</span><br><span class="line">        echo &quot;Hello World!&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    fun</span><br><span class="line">(&#96;&#96;&#96;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="十、流程图"><a href="#十、流程图" class="headerlink" title="十、流程图"></a>十、流程图</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;flow</span><br><span class="line">st&#x3D;&gt;start: 开始</span><br><span class="line">op&#x3D;&gt;operation: My Operation</span><br><span class="line">cond&#x3D;&gt;condition: Yes or No?</span><br><span class="line">e&#x3D;&gt;end</span><br><span class="line">st-&gt;op-&gt;cond</span><br><span class="line">cond(yes)-&gt;e</span><br><span class="line">cond(no)-&gt;op</span><br><span class="line">&amp;&#96;&#96;&#96;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>新房装修指南</title>
+    <url>/2020/12/11/other_house_refurbish_guide_20201211/</url>
+    <content><![CDATA[<h2 id="1-第一期：精装房如何验收及施工方的选择"><a href="#1-第一期：精装房如何验收及施工方的选择" class="headerlink" title="1. 第一期：精装房如何验收及施工方的选择"></a>1. 第一期：精装房如何验收及施工方的选择</h2><p><strong>精装房的验收，两个小的细节：</strong></p>
+<ol>
+<li>要一份水电施工图纸</li>
+<li>顺便把冰箱、洗衣机尺寸量了</li>
+</ol>
+<p><strong>隐蔽工程：</strong></p>
+<ol>
+<li>防水测试</li>
+<li>地砖和墙砖的帖铺，拿硬币敲</li>
+<li>甲醛测试<br>精装房格局尽量不动，尽量在软装上找补</li>
+</ol>
+<span id="more"></span>
+
+<p><strong>不良装修公司的惯用套路：</strong></p>
+<ol>
+<li>傍名牌型</li>
+<li>套餐型</li>
+<li>恐吓型</li>
+<li>连锁型</li>
+<li>全包型</li>
+<li>熟人型</li>
+</ol>
+<p><strong>选装修公司：</strong></p>
+<ol>
+<li>第一看口碑</li>
+<li>第二现场考察</li>
+<li>第三要看合同签订是否明晰</li>
+<li>第四价格</li>
+</ol>
+<p><strong>装修公司是怎么运转的：</strong></p>
+<ol>
+<li>第一个阶段：销售</li>
+<li>第二个阶段：设计师</li>
+</ol>
+<p><strong>设计师的收入有三种形式：</strong></p>
+<ol>
+<li>总价提成</li>
+<li>设计费</li>
+<li>主材返点</li>
+</ol>
+<p><strong>不找装修公司怎么办：</strong></p>
+<ol>
+<li>第一种找独立的设计工作室或设计师</li>
+<li>第二种自己设计</li>
+</ol>
+<p><strong>哪里找施工队：</strong></p>
+<ol>
+<li>第一发动一下周围3到5年内装修过的朋友</li>
+<li>第二到周围装修楼盘找</li>
+</ol>
+<p><strong>找施工队要注意什么：</strong></p>
+<ol>
+<li>第一合同</li>
+<li>第二付款进度</li>
+<li>第三造价</li>
+</ol>
+<h2 id="2-第二期：设计中的坑，装个房子能省辆车？"><a href="#2-第二期：设计中的坑，装个房子能省辆车？" class="headerlink" title="2. 第二期：设计中的坑，装个房子能省辆车？"></a>2. 第二期：设计中的坑，装个房子能省辆车？</h2><p>很多装修公司里的设计师是根据最后的合同总额来提成的，为什么有些时候设计师会故意推荐你一些复杂的设计，目的是提高合同总价</p>
+<h3 id="无良设计师的惯用套路："><a href="#无良设计师的惯用套路：" class="headerlink" title="无良设计师的惯用套路："></a>无良设计师的惯用套路：</h3><p>1.故意更改格局、提高总价<br>2.强推开放式厨房<br>3.强推无主灯设计<br>4.强行干湿分离<br>5.强推集成墙板<br>6.厨卫间距很远还强推回水系统<br>7.说客厅必须做电视背景墙</p>
+<h2 id="3-第三期：窗要换吗？地暖、新风、中央空调要安吗？土建拆改多少钱合理？"><a href="#3-第三期：窗要换吗？地暖、新风、中央空调要安吗？土建拆改多少钱合理？" class="headerlink" title="3. 第三期：窗要换吗？地暖、新风、中央空调要安吗？土建拆改多少钱合理？"></a>3. 第三期：窗要换吗？地暖、新风、中央空调要安吗？土建拆改多少钱合理？</h2><p>①换窗、土建拆改、中央空调、新风、地热同时穿插水电改造<br>②瓦工：防水和地砖<br>③木工：吊棚、门口和打柜子<br>④油工：腻子、乳胶漆<br>⑤安装上开关插座、灯具洁具<br>整个硬装部分结束</p>
+<h3 id="换窗："><a href="#换窗：" class="headerlink" title="换窗："></a>换窗：</h3><p>影响窗的隔热和隔音的性能主要是开窗的方式<br>平开窗隔热性和隔音性比推拉窗要好<br>材料是铝合金、断桥铝、塑钢差别不大<br>二手房翻新换一套好一点的五金件和密封件就可以<br>关于门窗的价格，查看往期视频<br>70断桥铝配5mm夹胶玻璃大概的合理价格在700块钱左右</p>
+<h3 id="土建改造："><a href="#土建改造：" class="headerlink" title="土建改造："></a>土建改造：</h3><p>①墙体拆除主要分12cm厚和24cm厚两种<br>分别50到100每平米，包含清运费用<br>混凝土墙体费用翻倍<br>②砌筑费用12cm单砖墙和24cm双砖墙<br>双面抹灰的价格分别在100和200左右每平米<br>不同的地区价格浮动20%，含砖、水泥、沙子等材料<br>③单层加建部分可以按扩建面积算<br>平均价格在扩建面积的平米数乘以600-900<br>④墙体拆除<br>局部拆除要求用无齿锯切割后再砸<br>砖混结构老房子的承重墙和阳台的配重墙别动</p>
+<h3 id="中央空调："><a href="#中央空调：" class="headerlink" title="中央空调："></a>中央空调：</h3><p>①一拖一的风管机节省一部分空间，造型美观<br>②多联机适合100-200平的中大型户型，优点节省外机空间、出风口更美观，缺点造价高、管线和出风口需要安装在吊顶里，影响净高，一线大牌大金、日立、三菱电机，国产品牌海尔、美的、格力、海信<br>③水机用在大型公共场所或500平以上大别墅，需要地热供暖还没法加燃气锅炉的地区，缺点贵、能量损耗高，品牌美系的四大，国产的性价比高</p>
+<h3 id="新风："><a href="#新风：" class="headerlink" title="新风："></a>新风：</h3><p>核心功能是空气过滤和热交换系统<br>净化空气实际上并不比空气净化器更有优势<br>核心功能是能在冬季、夏季这种室内外温差较大的季节完成空气交换，同时不损失温度<br>算好电费，权衡好利弊</p>
+<h3 id="地热："><a href="#地热：" class="headerlink" title="地热："></a>地热：</h3><p>地热的铺设是没有大品牌的，价格80-100元左右<br>有品牌的是锅炉<br>南方主要有三种供暖方式<br>燃气锅炉、电锅炉和水机中央空调<br>初始投资水机大于燃气锅炉大于电锅炉<br>后期使用的经济性燃气好于水机好于电锅炉<br>具体选哪种要看物业条件，有些房子天燃气容量不够，有些电容量不够</p>
+<h2 id="4-第四期：水电改造中容易遇到的坑"><a href="#4-第四期：水电改造中容易遇到的坑" class="headerlink" title="4. 第四期：水电改造中容易遇到的坑"></a>4. 第四期：水电改造中容易遇到的坑</h2><p>成本：人工费用，物料成本</p>
+<p><strong>人工费用：</strong><br>计量方式：面积，时间，点位，接线长度<br>大概5-7天，2000-3000元略有浮动</p>
+<p><strong>材料费用：</strong></p>
+<ul>
+<li><p>水路：管线，弯头，下水管，角阀，一般ppr 6分管含配件，20元/米，百平米大概500元</p>
+</li>
+<li><p>电路：电线（1.5平方照明，2.5平方插座，4平方空调储水式热水器，6平方中央空调即热式热水器），穿线管，开关盒。百平米大概300米线路，50个点位，1500元左右</p>
+</li>
+</ul>
+<p><strong>注意问题：</strong></p>
+<ul>
+<li><p>水路注意问题：<br>  ①热水器离厨房远，安装厨宝<br>  ②压力测试<br>  ③水路建议走天，方便检修</p>
+</li>
+<li><p>电路注意问题：<br>  ①不允许承重墙开横槽<br>  ②照明电路零火双线<br>  ③同一穿线管只能一组回路，强弱电分开<br>  ④接头不允许在墙体内<br>  ⑤插座必须接地线</p>
+</li>
+<li><p>遇到拆分式报价方式注意问题：<br>  ①非承重墙适当开槽，不超过50cm，注意留存线路照片<br>  ②地面走线点对点，避免死线，方便检修<br>  ③同一回路可以穿一根管，但强弱电一定要分开<br>  ④如不需要移动强电箱，原有线路没必要全部重新布局</p>
+</li>
+</ul>
+<p>最后，可以尝试找专业水电改造公司</p>
+<p><strong>拓展一部分物联网知识：</strong><br>物联网的安装属于水电改造的一部分，现在还没有标准物联网家装方案，所谓的物联网装修没有不同意标准，都是八仙过海各显神通。<br>小米系：自己的良性生态。<br>阿里系：平台开放厂家多。<br>专业物联公司：专业团队核心技术，价格虚高。</p>
+<h2 id="5-第五期：地面施工，25块钱的地砖和200的有什么区别？"><a href="#5-第五期：地面施工，25块钱的地砖和200的有什么区别？" class="headerlink" title="5. 第五期：地面施工，25块钱的地砖和200的有什么区别？"></a>5. 第五期：地面施工，25块钱的地砖和200的有什么区别？</h2><p>这期讲防水、地面找平以及瓷砖和地板</p>
+<h3 id="室内防水："><a href="#室内防水：" class="headerlink" title="室内防水："></a>室内防水：</h3><p>含人工费在45-50元/平米属于合理价格<br>卫生间湿区刷到顶，干区1米左右即可<br>厨房墙面0.3米，洗手台区域1.2-1.5米左右<br>施工结束后做48小时闭水测试，确保无渗漏点即可</p>
+<p><strong>地面找平：</strong><br>地面找平的作用<br>第一个2米范围内高差超过5mm,在铺地板时会影响效果<br>这个时候就需要地面找平了<br>第二个是如果卧室铺地板，客厅铺瓷砖<br>因为材质不同、厚度不同，造成不同房间有高差<br>这时候铺地板的房间也需要地面找平来垫高了<br>铺地砖的地面<br>本身地面找平的费用就应该包含在地砖帖铺的费用里<br>大家看看手里的报价单，有多少是重复计费和没必要做找平的</p>
+<h3 id="自流平水泥："><a href="#自流平水泥：" class="headerlink" title="自流平水泥："></a>自流平水泥：</h3><p>造价不低，从100每平到700每平<br>建议谨慎选择</p>
+<h3 id="瓷砖："><a href="#瓷砖：" class="headerlink" title="瓷砖："></a>瓷砖：</h3><p>瓷砖的结构一共分两个部分：胚体和表面</p>
+<p><strong>胚体就是瓷砖的底层部分：</strong><br>分为陶土、全瓷、通体</p>
+<ul>
+<li>陶土胚体的瓷砖吸水率最高<br>重量最轻，硬度最低，但是价格最便宜，一般用于墙砖</li>
+<li>全瓷密度大、硬度高、平整度高，适合作为地砖</li>
+<li>通体胚体也是全瓷的一种，但是胚体和砖表面颜色保持一致的<br>在适合作为地砖的同时可以切割上墙</li>
+</ul>
+<p><strong>瓷砖的表面处理有两种方式：打磨和施釉</strong><br>陶土胚体和全瓷胚体只能做釉面砖<br>根据釉面施工工艺和花色不同，商家起了很多商业名词<br>而通体砖的表面处理方式有打磨、施釉，还有两种都用的<br>至于负离子砖，就是在陶瓷砖中引入复合负离子粉体</p>
+<p>我们消费者到底该怎么选砖：</p>
+<ol>
+<li>首先看砖的吸水率</li>
+<li>接下来看表面亲水性</li>
+<li>测试结果就是： 合格的网购产品并不输给大品牌的高价货地板：</li>
+</ol>
+<h3 id="地板："><a href="#地板：" class="headerlink" title="地板："></a>地板：</h3><p>常用的地板有四类，纯实木、实木复合、强化复合和SPC石塑地板</p>
+<ul>
+<li><p>纯实木：<br>优点就是有害气体排放风险小，缺点就是贵<br>200元/平米左右的出厂价格能买到很不错的品质了</p>
+</li>
+<li><p>实木复合地板：<br>三层实木复合就是表层或底层用高档硬木<br>中间芯板用较厚的松木、桉木等软木<br>新三层就是在三层的基础上加一层表面和底面的耐磨层<br>种实木复合地板的出厂价在120左右每平米<br>也是迷瞪推荐的性价比最高的款式</p>
+</li>
+<li><p>强化复合地板<br>造价低，市场占有率大，最大的致命伤就是怕潮<br>迷瞪从市面上买来三种不同价格段的强化复合地板<br>参考出厂价，60元每平米</p>
+</li>
+<li><p>SPC石塑地板<br>其材质是由PVC加钙粉冲压成型，结构稳定、无污染<br>同时不怕潮、不怕热<br>缺点就是脚感太硬，跟地砖的脚感接近</p>
+</li>
+</ul>
+<h2 id="6-第六期-买全屋定制吗？骨折价那种"><a href="#6-第六期-买全屋定制吗？骨折价那种" class="headerlink" title="6. 第六期 买全屋定制吗？骨折价那种"></a>6. 第六期 买全屋定制吗？骨折价那种</h2><p>全屋定制板材按大类分为颗粒板、密度板、大芯板、实木多层板、原木板<br>主要从成本、环保性、工艺和市场几个角度来讲</p>
+<h3 id="颗粒板"><a href="#颗粒板" class="headerlink" title="颗粒板"></a>颗粒板</h3><p>国内大牌颗粒板定制衣柜出厂价：每投影平米500元左右，加上每平米100出头的量尺、设计、安装费</p>
+<h3 id="克诺斯邦"><a href="#克诺斯邦" class="headerlink" title="克诺斯邦"></a>克诺斯邦</h3><p>成品出厂价在600左右每投影面积</p>
+<h3 id="爱格板"><a href="#爱格板" class="headerlink" title="爱格板"></a>爱格板</h3><p><strong>防伪：</strong></p>
+<ul>
+<li>第一，爱格板的尺寸都是2070*2800尺寸的，原板不是这个尺寸的全都是仿造品</li>
+<li>第二，国内的爱格板都是出厂就带装饰面的精板，每个花色都有自己的明确型号</li>
+<li>第三，爱格板全国六家授权经销商，分别负责全国的六个片区，不能跨区域销售，定制家居商要能提供跟这几家经销商的订购信息和交易往来，才能证明是真板</li>
+</ul>
+<p>价格：W980铂金白，成品出厂价在900左右一平米。其他的各种装饰面板合到投影面积1200左右一平米ã</p>
+<p>关于颗粒板一句话总结，颗粒板的核心优势在于性价比，但是一定要买合格的优质颗粒板，有害气体排放量才可控，但是如果找家居定制品牌花大价钱购买，那颗粒板的性价比就没有优势了，很多自己都不生产，只卖个品牌。所以建议大家可以自己寻找一下周边工厂，价格是含柜门、含五金件、含隔板的价格不含安装的价格，照这个砍就可以了。</p>
+<h2 id="7-第七期-继续扒全屋定制底裤，买套柜子省几万？"><a href="#7-第七期-继续扒全屋定制底裤，买套柜子省几万？" class="headerlink" title="7. 第七期 继续扒全屋定制底裤，买套柜子省几万？"></a>7. 第七期 继续扒全屋定制底裤，买套柜子省几万？</h2><h3 id="密度板"><a href="#密度板" class="headerlink" title="密度板"></a>密度板</h3><p>密度板因为也是木纤维+粘合剂压制，尽量选择大厂的板材，安全性有保证。密度板一般用于全屋定制中的门板和背板。用作门板是因为颗粒板、多层板、大芯板只能做平板造型，不能做凹凸雕花造型。大亚、森工、吉象、众旺等是大厂产品，一般来说密度越高价格越贵，130左右一张不含贴面费用多层板：多层板也是比较可靠、性能比较好、有害气体排放较低的一种板材，贴上实木贴皮视觉效果也不错。大品牌多层板不到200一张，工厂出厂成本在750左右含柜门、五金和隔板。品牌上兔宝宝.千年舟.莫干山、锦旭等都是大厂</p>
+<h3 id="大芯板"><a href="#大芯板" class="headerlink" title="大芯板"></a>大芯板</h3><p>有些地方也叫生态板，内部基材是杉木或者松木竖拼，两边加面板。各方面性能略逊色于多层板，品牌方面兔宝宝.隆饰.福湘等都还可以，参考价格含柜门每投影面积650左右。手工打柜子太考验手艺，柜体还可以，柜门还是要谨慎。</p>
+<h3 id="原木板"><a href="#原木板" class="headerlink" title="原木板"></a>原木板</h3><p>所有板材中被黑的最惨的一个。年初以来北美AA级红橡板从5000一立涨到现在接近9000。但是现在橡胶木、白蜡木、樱桃木价格还比较稳定，如果是免漆工艺，每投影面积成品定制衣柜价格分别在900、1300、1500左右，油漆工艺的贵30%。</p>
+<p>再补充说一下装修公司关于定制家居的报价。大家可以根据装修公司所用材质、包含内容与迷瞪给的参考价做对比，如果是木工手工打，价格可以参照这个价格。如果是包给工厂定做，那就完全没必要让装修公司在中间赚这个差价了。全屋定制这个行业就像电脑里的组装机一样，并不具有核心技术，很多品牌甚至工厂都没有，完全靠请明星、打广告、搞营销，大家也不要沉迷大牌所谓的服务和售后，这个行业全都是代理商在销售和处理售后，有些不良代理商还真的假的掺着卖，已经购买了大牌的同学，也可以拨打一下品牌400电话，核对一下自己的住址是否在品牌方有备案，如果没有就是假货无疑了，这招是直戳不良代理商死穴，注意保护好自己的个人信息，因为品牌方在处理代理商时一定会索要证据和证人对峙，容易被代理商报复。</p>
+<p><strong>吊顶：</strong></p>
+<p>没有必要过度吊顶，造价不低的同时还影响净高。吊平顶的成本每平米在90左右，装修公司一般报价在140每平米以内是合理价格。边棚按延米算，每米70左右成本，报价120以内合理。石膏板造型走边参照边棚价格。叠积棚叠几层算几次价格。石膏线在20左右一米。</p>
+<h2 id="8-第八期-揭秘木门行业"><a href="#8-第八期-揭秘木门行业" class="headerlink" title="8. 第八期 揭秘木门行业"></a>8. 第八期 揭秘木门行业</h2><p>木门的工艺拆解开分几块：芯材、面板、门架、装饰面、五金密封件<br>市场名称很多（实木门、实木复合门、免漆门、烤漆门、静音门、模压门、桥动力学门等等）</p>
+<h3 id="种类"><a href="#种类" class="headerlink" title="种类"></a>种类</h3><ul>
+<li>纯实木门（原木门：整块木板，表面不贴任何装饰面，直接在表面上清油或者混油。<br>优点：环保、保温、隔音<br>缺点：贵，木材不好有开裂的风险<br>注意：不良商贩拿贴木皮的产品冒充原木门卖</li>
+<li>指节木门<br>虽然也叫实木门，但是性能稍微差一些</li>
+<li>全实木门<br>根据门板材质不同、油漆工艺不同价格区别很大，便宜的橡胶木1000出头一樘，黑胡桃门接近3000</li>
+</ul>
+<h3 id="芯材"><a href="#芯材" class="headerlink" title="芯材"></a>芯材</h3><ul>
+<li>第一个泡沫板，已经被淘汰了</li>
+<li>第二个是蜂窝纸板，用的比较多，隔音、隔热性都很一般，优点就是便宜</li>
+<li>第三个是空颗粒板，也被某些品牌号称桥洞力学板。实际优点未查阅到相关文献，有同学了解的请给迷瞪哥补充指正</li>
+<li>第四种是龙骨状实木芯材，用的一般是软木，隔音和隔热效果一般</li>
+<li>第五种是密度板，跟密度板柜体一样，重、怕潮且性能一般，注意下品牌</li>
+<li>最后一种是实木指接板做芯材的，优质的实木复合门芯材了<br>注意：细节落实在纸面上，同时要求展示横截面</li>
+</ul>
+<h3 id="面板和门架"><a href="#面板和门架" class="headerlink" title="面板和门架"></a>面板和门架</h3><ul>
+<li>面板：实木复合门使用的面板都是6-8mm厚密度板，雕花造型和烤漆处理。看板材的品牌，品质和环保性有保障</li>
+<li>门架和门套：一般实木指接板或者多层板做的，稳定门体框架结构。<br>注意：而不良商家为了遮掩使用劣质芯材的事实，会把门架故意做宽，这样开锁孔时候看到的就是门架的材质而不是芯板材质了，大家要注意做好区分。</li>
+</ul>
+<h3 id="装饰面"><a href="#装饰面" class="headerlink" title="装饰面"></a>装饰面</h3><p>按工艺不同一般分为免漆门、油漆门、实木贴皮门</p>
+<ul>
+<li>免漆工艺：贴PVC装饰面</li>
+<li>油漆门：喷油漆，也是分清油和混油，不再赘述了<br>两种的区别就是质感上的区别，真正的实用性区别不大<br>环保性：PVC本身是种环保材料。油漆含苯，挥发较快，挥发周期较短，注意通风<br>油漆门比免漆门贵500左右</li>
+<li>实木贴皮门：不是实木上面贴层皮，而是实木复合门表面贴上实木加工的薄片。<br>实木贴皮门外表上看跟纯实木门没啥区别，里面却天差地别。</li>
+</ul>
+<h3 id="五金密封件"><a href="#五金密封件" class="headerlink" title="五金密封件"></a>五金密封件</h3><p>之前关于隔音的视频里讲过，密封条和门底隔音条是神器</p>
+<p><em>木门投入不低，没必要追求大牌，过度装修</em></p>
+<h2 id="9-第九期-乳胶漆是健康杀手吗？室内涂料什么最安全环保？"><a href="#9-第九期-乳胶漆是健康杀手吗？室内涂料什么最安全环保？" class="headerlink" title="9. 第九期 乳胶漆是健康杀手吗？室内涂料什么最安全环保？"></a>9. 第九期 乳胶漆是健康杀手吗？室内涂料什么最安全环保？</h2><h3 id="界面剂（墙固）"><a href="#界面剂（墙固）" class="headerlink" title="界面剂（墙固）"></a>界面剂（墙固）</h3><p>三个功能：</p>
+<ul>
+<li>一个是增加墙面附着力</li>
+<li>另一个是一定程度上防止墙体粉化、脱落，还能起到一定的防霉效果</li>
+<li>最后一个就是好看，造价一般在3块钱一平米，装修公司一般报价在5块钱左右。</li>
+</ul>
+<h3 id="腻子："><a href="#腻子：" class="headerlink" title="腻子："></a>腻子：</h3><p>也就是大白，只有墙体连接处和开过槽的地方需要挂网处理，防止腻子开裂，没必要全屋挂网。建议大家还是要使用水性成品腻子，不建议用滑石粉和建筑胶水混合做腻子。腻子的验收主要是用靠尺测量墙面是否平整，同时用直角尺看阴阳角是否垂直，腻子的施工+材料费用成本根据地区不同在15-20块钱一平米，装修公司报价一般在25-35一平米。</p>
+<h3 id="乳胶漆："><a href="#乳胶漆：" class="headerlink" title="乳胶漆："></a>乳胶漆：</h3><p>第一，选市场占有率大的品牌，造假和违约成本较高。<br>第二，选大品牌里的基本款，几百块钱一大桶那种，不用盲目追求儿童漆、净味漆，不管什么漆都建议刷后通风20天左右。<br>第三，打着纯进口旗号的高价漆，不建议选购。</p>
+<ul>
+<li><p>硅藻泥：<br>把硅藻泥当成一种普通的无机墙内涂料就好了，优点就是安全环保、抗潮能力强，同时还能起到一定的平衡室内湿度的作用。硅藻泥粉不到10块钱一公斤，能厚涂1平米，如果请工人手工费15-20每平米，<br>艺术涂料：其核心本质也是种漆，优点就是好看，有些能做出天然大理石、瓷砖的纹理和感觉，有些时候甚至能替代石材或者瓷砖上墙的效果，缺点就是贵，对于施工工艺要求比较高</p>
+</li>
+<li><p>壁纸<br>优点就是好看，缺点就是用胶，而且如果墙面返潮，几年就容易翘边发霉。</p>
+</li>
+<li><p>壁布<br>用热熔胶粘贴，壁纸和壁布都可以网上选购</p>
+</li>
+</ul>
+<h2 id="10-第十期-马桶选得好，便便没烦恼"><a href="#10-第十期-马桶选得好，便便没烦恼" class="headerlink" title="10. 第十期 马桶选得好，便便没烦恼"></a>10. 第十期 马桶选得好，便便没烦恼</h2><p>虹吸式防虫防臭效果优于直冲式</p>
+<p>冲得干不干净除了冲水方式的原因还与釉面有关系</p>
+<p><strong>A+类：汉斯格雅、高仪、唯宝、杜拉维特、当代、劳芬、凯乐玛、汉莎、卡德维</strong></p>
+<p>国内属于小众，定位轻奢到奢侈品之间，汉斯格雅和高仪入门款和A类产品价格持平，核心竞争优势是设计和品牌价值，产品质量是他们的最低标准</p>
+<p><strong>A类：科勒、TOTO、ROCA</strong></p>
+<p>科勒产品线完整，设计现代感强，浴室柜是代工产品<br>TOTO优势是陶瓷制品<br>2个牌子品控都可以，说自己是代工这2个牌子的都是假货，除了线上特供，线下有可能更便宜，买走量款</p>
+<p>ROCA乐家，西班牙品牌，全球销售额第一，国内市场没做好</p>
+<p><strong>A-类：伊奈、美标、摩恩</strong></p>
+<p>全球市场占有率定位都可以，产品不错，但是国内市场越做越低，运营能力堪忧</p>
+<p><strong>B类：箭牌、惠达、九牧、恒洁、法恩莎等一线国产品牌</strong></p>
+<p>中高端市场起步晚后起之秀切入困难</p>
+<p>一体式只能马桶=普通马桶+只能坐便盖=马桶+电加热+呲水枪 外观好看</p>
+<h2 id="11-第十一期-灯具的选择，如何自己测照度"><a href="#11-第十一期-灯具的选择，如何自己测照度" class="headerlink" title="11. 第十一期 灯具的选择，如何自己测照度"></a>11. 第十一期 灯具的选择，如何自己测照度</h2><p>无</p>
+<h2 id="12-第十二期：施工验收及监理"><a href="#12-第十二期：施工验收及监理" class="headerlink" title="12. 第十二期：施工验收及监理"></a>12. 第十二期：施工验收及监理</h2><p>课代表：</p>
+<ul>
+<li><p>水电改造验收<br>走线是否规范，留好照片存档，检查所有插座都留有底线，穿管过程中是否不同回路分开穿管，单根线管最多穿三根电线，谨防恶意绕线的情况，检查管内穿线是不是活线（就是线能不能拽出来），对日后检修很有帮助。水管和地暖做24小时打压测试测试密封性和稳定性（提前联系邻居，有问题及时处理），凡是有水路的卫生间、厨房、阳台都建议做防水+地漏，防水容易出问题的地方在墙体和楼板的交界处、楼板与水管、下水道的交接处</p>
+</li>
+<li><p>贴砖验收<br>如果出问题返工很麻烦，瓷砖没法二次利用，贴砖看对缝是否匀称，墙面45度阳角的倒角是否规整，敲击是否有空鼓现象。</p>
+</li>
+<li><p>腻子&amp;挂网<br>墙面挂网和阴阳角条安装。如果没装后期没法补装。阴阳角条全屋都要用，墙面挂网选择墙体交界处、开槽修复处、墙面有粉化风险处。</p>
+</li>
+</ul>
+<h2 id="13-第十三期：成品家具的选择，岩板真的香吗？"><a href="#13-第十三期：成品家具的选择，岩板真的香吗？" class="headerlink" title="13. 第十三期：成品家具的选择，岩板真的香吗？"></a>13. 第十三期：成品家具的选择，岩板真的香吗？</h2><p>课代表：</p>
+<p>选家具：颜值、功能性、性价比</p>
+<p><strong>一、哪些家具该买成品？哪些家具该定制？</strong><br>能选成品就不要定制，成品家具统一备料、批量生产，定制家具因为设计、备料、加工的原因，同等材质下比成品家具贵一倍左右。因为电商，成品家具的样式、购买渠道更加丰富，选择性更多。厨房橱柜和通顶衣柜必须严丝合缝，选择定制。</p>
+<p><strong>二、 新手该怎么选择家具的样式和色彩？</strong><br>3+1配色，三个主色系，硬装、家具都围绕这三个色系展开，一个软装搭配色系，通过抱枕、挂画、床品展现。<br>白墙、瓷砖和地板、踢脚线和门，家具往这三个色系上靠。</p>
+<p><strong>三、成品家具买什么品牌好？</strong><br>没有社交属性、低技术含量的加工行业，只需关注颜值、用料、性价比，不用管品牌。</p>
+<p><strong>四、床该怎么选？</strong><br>床是家具里唯一一个承重家具，多层板的物理性能比实木好，家里床的承重框架硬质实木或多层板都可以，但不建议选软木床（松木），排骨架可以软木。</p>
+<ul>
+<li><p>1、床价格<br>木头锯材1立方米价格/3<br>估价会上下浮动<br>黑胡桃：10000-15000/立<br>北美红橡白橡：6000-8000/立<br>水曲柳：6000/立<br>橡胶木：2700-3000/立<br>新西兰松：1500-1800/立</p>
+</li>
+<li><p>2、两个坑<br>（1）偷梁换柱<br>非洲黑胡桃-黑胡桃<br>橡胶木-橡木<br>（2）偷工减料<br>框架和床腿是实木，侧板用的颗粒板，线上购买留好聊天记录和页面截图。线下购买签纸质协议或购物小票上。<br>框架结构改成箱体结构，造价*1.5倍，真皮床头软包+500元左右，PU不加价。</p>
+</li>
+</ul>
+<p><strong>五、岩板餐桌/茶几/电视柜值得买吗？</strong></p>
+<p>岩板是瓷砖的升级产品，胚体密度更大，烧制温度更高<br>作为家居台面，用12MM厚度<br>注意：岩板尺寸大，运输有问题，购买前注意尺寸。</p>
+<p><strong>六、沙发怎么选？</strong><br>主要考虑样式和材质，框架大多是软木（新西兰松、俄罗斯松）和多层板<br>海绵偏软，乳胶偏硬，看个人喜好</p>
+<h2 id="14-第十四期：小小踢脚线，大大有学问"><a href="#14-第十四期：小小踢脚线，大大有学问" class="headerlink" title="14. 第十四期：小小踢脚线，大大有学问"></a>14. 第十四期：小小踢脚线，大大有学问</h2><p>课代表：</p>
+<p>踢脚线对大部分家庭有必要</p>
+<p><strong>一、作用：</strong></p>
+<ol>
+<li>保护墙面，不然擦地容易有水渍，扫地机器人会撞到</li>
+<li>地面墙面交口处转接、覆盖。瓷砖上墙的墙面不需要。</li>
+</ol>
+<p><strong>二、颜色选择：</strong><br>选择与门套相近的颜色</p>
+<p><strong>三、材质和安装方式</strong></p>
+<ul>
+<li><p>（一）卡扣式踢脚线<br>最便宜的踢脚线含主材、配件、安装，成本15元/米，通过钉子钉在墙面上，不用胶，安全环保，可以在踢脚线里面走线，使用寿命长，不存在脱落风险。</p>
+<ol>
+<li>竹木纤维——像实木纹理，与门套颜色好搭配，木塑材质，有甲醛挥发</li>
+<li>PVC——塑料质感较重，但能解决墙面不平不贴合问题</li>
+<li>铝合金——跟门套颜色不好搭，较适合现代、轻奢、极简风</li>
+</ol>
+</li>
+<li><p>（二）实木踢脚线<br>密度板踢脚线冒充实木踢脚线：看切面端口可以分辨。一般含安装价格不到20元/米<br>松木、杨木等软木刷漆：木质较软，有变形、开裂的现象。一般含安装价格不到25元/米<br>番龙眼等入门硬木：等硬木一般含安装价格不到30元/米<br>最好：硬木刷木蜡油，根据材质，30-100元/米<br>安装方式：</p>
+<ol>
+<li>最坑：拿玻璃胶粘，不环保，后期容易掉</li>
+<li>无痕钉+玻璃胶，建议用MS胶替代玻璃胶</li>
+<li>无痕钉+表面修补，最安全稳定的安装方式</li>
+</ol>
+</li>
+<li><p>（三）石材踢脚线<br>不会受湿度影响发霉变潮，南方较多，安全稳定，后期很少脱落，但费用高，颜色与门套很难对上，中间会有交口。<br>材质：<br>瓷砖切割暗装、天然石材、人造石材<br>安装方式：</p>
+<ol>
+<li>水泥砂浆或瓷砖背胶贴铺，没有污染风险</li>
+<li>墙根处开槽，再贴石材踢脚线，安装成本费用近20元/米<br>踢脚线安装:<br>开槽，底面不一定平整，比较考验手艺，有些地方会影响水电线路。直接安装踢脚线，再用石膏板满铺墙面找平，效果好，价格高，40元/米左右</li>
+</ol>
+</li>
+<li><p>（四）无踢脚线<br>适合设计感特别强的空间</p>
+<ol>
+<li>石膏板压地面，墙面满铺，覆盖掉地板或地砖与墙面的交口，40元/米左右</li>
+<li>双层石膏板做灯带结构，不含灯带，70-80元/米</li>
+</ol>
+</li>
+</ul>
+<h2 id="15-第十五期：地热选材不好会漏水吗？"><a href="#15-第十五期：地热选材不好会漏水吗？" class="headerlink" title="15. 第十五期：地热选材不好会漏水吗？"></a>15. 第十五期：地热选材不好会漏水吗？</h2><p>课代表:</p>
+<p>地热系统是一个成熟产品，只要安装后打压测试没有问题，基本后期不作死就基本不会漏水</p>
+<p><strong>供暖方式：</strong></p>
+<ul>
+<li>水机中央空调两联供（热效率最高，比燃气锅炉便宜一半，但是初始投资最高，注意价差抵消的时间）</li>
+<li>燃气壁挂炉</li>
+<li>电热（初始投资没有明显优势、后期能耗最高，同石墨烯）</li>
+</ul>
+<p>不必过度迷信进口，国产和进口差距在逐渐缩小<br>分区温控在集中供暖区域没用，而且地暖的温度由于有延后性，使用感受并不明显、<br>尽量减少电子系统的使用</p>
+<p>管材：PE-RT或者PE-XB<br>分水器：铜质+国标<br>挤塑板：2cm</p>
+<p>施工：直接回填或者贴地砖回填一起（散热更高，但是二次换地砖容易造成破坏）<br>要带压回填（0.6mpa）养护完成后泄压</p>
+<p>北方地暖都是房地产直接装上了，自带地热需要要打压测试</p>
+<h2 id="16-第十六期：水电改造出天价？五分钟学会怎么看报价单"><a href="#16-第十六期：水电改造出天价？五分钟学会怎么看报价单" class="headerlink" title="16. 第十六期：水电改造出天价？五分钟学会怎么看报价单"></a>16. 第十六期：水电改造出天价？五分钟学会怎么看报价单</h2><p>无</p>
+<blockquote>
+<p>参考：<br><a href="https://space.bilibili.com/304578055/channel/index">B站 Mr迷瞪</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Other</category>
+      </categories>
+      <tags>
+        <tag>refurbish</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一种高效通信机制-RPC调用链</title>
+    <url>/2022/01/16/rpc_call_chains_20220116/</url>
+    <content><![CDATA[<p>RPC调用链可以将远程过程调用变成一个有效的堆栈。</p>
+<p>当我们编写应用程序时，我们中的许多人认为REST是服务间通信的一个通用标准。然而，还有许多其他形式的通信，RPC就是其中之一。值得注意的是，通信方式的选择取决于许多因素，如业务需求、遗留代码、技术和预算，更不用说你选择的架构模式。</p>
+<span id="more"></span>
+
+<p><img src="0.png" alt="0"></p>
+<p>在分布式计算中很受欢迎，RPC（远程过程调用）是一个程序，其中计算机程序在不同的计算机（服务器）中执行，而程序（代码）抽象出客户端和服务器之间的连接。</p>
+<p>你们中的许多人可以在互联网上了解RPC，但我发现很难找到关于 “RPC链”的信息。我甚至不知道它的存在，直到最近，我在微软研究院读到一篇有趣的<a href="https://www.microsoft.com/en-us/research/publication/rpc-chains-efficient-client-server-communication-in-geodistributed-systems/">论文</a>。</p>
+<h2 id="1-引言：RPC与RPC链的关系"><a href="#1-引言：RPC与RPC链的关系" class="headerlink" title="1. 引言：RPC与RPC链的关系"></a>1. 引言：RPC与RPC链的关系</h2><p>RPC链解决了与标准RPC有关的性能和效率问题，一个单一的任务可能涉及到对不同站点的几个客户服务器调用。如果你看下图，你可以立即注意到其中的差别。</p>
+<p><img src="1.png" alt="1"></p>
+<p>RPC链允许客户端连续调用多个服务器（A-B-E-F-C-D-A），而无需每次都让客户端参与。</p>
+<h2 id="2-主要机制"><a href="#2-主要机制" class="headerlink" title="2. 主要机制"></a>2. 主要机制</h2><p>作为RPC模型中以服务函数（远程方法）形式提供的服务器服务，它们可以在一个函数链中进行逻辑排序，指定执行的下一个服务函数（可能在不同的服务器上）。正如作者所说，它们可以是C#或Java方法（存储并因此从远程存储库检索到服务），但它们不能引用非本地变量，因为它们需要独立编译。</p>
+<h2 id="3-链条断裂：检测和恢复"><a href="#3-链条断裂：检测和恢复" class="headerlink" title="3. 链条断裂：检测和恢复"></a>3. 链条断裂：检测和恢复</h2><p>任何服务器都可能在RPC链执行过程中崩溃。它是由一个简单的机制检测出来的，这个机制被称为链心跳，链会定期向创建它的客户端发送一个活着的消息，并带有其独特的链标识符。</p>
+<p>如果检测到链条断裂，客户端会重新传输请求，然后，由于每个服务器的缓存结果，这个过程会从链条断裂的主机继续进行。</p>
+<p><img src="2.png" alt="2"></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>RPC链将RPC调用组合成一条链，从而可以减少使用复杂嵌套服务调用的应用程序中的网络跳数（从而减少端到端的延迟）和带宽，因为客户端不会收到不必要的数据。关于RPC链的更多详细信息，请阅读<a href="https://www.microsoft.com/en-us/research/publication/rpc-chains-efficient-client-server-communication-in-geodistributed-systems">原始论文</a>。</p>
+<blockquote>
+<p>参考：</p>
+</blockquote>
+<ul>
+<li><a href="https://orkhanscience.medium.com/rpc-chains-5-min-read-2b5c0f3886ba">RPC chains</a></li>
+<li><a href="https://www.microsoft.com/en-us/research/publication/rpc-chains-efficient-client-server-communication-in-geodistributed-systems/">RPC Chains: Efficient Client-Server Communication in Geodistributed Systems</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Software Engineering</category>
+      </categories>
+      <tags>
+        <tag>architecture</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>软件架构模式简介</title>
+    <url>/2022/01/16/software_architecture_patterns_20220116/</url>
+    <content><![CDATA[<p>当我们进入软件工程的世界，有一天需要学习软件架构模式的基本知识。当我刚开始编码的时候，我不知道从哪里获得资源来简单介绍现有的架构模式，不是那种太详细和混乱的，而是非常抽象和简单的理解。</p>
+<p>这一直是个问题，直到我发现了Mark Richards的《软件架构模式》一书。强烈建议仔细阅读这本书。</p>
+<span id="more"></span>
+
+
+<p><img src="0.png" alt="0"></p>
+<p><strong>为什么作为软件工程师至少要学习基本的架构模式？</strong></p>
+<p>我相信有很多文章可以回答这个问题，但我将给你几个理由来考虑。首先，如果你知道架构模式的基本知识，那么你就会更容易遵循架构师的要求。其次，了解这些模式将有助于你在代码中做出决定：例如，如果你的应用设计是基于事件驱动的微服务，作为一名软件工程师，如果你注意到现有服务中逻辑的复杂性和责任的增加，你必须把你的代码解耦到一个独立的服务中。(如果你没有得到这部分内容，就跟着文中的内容走，文中对这种模式进行了简单的解释）。</p>
+<p>这本书中Mark Richards描述了5种模式：</p>
+<ul>
+<li>分层架构</li>
+<li>事件驱动的架构</li>
+<li>微内核架构（或插件架构）</li>
+<li>微服务架构</li>
+<li>基于空间的架构（或云架构模式）</li>
+</ul>
+<h2 id="1-分层架构"><a href="#1-分层架构" class="headerlink" title="1. 分层架构"></a>1. 分层架构</h2><p><img src="1.png" alt="1"></p>
+<p>它是单体应用最常见的架构。该模式的基本思想是将应用程序的逻辑划分为若干层，每层都封装了特定的角色。例如，持久层将负责你的应用程序与数据库引擎的通信。</p>
+<h2 id="2-事件驱动的架构"><a href="#2-事件驱动的架构" class="headerlink" title="2. 事件驱动的架构"></a>2. 事件驱动的架构</h2><p><img src="2.png" alt="2"></p>
+<p>这种模式背后的想法是将应用逻辑解耦为单一用途的事件处理组件，这些组件异步地接收和处理事件。这种模式是流行的分布式异步架构模式之一，以高可扩展性和适应性而闻名。</p>
+<h2 id="3-微内核结构"><a href="#3-微内核结构" class="headerlink" title="3. 微内核结构"></a>3. 微内核结构</h2><p><img src="3.png" alt="3"></p>
+<p>Mikrokernel架构，也被称为插件架构，是有两个主要组成部分的设计模式：一个核心系统和插件模块（或扩展）。一个很好的例子是网络浏览器（核心系统），在那里你可以安装无尽的扩展（或插件）。</p>
+<h2 id="4-微服务架构"><a href="#4-微服务架构" class="headerlink" title="4. 微服务架构"></a>4. 微服务架构</h2><p><img src="4.png" alt="4"></p>
+<p>微服务架构由单独部署的服务组成，每个服务都有理想的单一责任。这些服务是相互独立的，如果一个服务出现故障，其他服务不会停止运行。</p>
+<h2 id="5-基于空间的架构"><a href="#5-基于空间的架构" class="headerlink" title="5. 基于空间的架构"></a>5. 基于空间的架构</h2><p><img src="5.png" alt="5"></p>
+<p>基于空间的模式背后的主要想法是分布式共享内存，以缓解经常发生在数据库层面的问题。其假设是，通过使用内存数据处理大部分操作，我们可以避免在数据库中进行额外的操作，从而避免将来可能出现的任何问题（例如，如果你的用户活动数据实体发生了变化，你不需要改变一堆代码来持久化和从数据库中检索该数据）。</p>
+<p>基本方法是将应用程序分成处理单元（可以根据需求自动扩大和缩小），数据将在这些单元之间进行复制和处理，而不需要在中央数据库中进行任何持久化处理（尽管在系统故障的情况下会有本地存储）。</p>
+<p>下面是一些架构模式的最简单例子:</p>
+<ul>
+<li><ol>
+<li><a href="https://github.com/OrkhanHuseynli/recording-job">Layered pattern (in Java)</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://github.com/OrkhanHuseynli/plugins_design_in_go">Mikrokernel or Plugin pattern (in Go or Golang)</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="https://github.com/OrkhanHuseynli/microservices_template_golang">Microservices pattern (in Go)</a></li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>参考：</p>
+</blockquote>
+<ul>
+<li><a href="https://orkhanscience.medium.com/software-architecture-patterns-5-mins-read-e9e3c8eb47d2">Software Architecture Patterns</a></li>
+<li><a href="https://enlear.academy/how-to-scale-your-web-and-mobile-applications-5be74bf99226">如何扩展你的应用程序</a></li>
+<li><a href="https://orkhanscience.medium.com/upgrade-performance-via-caching-5-min-read-19fafd56d704">缓存是软件架构的一部分</a></li>
+<li><a href="https://orkhanscience.medium.com/rpc-chains-5-min-read-2b5c0f3886ba">远程过程调用链</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Software Engineering</category>
+      </categories>
+      <tags>
+        <tag>architecture</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网址链接收藏夹</title>
+    <url>/2020/11/26/tools_links_collect_20201126/</url>
+    <content><![CDATA[<h2 id="1-数据结构与算法（Algorithm-And-DataStruct）"><a href="#1-数据结构与算法（Algorithm-And-DataStruct）" class="headerlink" title="1. 数据结构与算法（Algorithm And DataStruct）"></a>1. 数据结构与算法（Algorithm And DataStruct）</h2><ul>
+<li><p><a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html">Data Structure Visualizations</a></p>
+</li>
+<li><p><a href="https://visualgo.net/en">VisuAlgo</a></p>
+</li>
+<li><p><a href="http://algs4.cs.princeton.edu/home/">Algorithms, 4th Edition</a></p>
+</li>
+<li><p><a href="http://bigocheatsheet.com/">Big-O Cheat Sheet</a></p>
+</li>
+</ul>
+<span id="more"></span>
+
+
+<ul>
+<li><p><a href="http://www.cnblogs.com/kkun/archive/2011/11/23/2260312.html">经典排序算法-集锦</a></p>
+</li>
+<li><p><a href="http://blog.csdn.net/v_july_v/article/details/6530142">结构之法 算法之道 - 从B树、B+树、B*树谈到R 树</a></p>
+</li>
+<li><p><a href="http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm"><strong>Wikipedia</strong> Boyer–Moore string search algorithm</a></p>
+</li>
+</ul>
+<h2 id="2-人工智能（Artificial-Intelligence）"><a href="#2-人工智能（Artificial-Intelligence）" class="headerlink" title="2. 人工智能（Artificial Intelligence）"></a>2. 人工智能（Artificial Intelligence）</h2><ul>
+<li><a href="https://pythonprogramming.net/">pythonprogramming</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/">强化学习 (Reinforcement Learning) | 莫烦Python</a></li>
+</ul>
+<h2 id="3-虚拟化与云计算（Virtualization-And-Cloud-Technology）"><a href="#3-虚拟化与云计算（Virtualization-And-Cloud-Technology）" class="headerlink" title="3. 虚拟化与云计算（Virtualization And Cloud Technology）"></a>3. 虚拟化与云计算（Virtualization And Cloud Technology）</h2><ul>
+<li><p><a href="https://www.qemu.org/">Qemu</a></p>
+</li>
+<li><p><a href="https://libvirt.org/">Libvirt</a></p>
+</li>
+<li><p><a href="http://www.openvswitch.org/">Open vSwitch</a></p>
+</li>
+<li><p><a href="https://tonydeng.github.io/sdn-handbook/">SDN手册(sdn-handbook)</a></p>
+</li>
+<li><p><a href="https://ovirt.org/">oVirt</a></p>
+</li>
+<li><p><a href="https://www.cnovirt.com/">oVirt中文社区</a></p>
+</li>
+<li><p><a href="https://www.bookstack.cn/books/oVirt">oVirt 中文版文档</a></p>
+</li>
+<li><p><a href="https://docs.openstack.org/install-guide/">OpenStack Installation Guide</a></p>
+</li>
+<li><p><a href="https://docs.openstack.org/api-ref/">OpenStack api-ref</a></p>
+</li>
+</ul>
+<h2 id="4-Linux内核"><a href="#4-Linux内核" class="headerlink" title="4. Linux内核"></a>4. Linux内核</h2><ul>
+<li><p><a href="https://www.kernel.org/">The Linux Kernel Archives</a></p>
+</li>
+<li><p><a href="https://0xax.gitbooks.io/linux-insides/content/index.html">linux-insides</a></p>
+</li>
+</ul>
+<h2 id="5-C-C-语言"><a href="#5-C-C-语言" class="headerlink" title="5. C/C++语言"></a>5. C/C++语言</h2><ul>
+<li><p><a href="https://www.w3cschool.cn/cyykhsscsc/">C语言库函数速查手册</a></p>
+</li>
+<li><p><a href="https://notabug.org/koz.ross/awesome-c">Awesome C</a></p>
+</li>
+<li><p><a href="https://github.com/jobbole/awesome-c-cn">C 语言资源大全中文版</a></p>
+</li>
+<li><p><a href="https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html">Parallel Programming</a></p>
+</li>
+<li><p><a href="http://ifeve.com/perfbook/">并发编程</a></p>
+</li>
+</ul>
+<h2 id="6-Rust语言"><a href="#6-Rust语言" class="headerlink" title="6. Rust语言"></a>6. Rust语言</h2><ul>
+<li><p><a href="https://doc.rust-lang.org/std/index.html">Rust-std</a></p>
+</li>
+<li><p><a href="https://doc.rust-lang.org/stable/book/">The Rust Programming Language</a></p>
+</li>
+<li><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html">Rust 程序设计语言</a></p>
+</li>
+<li><p><a href="https://doc.rust-lang.org/stable/rust-by-example/">Rust by Example</a></p>
+</li>
+<li><p><a href="http://llever.com/rust-by-example-cn/index.html#a%E9%80%9A%E8%BF%87%E4%BE%8B%E5%AD%90%E5%AD%A6-rust">Rust by Example 中文版</a></p>
+</li>
+<li><p><a href="http://llever.com/exercism-rust-zh/index.html">exercisms.io 快速练习</a></p>
+</li>
+<li><p><a href="https://docs.rs/leetcode_for_rust/0.1.37/leetcode_for_rust/">Leetcode For Rust</a></p>
+</li>
+</ul>
+<h2 id="7-Golang语言"><a href="#7-Golang语言" class="headerlink" title="7. Golang语言"></a>7. Golang语言</h2><ul>
+<li><p><a href="https://godoc.org/">Search for Go Packages</a></p>
+</li>
+<li><p><a href="https://studygolang.com/">Go语言中文网</a></p>
+</li>
+<li><p><a href="https://github.com/unknwon/the-way-to-go_ZH_CN">Go 入门指南</a></p>
+</li>
+<li><p><a href="https://go-zh.org/">Go 编程语言</a></p>
+</li>
+<li><p><a href="https://www.bookstack.cn/read/GoExpertProgramming/README.md">GO专家编程</a></p>
+</li>
+<li><p><a href="https://chai2010.cn/advanced-go-programming-book/">Go语言高级编程</a></p>
+</li>
+</ul>
+<h2 id="8-Python语言"><a href="#8-Python语言" class="headerlink" title="8. Python语言"></a>8. Python语言</h2><ul>
+<li><p><a href="https://pypi.org/">PyPI · The Python Package Index</a></p>
+</li>
+<li><p><a href="https://docs.python.org/zh-cn/3.9/tutorial/index.html">Python Tutorial</a></p>
+</li>
+<li><p><a href="https://docs.python.org/zh-cn/3/library/index.html">Python Library</a></p>
+</li>
+<li><p><a href="https://www.runoob.com/python3/python3-tutorial.html">Python 3 教程(Runoob)</a></p>
+</li>
+</ul>
+<h2 id="9-Linux镜像源"><a href="#9-Linux镜像源" class="headerlink" title="9. Linux镜像源"></a>9. Linux镜像源</h2><ul>
+<li><p><a href="https://git.centos.org/">CentOS Git server</a></p>
+</li>
+<li><p><a href="http://mirror.centos.org/">mirror.centos源</a></p>
+</li>
+<li><p><a href="http://downloads.redhat.com/">downloads.redhat源</a></p>
+</li>
+<li><p><a href="https://dl.fedoraproject.org/pub/">fedoraproject源</a></p>
+</li>
+<li><p><a href="http://www.rpmfind.net/linux/">rpmfind源</a></p>
+</li>
+<li><p><a href="https://buildlogs.centos.org/centos/">buildlogs.centos源</a></p>
+</li>
+<li><p><a href="http://ftp.redsleeve.org/pub/">ftp.redsleeve源</a></p>
+</li>
+<li><p><a href="http://rpm.pbone.net/">rpm.pbone搜索</a></p>
+</li>
+<li><p><a href="https://pkgs.org/">pkgs搜索</a></p>
+</li>
+<li><p><a href="http://rpmfind.net/">rpmfind搜索</a></p>
+</li>
+<li><p><a href="https://mirrors.huaweicloud.com/">华为开源镜像站</a></p>
+</li>
+<li><p><a href="https://mirrors.tuna.tsinghua.edu.cn/">清华大学开源软件镜像站</a></p>
+</li>
+</ul>
+<h2 id="10-Linux发行版"><a href="#10-Linux发行版" class="headerlink" title="10. Linux发行版"></a>10. Linux发行版</h2><ul>
+<li><p><a href="https://bugs.centos.org/my_view_page.php">CentOS Bug Tracker</a></p>
+</li>
+<li><p><a href="https://weldr.io/lorax/lorax-composer/lorax.html">Lorax documentation</a></p>
+</li>
+<li><p><a href="http://download.cirros-cloud.net/">cirros-cloud</a></p>
+</li>
+<li><p><a href="http://isoredirect.centos.org/centos/">CentOS ISO Service</a></p>
+</li>
+</ul>
+<h2 id="11-工具"><a href="#11-工具" class="headerlink" title="11. 工具"></a>11. 工具</h2><ul>
+<li><p><a href="http://asciiflow.com/">asciiflow</a></p>
+</li>
+<li><p><a href="http://ditaa.sourceforge.net/">DIagrams Through Ascii Art</a></p>
+</li>
+<li><p><a href="https://plantuml.com/zh/">plantuml</a></p>
+</li>
+<li><p><a href="https://app.diagrams.net/">Draw.io</a></p>
+</li>
+</ul>
+<h2 id="12-资料"><a href="#12-资料" class="headerlink" title="12. 资料"></a>12. 资料</h2><ul>
+<li><p><a href="https://stackoverflow.com/">Stack Overflow</a></p>
+</li>
+<li><p><a href="https://www.2daygeek.com/">2DayGeek</a></p>
+</li>
+<li><p><a href="https://www.runoob.com/python/python-tutorial.html">runoob 菜鸟教程</a></p>
+</li>
+<li><p><a href="https://www.trustradius.com/">Software Reviews You Can Trust</a></p>
+</li>
+<li><p><a href="https://leetcode-cn.com/">力扣（LeetCode）</a></p>
+</li>
+<li><p><a href="http://www.quanxue.cn/QT_XiaoYa/SdkIndex.html">Windows SDK教程</a></p>
+</li>
+</ul>
+<h2 id="13-个人网站"><a href="#13-个人网站" class="headerlink" title="13. 个人网站"></a>13. 个人网站</h2><ul>
+<li><p><a href="http://wiki.csie.ncku.edu.tw/User/jserv">jserv (黃敬群)</a></p>
+</li>
+<li><p><a href="https://terenceli.github.io/">李强（Qemu/KVM源码解析与应用）</a></p>
+</li>
+</ul>
+<h2 id="14-其他"><a href="#14-其他" class="headerlink" title="14. 其他"></a>14. 其他</h2><ul>
+<li><a href="https://vercel.com/dashboard">Vercel网站托管</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>良好的Makefile实践</title>
+    <url>/2020/11/27/tools_make_well_documented_20201127/</url>
+    <content><![CDATA[<h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h2><p>这篇文章的主要目的是记录一些可以在Makefile中使用的技巧，以便可以为Makefile本身中的每个目标添加文档，并且可以将其作为make目标查看（例如make help）。</p>
+<p>在项目中拥有可靠的文档是一件很了不起的事情，而且如果它们不会过时，那就更好了。通常在顶级Readme.md或类似文件中记录每个Make目标。尽管这是迈出的重要第一步，但更新Makefile而不是更新文档是很常见的，因此使它们变得毫无用处。</p>
+ <span id="more"></span>
+
+<h2 id="2-目标"><a href="#2-目标" class="headerlink" title="2. 目标"></a>2. 目标</h2><p>最终目标是能够根据Makefile中的注释运行以下内容。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># make</span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line">  make</span><br><span class="line"></span><br><span class="line">Targets:</span><br><span class="line">  help        Display this help</span><br><span class="line">  deps        Check dependencies</span><br><span class="line">  clean       Cleanup the project folders</span><br><span class="line">  build       Build the project</span><br><span class="line">  watch       Watch file changes and build</span><br></pre></td></tr></table></figure>
+<p>对于具有很多目标的复杂Makefile，我们也可以将它们组合在一起。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; make</span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line">  make</span><br><span class="line"></span><br><span class="line">Dependencies</span><br><span class="line">  deps             Check dependencies</span><br><span class="line"></span><br><span class="line">Cleanup</span><br><span class="line">  clean            Cleanup the project folders</span><br><span class="line"></span><br><span class="line">Building</span><br><span class="line">  build            Build the project</span><br><span class="line">  watch            Watch file changes and build</span><br><span class="line"></span><br><span class="line">Helpers</span><br><span class="line">  help             Display this help</span><br></pre></td></tr></table></figure>
+
+<p>让我们继续看看它是如何实现的</p>
+<p><strong>要求</strong>:</p>
+<p><code>make</code>和<code>awk</code>是唯一的要求。在macOS（BSD）和Linux（GNU）版本上均能工作。</p>
+<p><strong>实现</strong>：</p>
+<p>如上面的示例所示，我们可以针对两种不同的情况实现它们。</p>
+<ul>
+<li>简单的makefile<br>对于目标文件很少的Makefile，我们可以列出所有目标文件而没有任何分组。</li>
+</ul>
+<p>首先，添加一个帮助目标。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">help:  ## Display this help</span><br><span class="line">    @awk &#39;BEGIN &#123;FS &#x3D; &quot;:.*##&quot;; printf &quot;\nUsage:\n  make \033[36m\033[0m\n\nTargets:\n&quot;&#125; &#x2F;^[a-zA-Z_-]+:.*?##&#x2F; &#123; printf &quot;  \033[36m%-10s\033[0m %s\n&quot;, $$1, $$2 &#125;&#39; $(MAKEFILE_LIST)</span><br></pre></td></tr></table></figure>
+
+<p>然后，使用上述帮助目标中指定的语法添加注释。在此示例中，我们将使用##作为可打印注释的标签。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deps:  ## Check dependencies</span><br><span class="line">    $(info Checking and getting dependencies)</span><br><span class="line"></span><br><span class="line">clean: ## Cleanup the project folders</span><br><span class="line">    $(info Cleaning up things)</span><br><span class="line"></span><br><span class="line">build: clean deps ## Build the project</span><br><span class="line">    $(info Building the project)</span><br><span class="line"></span><br><span class="line">watch: clean deps ## Watch file changes and build</span><br><span class="line">    $(info Watching and building the project)</span><br></pre></td></tr></table></figure>
+
+<p>（可选）将默认目标添加为help，最好在Makefile的顶部</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.DEFAULT_GOAL:&#x3D;help</span><br></pre></td></tr></table></figure>
+<p>（可选）调整目标和通过make help输出的注释之间的宽度。</p>
+<p>在上述帮助目标中，将数字10替换为您喜欢的字符宽度。</p>
+<p>完整的例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.DEFAULT_GOAL:&#x3D;help</span><br><span class="line">SHELL:&#x3D;&#x2F;bin&#x2F;bash</span><br><span class="line"></span><br><span class="line">.PHONY: help deps clean build watch</span><br><span class="line"></span><br><span class="line">help:  ## Display this help</span><br><span class="line">    @awk &#39;BEGIN &#123;FS &#x3D; &quot;:.*##&quot;; printf &quot;\nUsage:\n  make \033[36m\033[0m\n\nTargets:\n&quot;&#125; &#x2F;^[a-zA-Z_-]+:.*?##&#x2F; &#123; printf &quot;  \033[36m%-10s\033[0m %s\n&quot;, $$1, $$2 &#125;&#39; $(MAKEFILE_LIST)</span><br><span class="line"></span><br><span class="line">deps:  ## Check dependencies</span><br><span class="line">    $(info Checking and getting dependencies)</span><br><span class="line"></span><br><span class="line">clean: ## Cleanup the project folders</span><br><span class="line">    $(info Cleaning up things)</span><br><span class="line"></span><br><span class="line">build: clean deps ## Build the project</span><br><span class="line">    $(info Building the project)</span><br><span class="line"></span><br><span class="line">watch: clean deps ## Watch file changes and build</span><br><span class="line">    $(info Watching and building the project)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>分组的Makefile</li>
+</ul>
+<p>添加分组与上面的分组非常相似。我们再添加一种注释格式，以区分分组注释和目标注释，并稍微调整帮助目标以适应更改。</p>
+<p>添加帮助目标（确保正确复制/转换制表符）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">help:  ## Display this help</span><br><span class="line">    @awk &#39;BEGIN &#123;FS &#x3D; &quot;:.*##&quot;; printf &quot;\nUsage:\n  make \033[36m\033[0m\n&quot;&#125; &#x2F;^[a-zA-Z_-]+:.*?##&#x2F; &#123; printf &quot;  \033[36m%-15s\033[0m %s\n&quot;, $$1, $$2 &#125; &#x2F;^##@&#x2F; &#123; printf &quot;\n\033[1m%s\033[0m\n&quot;, substr($$0, 5) &#125; &#39; $(MAKEFILE_LIST)</span><br></pre></td></tr></table></figure>
+
+<p>使用上述帮助目标中指定的语法添加注释。在此示例中，我们将使用##作为可打印注释的标记，并使用## @作为分组注释 的标记</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">##@ Dependencies</span><br><span class="line"></span><br><span class="line">deps:  ## Check dependencies</span><br><span class="line">    $(info Checking and getting dependencies)</span><br><span class="line"></span><br><span class="line">##@ Cleanup</span><br><span class="line"></span><br><span class="line">clean: ## Cleanup the project folders</span><br><span class="line">    $(info Cleaning up things)</span><br><span class="line"></span><br><span class="line">##@ Building</span><br><span class="line"></span><br><span class="line">build: clean deps ## Build the project</span><br><span class="line">    $(info Building the project)</span><br><span class="line"></span><br><span class="line">watch: clean deps ## Watch file changes and build</span><br><span class="line">    $(info Watching and building the project)</span><br></pre></td></tr></table></figure>
+
+<p>（可选）提供默认目标，并调整目标和打印输出的注释之间的字符宽度，如上面“简单Makefile”部分中所述</p>
+<p>完整的例子:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.DEFAULT_GOAL:&#x3D;help</span><br><span class="line">SHELL:&#x3D;&#x2F;bin&#x2F;bash</span><br><span class="line"></span><br><span class="line">##@ Dependencies</span><br><span class="line"></span><br><span class="line">.PHONY: deps</span><br><span class="line"></span><br><span class="line">deps:  ## Check dependencies</span><br><span class="line">    $(info Checking and getting dependencies)</span><br><span class="line"></span><br><span class="line">##@ Cleanup</span><br><span class="line"></span><br><span class="line">.PHONY: clean</span><br><span class="line"></span><br><span class="line">clean: ## Cleanup the project folders</span><br><span class="line">    $(info Cleaning up things)</span><br><span class="line"></span><br><span class="line">##@ Building</span><br><span class="line"></span><br><span class="line">.PHONY: build watch</span><br><span class="line"></span><br><span class="line">build: clean deps ## Build the project</span><br><span class="line">    $(info Building the project)</span><br><span class="line"></span><br><span class="line">watch: clean deps ## Watch file changes and build</span><br><span class="line">    $(info Watching and building the project)</span><br><span class="line"></span><br><span class="line">##@ Helpers</span><br><span class="line"></span><br><span class="line">.PHONY: help</span><br><span class="line"></span><br><span class="line">help:  ## Display this help</span><br><span class="line">    @awk &#39;BEGIN &#123;FS &#x3D; &quot;:.*##&quot;; printf &quot;\nUsage:\n  make \033[36m\033[0m\n&quot;&#125; &#x2F;^[a-zA-Z_-]+:.*?##&#x2F; &#123; printf &quot;  \033[36m%-15s\033[0m %s\n&quot;, $$1, $$2 &#125; &#x2F;^##@&#x2F; &#123; printf &quot;\n\033[1m%s\033[0m\n&quot;, substr($$0, 5) &#125; &#39; $(MAKEFILE_LIST)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考：<br><a href="https://www.thapaliya.com/en/writings/well-documented-makefiles/">make help - Well documented Makefiles</a><br><a href="https://gist.github.com/prwhite/8168133">Gist by prwhite</a><br><a href="https://www.client9.com/self-documenting-makefiles/">Client9 - Self documenting makefiles</a><br><a href="https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html">Marmelab - Self documented makefiles</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>KVM Forum 2021应该重点关注的话题</title>
+    <url>/2021/10/25/virtualization_kvmforum2021_focus_20211025/</url>
+    <content><![CDATA[<h1 id="1-内存脏页"><a href="#1-内存脏页" class="headerlink" title="1. 内存脏页"></a>1. 内存脏页</h1><ul>
+<li><strong>‘Dirty Quota-Based VM Live Migration Auto-Converge - Manish Mishra &amp; Shivam Kumar, Nutanix India’</strong><br>目前qemu的自动收敛实现方式是根据迭代过程中观察到的dirty-rate和网络吞吐量对所有的vcpus进行节流，这导致了–所有的vcpus受到同样的惩罚。<br>讲座提出了一种基于单个vcpu “脏污配额” 的新算法，它只惩罚写密集型的vcpus，在网络和脏污率变化的情况下动态适应，并通过允许更精细地控制脏污率来提高收敛性。</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li><strong>‘KVM Dirty Page Tracking - Peter Xu, Red Hat’</strong><br>讨论了KVM中现有的用于虚拟机脏页追踪的解决方案、挑战以及对未来的大胆想象。<br>首先，介绍什么了是KVM脏页跟踪，为什么我们需要它，以及它是如何工作的。<br>讨论不同解决方案的优点和缺点，最后针对在巨大的虚拟机迁移中所面临的挑战，进行了讨论和说明。</li>
+</ul>
+<h1 id="2-内存超配"><a href="#2-内存超配" class="headerlink" title="2. 内存超配"></a>2. 内存超配</h1><ul>
+<li><strong>‘Lessons Learned Building a Production Memory-Overcommit Solution - Florian Schmidt &amp; Ivan Teterevkov, Nutanix’</strong><br>介绍了基于QEMU/kvm和libvirt的自适应内存超额分配解决方案中所获得的经验教训。<br>讨论了不同内存后端（如hugetlbfs和memfd）的缺点，通过cgroups协调内存膨胀和管理程序交换的挑战。<br>以及如果没有详尽的页回收提示，开箱即用的实时迁移性能为何会是灾难性的。</li>
+</ul>
+<h1 id="3-vDPA技术"><a href="#3-vDPA技术" class="headerlink" title="3. vDPA技术"></a>3. vDPA技术</h1><ul>
+<li><p><strong>‘vdpa-blk Unified Hardware and Software Offload for virtio-blk - Stefano Garzarella, Red Hat’</strong><br>vDPA（virtio Data Path Acceleration）是一个新颖的框架，旨在简化设备硬件加速的软件实现。<br>利用vDPA的潜力，作者介绍了一个在主机内核中运行的新的vdpa-blk软件设备，它统一了硬件和软件加速器的软件栈。</p>
+</li>
+<li><p><strong>‘Hyperscale vDPA - Jason Wang, Red Hat’</strong><br>大规模可扩展vDPA技术。随着给每个虚拟机/容器分配一个vDPA实例的要求增加，讲座介绍各种了将vDPA扩展到每个主机超过10K实例的方法。</p>
+</li>
+<li><p><strong>‘VDUSE - vDPA Device in Userspace - Yongji Xie, ByteDance’</strong><br>本讲座将介绍VDUSE（用户空间中的vDPA设备），它是一个建立在vDPA内核子系统上的Linux驱动，提供一个框架来实现用户空间中的软件模拟vDPA设备。讨论内核VDUSE模块的设计和实现，并给出一些例子来说明如何用VDUSE在用户空间中模拟VDPA设备。</p>
+</li>
+</ul>
+<h1 id="4-QEMU多进程"><a href="#4-QEMU多进程" class="headerlink" title="4. QEMU多进程"></a>4. QEMU多进程</h1><ul>
+<li><p><strong>‘libvfio-user Status Update - Thanos Makatos &amp; John Levon, Nutanix’</strong><br>vfio-user是一个设备卸载协议，允许设备在VMM之外进行虚拟化。这个库简化了在vfio-user协议下运行的虚拟设备的实现，隐藏了协议实现的细节。<br>讲座探讨了libvfio-user的实现、它的API、未来的工作。</p>
+</li>
+<li><p><strong>‘VFIO User - Using VFIO as the IPC Protocol in Multi-process QEMU - John Johnson &amp; Jagannathan Raman, Oracle’</strong><br>描述了我们如何在一个独立的QEMU进程中进行设备虚拟化。在6.0版本中，QEMU多进程它作为一项实验性功能被集成到了发布版本中。<br>演讲中，描述如何发展该项目，使用VFIO作为进程间通信的基础。利用libvfio-user项目进行服务器端的VFIO消息处理。<br>VFIO协议足够灵活，可以在未来扩展到非PCI设备。 作者介绍了项目的现状，以及未来的发展方向。</p>
+</li>
+</ul>
+<h1 id="5-Windows优化"><a href="#5-Windows优化" class="headerlink" title="5. Windows优化"></a>5. Windows优化</h1><ul>
+<li><strong>‘The Traps of Using Hyper-V Features in KVM Environment - Liang Li, Alibaba’</strong><br>Windows guest在云游戏和云桌面的场景中它的作用是不可替代的。<br>Hyper-V的相关功能被逐步加入KVM中。在讲座中，介绍了生产环境中使用Hyper-V相关功能时遇到的陷阱，以及避免陷阱的相关方法。</li>
+</ul>
+<h1 id="6-QEMU-KVM-测试框架"><a href="#6-QEMU-KVM-测试框架" class="headerlink" title="6. QEMU/KVM 测试框架"></a>6. QEMU/KVM 测试框架</h1><ul>
+<li><strong>‘Know your QEMU and KVM Test Frameworks - Thomas Huth, Red Hat’</strong><br>QEMU和KVM是巨大的项目–因此当然也有多个测试框架用于项目的各个部分。KVM selftests, kvm-unit-tests, qemu qtests, iotests, avocado等等。<br>讲座中对现有的测试框架进行调查，以帮助决定应该为哪项任务选择哪种框架，并提供一些添加新测试的简单例子。</li>
+</ul>
+<h1 id="7-QEMU代码复杂性讨论"><a href="#7-QEMU代码复杂性讨论" class="headerlink" title="7. QEMU代码复杂性讨论"></a>7. QEMU代码复杂性讨论</h1><ul>
+<li><strong>‘Is QEMU too Complex, and What Can we do About It - Paolo Bonzini, Red Hat, Inc.’</strong><br>Paolo Bonzini作为KVM和QEMU中各种子系统的上游maintainer，在此演示中，展示了其对QEMU复杂到性来源，包括本质复杂性和偶然复杂性，并分析了怎么避免偶然复杂性。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考:"></a>参考:</h2><p><a href="https://kvmforum2021.sched.com/">https://kvmforum2021.sched.com</a></p>
+]]></content>
+      <categories>
+        <category>Virtualization</category>
+      </categories>
+      <tags>
+        <tag>Virtualization</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>QEMU/KVM原理概述</title>
+    <url>/2021/02/02/virtualization_qemu_kvm_summary_and_api_sample_20210202/</url>
+    <content><![CDATA[<h2 id="1-QEMU与KVM-架构"><a href="#1-QEMU与KVM-架构" class="headerlink" title="1. QEMU与KVM 架构"></a>1. QEMU与KVM 架构</h2><p><img src="https://img-blog.csdnimg.cn/20210202144157647.bmp?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hidXhpYW9mZWk=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>qemu 和 kvm 架构整体上分为 3 部分，对应着上图的三个部分 (左上、右上和下)，3 部分分别是 VMX root 的应用层，VMX no-root 和 VMX root 的内核层（分别对应着左上、右上和下）</p>
+<p><strong>VMX root</strong>: 宿主机根模式，CPU 在运行包括 QEMU 在内的普通进程和宿主机的操作系统内核时，CPU 处在该模式。</p>
+<p><strong>VMX no-root</strong>: 宿主机非根模式，CPU 在运行虚拟机中的用户程序和操作系统代码的时候处于 VMX no-root 模式</p>
+<blockquote>
+<p>注：VMX root 和 VMX no-root 都包含 ring0 到 ring3 四个特权级别</p>
+</blockquote>
+<span id="more"></span>
+
+<p><strong>1.1 QEMU 的主要任务(图中左上部分)</strong></p>
+<ul>
+<li>创建模拟芯片组</li>
+<li>创建 CPU 线程来表示虚拟机的 CPI 执行流</li>
+<li>在 QEMU 的虚拟地址空间中分配空间作为虚拟机的物理地址</li>
+<li>根据用户在命令行指定的设备为虚拟机创建对应的虚拟设备</li>
+<li>在主线程中监听多种事件，这些事件包括虚拟机对设备的 I/O 访问、用户对虚拟机管理界面、虚拟设备对应的宿主机上的一些 I/O 事件等（比如虚拟机网络数据的接收）等</li>
+</ul>
+<blockquote>
+<p>对应图中的系统总线、PCI 总线、VGA 的概念如下：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>系统总线：单独的电脑总线，是连接电脑系统的主要组件。这个技术的开发是用来降低成本和促进模块化。<br>系统总线结合数据总线的功能来搭载信息，地址总线来决定将信息送往何处，控制总线来决定如何动作。</li>
+<li>VGA：VGA 采集卡是能直接采集 VGA 信号，把输入的 VGA 视频信号实时采集压缩，并能立即在一台显示器上同时显示另外一台甚至多台设备的 VGA 数据的设备。VGA 高清采集卡工作原理是由 RGB 模拟信号经过 A/D 采样后转换为数字信号，通过 FPGA 写入 SDRAM 作为缓存，再经 FPGA 从 SDRAM 中将采集压缩的数据读出通过 PCI 总线传输到上位机，由上位机对数据进行传输等处理。 对 VGA 信号实时进行采集支持声音的同步录制，显示画面可以任意拉伸或全屏，录制后格式为 avi，保证适应各类播放器播放，录制后期可以进行非线编，删除或添加相关内容，显示画面颜色和清晰度可调，录制帧率和码率可调。</li>
+<li>PCI 总线主要被分成三部分：</li>
+</ul>
+<ol>
+<li> PCI 设备。符合 PCI 总线标准的设备就被称为 PCI 设备，PCI 总线架构中可以包含多个 PCI 设备。图中的 Audio、LAN 都是一个 PCI 设备。PCI 设备同时也分为主设备和目标设备两种，主设备是一次访问操作的发起者，而目标设备则是被访问者。</li>
+<li>PCI 总线。PCI 总线在系统中可以有多条，类似于树状结构进行扩展，每条 PCI 总线都可以连接多个 PCI 设备 / 桥。上图中有两条 PCI 总线。</li>
+<li>PCI 桥。当一条 PCI 总线的承载量不够时，可以用新的 PCI 总线进行扩展，而 PCI 桥则是连接 PCI 总线之间的纽带。</li>
+</ol>
+</blockquote>
+<p><strong>1.2 虚拟机的运行:(图中右上部分)</strong></p>
+<ul>
+<li>虚拟机的 CPU：虚拟机的一个 CPU 对应宿主机的一个线程，通过 QEMU 和 KVM 的相互合作，这些线程会直接被宿主机的操作系统正常调度，直接执行虚拟机中的代码</li>
+<li>虚拟机的内存：虚拟机的物理内存对应于 QEMU 中的虚拟内存，虚拟机的虚拟地址转换为宿主机的物理地址需要先将虚拟机的虚拟地址转换为虚拟机的物理地址，然后再将虚拟机的物理地址通过 KVM 的页表完成虚拟机物理地址到宿主机物理地址的转换</li>
+<li>虚拟机的设备：虚拟机中的设备是通过 QEMU 呈现给它的，操作系统在启动时进行设备枚举，加载对应的驱动</li>
+<li>虚拟机与宿主机的交互：虚拟机操作系统通过 I/O 端口 (Port IO、PIO) 或者 MMIO (Memory Mapped I/O) 进行交互，KVM 会截获这个请求，大多数时候 KVM 会将请求分发到用户空间的 QEMU 进程中，有 QEMU 处理这些 I/O 请求</li>
+</ul>
+<p><strong>1.3 KVM 驱动:(图中下半部分)</strong></p>
+<p>KVM 通过”/dev/kvm” 设备导出了一系列的接口，QEMU 等用户态程序可以通过这些接口来控制虚拟机的各个方面，比如 CPU 个数、内存布局、运行等。另一方面，KVM 需要截获虚拟机产生的虚拟机退出 (VM Exit) 事件并进行处理</p>
+<p><strong>1.4 CPU 虚拟化:</strong></p>
+<p>前面说过了虚拟机中的一个 CPU 对应宿主机的一个线程。QEMU 会先创建一个 CPU 线程，然后初始化通用寄存器和特殊寄存器 (CPU 寄存器) 的值，然后调用 KVM 接口运行虚拟机。<strong>在虚拟机运行的过程中，KVM 会捕获虚拟机中的敏感指令，当虚拟机中的代码时敏感指令或者说满足了一定的退出条件时，CPU 会从 VMX non-root 模式退出到 KVM，这叫做 VM Exit。</strong> 退出之后先回陷入到 KVM 中进行处理，如果 KVM 处理不了就转去让 QEMU 处理，当 KVM 或者 QEMU 处理好了 VM Exit 事件后，又可以将 CPU 置于 VMX non-root 模式运行虚拟机代码，这叫做 VM Entry。虚拟机会不停的进行 VM Exit 和 VM Entry，CPU 会加载对应的宿主机状态或者虚拟机状态，并且使用一个 VMCS 结构来保存虚拟机 VM Exit 和 VM Entry 的状态，如下图所示<br><img src="https://img-blog.csdnimg.cn/20210202144322887.png" alt="在这里插入图片描述"></p>
+<p><strong>1.5 内存虚拟化:</strong><br>前面 KVM 驱动那里说了，QEMU 通过 KVM 来设置虚拟机的内存布局。其中 QEMU 会在初始化的时候通过 mmap 系统调用分配虚拟内存空间作为虚拟机的物理内存，QEMU 在不断更新内存布局的过程中会持续调用 KVM 接口通知内核 KVM 模块虚拟机的内存分布。</p>
+<p>虚拟机虚拟地址转换为宿主机物理地址的过程如下 (前面也提到过)：</p>
+<ul>
+<li>虚拟机虚拟地址 (Guest Virtual Address，GVA) 转换为虚拟机物理地址 (Guest Physical Address，GPA )</li>
+<li>虚拟机物理地址转换为宿主机虚拟地址 (Host Virtual Address，HVA)</li>
+<li>宿主机虚拟地址转换为宿主机物理地址 (Host Physical Address，HPA)</li>
+</ul>
+<p>在 CPU 没有支持 EPT (Extended Page Table，扩展页表) 的时候，虚拟机通过影子页表实现从虚拟机虚拟地址到宿主机物理地址的转换，是一种软件实现。</p>
+<p>关于影子页表，它的具体细节就是会在初始化写入 cr3 寄存器的时候，把宿主机针对虚拟机生成的一张页表放进 cr3 寄存器中，然后把原本想要写入 cr3 寄存器的值保存起来，当虚拟机读 cr3 寄存器值的时候，就会把之前保存的 cr3 的值返回给虚拟机。这样做的目的是，在虚拟机内核态中虽然有一张页表，但是虚拟机在访问内存的时候，MMU 不会走这张页表，MMU 走的是以填入到 cr3 寄存器上的真实的值为基地址 (这个值是 vmm 写的宿主机的物理地址) 的影子页表，经过影子页表找到真实的物理地址，影子页表时刻与客户端的页表保持同步。</p>
+<p>通过 EPT 表寻址的过程如下图所示：<br><img src="https://img-blog.csdnimg.cn/202102021444518.png" alt="在这里插入图片描述"></p>
+<p><strong>1.6 设备虚拟化:</strong></p>
+<ul>
+<li>纯软件模拟设备 ：虚拟机内核不用做任何修改，每一次对设备的寄存器读写都会陷入到 KVM，进而到 QEMU，QEMU 再对这些请求进行处理并模拟硬件行为，如下图所示：<br><img src="https://img-blog.csdnimg.cn/20210202144708159.png" alt="在这里插入图片描述"></li>
+</ul>
+<ul>
+<li>virtio 设备方案 ：virtio 设备模拟如下图所示，virtio 设备将 QEMU 变成了半虚拟化方案，因为它修改了虚拟机操作系统的内核。这里先十分简要的说一下 virtio 后面会再详细的进行分析<br><img src="https://img-blog.csdnimg.cn/20210202144718866.png" alt="在这里插入图片描述"></li>
+</ul>
+<ul>
+<li>设备直通方案 ：将物理硬件设备直接挂到虚拟机上，虚拟机直接与物理设备交互，尽可能在 I/O 路径上减少 QEMU/KVM 的参与，直通设备原理如下图所示，与设备直通经常一起使用的硬件虚拟化支持技术 SRIOV，SIROV 能够将单个的物理硬件高效地虚拟出多个也许你硬件。通过 SIROV 虚拟出来的硬件直通到虚拟机中，虚拟机能够非常高效的使用这些设备<br><img src="https://img-blog.csdnimg.cn/20210202144729610.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>1.7 中断虚拟化:</strong></p>
+<p>操作系统通过写设备的 I/O 端口或者 MIMO 地址来与设备交互，设备通过发送中断来通知虚拟操作系统事件，下图显示了模拟设备向虚拟机注入中断的状态。QEMU 在初始化主板芯片的时候初始化中断控制器。QEMU 支持单 CPU 的 Intel8259 中断控制器以及 SMP 的 I/O APIC (I/O Advanced Programmable Interrupt Controller) 中断控制器。<br><img src="https://img-blog.csdnimg.cn/20210202144808142.png" alt="在这里插入图片描述"></p>
+<h2 id="2-KVM-API-使用实例"><a href="#2-KVM-API-使用实例" class="headerlink" title="2. KVM API 使用实例"></a>2. KVM API 使用实例</h2><p>下面是一个超级精简版的内核，功能就是向 I/O 端口写入数据”Hello”: 文件 boot.s</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">start:</span><br><span class="line">    mov $0x48, %al  # &#39;H&#39;</span><br><span class="line">    outb %al, $0xf1</span><br><span class="line">    mov $0x65, %al  # &#39;e&#39;</span><br><span class="line">    outb %al, $0xf1</span><br><span class="line">    mov $0x6C, %al  # &#39;l&#39;</span><br><span class="line">    outb %al, $0xf1</span><br><span class="line">    mov $0x6C, %al  # &#39;l&#39;</span><br><span class="line">    outb %al, $0xf1</span><br><span class="line">    mov $0x6F, %al  # &#39;o&#39;</span><br><span class="line">    outb %al, $0xf1</span><br><span class="line">    mov $0x0A, %al  # &#39;\n&#39;</span><br><span class="line">    outb %al, $0xf1</span><br><span class="line">    hlt</span><br></pre></td></tr></table></figure>
+
+<p>精简版的 qemu(light-qemu): 文件 light-qemu.c</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kvm.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">    <span class="keyword">int</span> kvmfd = open(<span class="string">&quot;/dev/kvm&quot;</span>, O_RDWR);            <span class="comment">// 获取系统中KVM子系统的文件描述符kvmfd</span></span><br><span class="line">    ioctl(kvmfd, KVM_GET_API_VERSION, <span class="literal">NULL</span>);         <span class="comment">// 获取KVM版本号</span></span><br><span class="line">    <span class="keyword">int</span> vmfd = ioctl(kvmfd, KVM_CREATE_VM, <span class="number">0</span>);       <span class="comment">// 创建一个虚拟机</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *ram = mmap(<span class="literal">NULL</span>, <span class="number">0x1000</span>, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>); <span class="comment">// 为虚拟机分配内存，大小4K</span></span><br><span class="line">    <span class="keyword">int</span> kfd = open(<span class="string">&quot;bootimg&quot;</span>, O_RDONLY);             <span class="comment">// 打开第一个例子的程序</span></span><br><span class="line">    read(kfd, ram, <span class="number">4096</span>);                            <span class="comment">// 把程序的读入到虚拟机中，这样等会虚拟机运行的时候就会先开始执行这个打开的程序了</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">kvm_userspace_memory_region</span> <span class="title">mem</span> =</span> &#123;       <span class="comment">// 设置虚拟机内存布局</span></span><br><span class="line">        .slot = <span class="number">0</span>,</span><br><span class="line">        .guest_phys_addr = <span class="number">0</span>,</span><br><span class="line">        .memory_size = <span class="number">0x1000</span>,</span><br><span class="line">        .userspace_addr = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)ram,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    ret = ioctl(vmfd, KVM_SET_USER_MEMORY_REGION, &amp;mem);      <span class="comment">// 分配虚拟机内存</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> vcpufd = ioctl(vmfd, KVM_CREATE_VCPU, <span class="number">0</span>);             <span class="comment">// 创建VCPU</span></span><br><span class="line">    <span class="keyword">int</span> mmap_size = ioctl(kvmfd, KVM_GET_VCPU_MMAP_SIZE, <span class="number">0</span>);  <span class="comment">// 获取VCPU对应的kvm_run结构的大小</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">kvm_run</span> *<span class="title">run</span> =</span> mmap(<span class="literal">NULL</span>, mmap_size, PROT_READ | PROT_WRITE, MAP_SHARED, vcpufd, <span class="number">0</span>); <span class="comment">// 给VCPU分配内存空间</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">kvm_sregs</span> <span class="title">sregs</span>;</span></span><br><span class="line">    ret = ioctl(vcpufd, KVM_GET_SREGS, &amp;sregs);               <span class="comment">// 获取特殊寄存器</span></span><br><span class="line">    sregs.cs.base = <span class="number">0</span>;</span><br><span class="line">    sregs.cs.selector = <span class="number">0</span>;</span><br><span class="line">    ret = ioctl(vcpufd, KVM_SET_SREGS, &amp;sregs);               <span class="comment">// 设置特殊寄存器的值</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">kvm_regs</span> <span class="title">regs</span> =</span> &#123;</span><br><span class="line">        .rip = <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">    ret = ioctl(vcpufd, KVM_SET_REGS, &amp;regs);                 <span class="comment">// 设置通用寄存器的值</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        ret = ioctl(vcpufd, KVM_RUN, <span class="literal">NULL</span>);                   <span class="comment">// 开始运行虚拟机</span></span><br><span class="line">        <span class="keyword">if</span>(ret == <span class="number">-1</span>)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;exit unknown\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">switch</span>(run-&gt;exit_reason)&#123;                             <span class="comment">// 检测VM退出的原因</span></span><br><span class="line">            <span class="keyword">case</span> KVM_EXIT_HLT:</span><br><span class="line">                <span class="built_in">puts</span>(<span class="string">&quot;KVM_EXIT_HLT&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">case</span> KVM_EXIT_IO:</span><br><span class="line">                <span class="built_in">putchar</span>(*(((<span class="keyword">char</span> *)run) + run-&gt;io.data_offset));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> KVM_EXIT_FAIL_ENTRY:</span><br><span class="line">                <span class="built_in">puts</span>(<span class="string">&quot;entry error&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">puts</span>(<span class="string">&quot;other error&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;exit_reason： %d\n&quot;</span>,run-&gt;exit_reason);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Makefile如下：</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">OBJ = bootimg light-qemu</span><br><span class="line"></span><br><span class="line"><span class="section">all: <span class="variable">$(OBJ)</span></span></span><br><span class="line"></span><br><span class="line"><span class="section">light-qemu: light-qemu.c</span></span><br><span class="line">    gcc light-qemu.c -o light-qemu</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="section">bootimg: boot.s</span></span><br><span class="line">    as -32 boot.s -o boot.o</span><br><span class="line">    objcopy -O binary boot.o bootimg</span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">    rm -f *.o</span><br><span class="line"></span><br><span class="line"><span class="section">dist-clean: clean</span></span><br><span class="line">    rm -f <span class="variable">$(OBJ)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译、运行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> make</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ./light-qemu</span></span><br><span class="line">Hello</span><br><span class="line">KVM_EXIT_HLT</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>参考：<br> <a href="http://www.resery.top/2020/09/22/QEMU%20KVM%20Note%20%E2%85%A0/">QEMU KVM Note Ⅰ</a><br> <a href="https://terenceli.github.io/%E6%8A%80%E6%9C%AF/2020/09/11/book">QEMU/KVM源码解析与应用</a><br> <a href="https://www.cnblogs.com/LoyenWang/p/13796537.html">Linux虚拟化KVM-Qemu分析（四）之CPU虚拟化（2）</a><br> <a href="https://luohao-brian.gitbooks.io/interrupt-virtualization/content/kvm-run-processzhi-qemu-he-xin-liu-cheng.html">Qemu核心流程</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Virtualization</category>
+      </categories>
+      <tags>
+        <tag>Virtualization</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>以QEMU为例，探讨软件&quot;基本&quot;和&quot;意外“的复杂性</title>
+    <url>/2021/10/22/virtualization_qemu_study_complex_20211022/</url>
+    <content><![CDATA[<p>编写长期可靠和可维护的软件，有很多障碍。其中之一就是软件的复杂性。在最近结束的2021年KVM论坛上，Paolo Bonzini以开源虚拟化QEMU仿真软件为例，探讨了这个话题。根据他作为几个QEMU子系统的维护者的经验，他就如何抵御不受欢迎的复杂性提出了一些具体建议。Bonzini在整个演讲中使用QEMU作为例子，希望让未来的贡献者更容易修改QEMU。然而，他所分享的经验也同样适用于其他许多项目。</p>
+<span id="more"></span>
+
+
+<p>为什么软件的复杂性会成为一个问题？首先，毫不奇怪，它导致了各种类型的错误，包括安全缺陷。对于复杂的软件来说，代码审查变得更加困难；它也使得对项目的贡献和维护更加痛苦。很明显，这些都是不可取的。</p>
+<p>Bonzini旨在回答的问题是 “我们能在多大程度上消除复杂性?”；为了做到这一点，他首先区分了 “基本 “和 “意外 “复杂性。这两类复杂性的概念源于1987年Fred Brooks的经典论文《没有银弹》。可以看出，Brooks本人正在回顾亚里士多德的本质和意外的概念。</p>
+<p>正如Bonzini所说，基本复杂性是 “一个软件程序试图解决的问题的属性”。而意外的复杂性，则是 “正在解决手头问题的程序的属性”（由于困难不是被解决的问题所固有的）。为了进一步解释这些概念，他指出了QEMU正在解决的问题，这些问题构成了QEMU的基本复杂性。</p>
+<h2 id="QEMU复杂性的本质和意外"><a href="#QEMU复杂性的本质和意外" class="headerlink" title="QEMU复杂性的本质和意外"></a>QEMU复杂性的本质和意外</h2><p>QEMU在可移植性、可配置性、性能和安全性方面有大量的要求。除了模拟设备并提供保存和恢复其状态的方法外，它还有一个强大的存储层，并且还嵌入了一些网络服务器，如VNC服务器。QEMU还必须确保暴露给虚拟机的CPU和设备模型保持稳定，无论底层硬件或QEMU本身是否被更新。对于许多用户来说，使用QEMU的发行版内核而不是定制的内核很重要。对于许多QEMU用户来说，能够启动非Linux操作系统也是一个必要的功能；这些被认为是必要的复杂性。</p>
+<p>QEMU提供了一个管理界面，通常称为监视器。事实上有两个，HMP和QMP，因为用户需要一个简单的方法来与监控器互动，不会被QMP提供的基于JSON的接口所服务，外部程序使用QEMU来管理。因此，QEMU包含了一个对象模型和一个代码生成器，它可以处理C结构的集合和解集。由于这个代码生成器，同样的代码可以很容易地对JSON字典或命令行选项进行操作。</p>
+<p>开发人员也看到了复杂性的另一面，这是由作为构建过程一部分的工具带来的。工具使普通的任务变得更容易，但当它们发生故障时，也使调试变得更难。例如，QEMU曾经有一个手动配置机制，需要逐一列出它所模拟的主板上的所有设备。现在，只需要指定主板，构建系统将自动启用它所支持的设备。它还能确保不可能的配置不会被构建–这很有用，但是，当然，开发者必须学会如何处理这些故障。</p>
+<h2 id="复杂性的来源"><a href="#复杂性的来源" class="headerlink" title="复杂性的来源"></a>复杂性的来源</h2><p>Bonzini确定了两个主要的意外复杂性的来源。第一个是 “不完整的过渡”（受一篇关于GCC维护的论文启发），它发生在一个新的和更好的方法被引入，但它没有在整个代码库中被一致应用。这可能是由于多种原因造成的：开发人员可能没有时间或相关的专业知识；或者他们根本没有发现其余的情况。</p>
+<p>作为一个例子，他列举了在QEMU中报告错误的两种截然不同的方式：基于传播的API，以及将错误写入标准输出的特设函数（如<code>error_report()</code>）。基于传播的API是为了向QMP接口报告错误而引入的。它有两个优点：它将错误发生的地方与报告的地方分开，并允许优雅的错误恢复。另一个不完全过渡的例子是，尽管现在QEMU的构建系统大多使用Meson，但仍有一些预先存在的编译测试是用Bourne shell编写的，是QEMU的配置脚本的一部分。</p>
+<p>然而，QEMU在完成转换方面也有一个不错的记录。其中有几个是使用Coccinelle完成的–这是一个模式匹配和源码转换工具，允许创建一个 “语义补丁”，它可以统一应用于整个代码库。例如，Coccinelle被用来取代过时的API，简化那些要经过不必要的圈套的代码，或者甚至引入全新的API（如设备的创建和 “实现”）。</p>
+<p>偶然复杂性的第二个来源是重复的逻辑和缺失抽象。在编写临时性的代码与设计可重用的数据结构和API之间，有一个权衡。Bonzini提到了命令行解析，并将使用strtol()或scanf()等函数的临时代码与QEMU特定的API，如QemuOpts或keyval进行了对比。后者确保了命令行的一致性，有时还负责打印帮助信息。</p>
+<p>另一个例子是最近努力将QEMU的更多部分组织成可以单独安装的共享对象。随着这类模块数量的增加，我们建立了一个新的机制，将模块提供的功能及其依赖关系与实现的功能列在同一个源文件中，而不是让它们散落在QEMU源代码中。Bonzini建议，一旦审查员注意到过多的重复，或者功能散落在许多文件中，他们就应该制定一个如何消除这些功能的计划。</p>
+<h2 id="QEMU-命令行的复杂性"><a href="#QEMU-命令行的复杂性" class="headerlink" title="QEMU 命令行的复杂性"></a>QEMU 命令行的复杂性</h2><p>接下来是对QEMU中意外复杂性的案例研究，即命令行处理代码。QEMU有117个选项，在大约3000行的代码中实现，有 “一些基本的复杂性，但意外的复杂性太多”。Bonzini概述了简化事情的方法，或者说在处理QEMU的命令行解析代码时如何不使其变得更糟。他首先问道：到底是什么导致了QEMU命令行选项的意外复杂性？众多的选项在实现上有很大的不同，所以将它们归为六类，并按照意外复杂性增加的顺序进行了讨论：灵活、命令、组合、快捷、一次性和遗留。</p>
+<p>灵活选项是最复杂的，因为它们满足了广泛的需求。它们提供了对QEMU基本复杂性的很大一部分的访问，QEMU的新功能通常是通过这些选项来实现的。灵活选项的工作方式是将尽可能多的功能委托给通用的QEMU APIs，因此启用新功能不需要编写或修改任何命令行解析代码。这就是一个单一的选项，-object可以配置诸如加密密钥、TLS的证书、虚拟机与主机上的NUMA节点的关联等信息。三个选项，<code>-cpu</code>、<code>-device</code>和<code>-machine</code>，配置了虚拟硬件的几乎所有方面。然而，这些选项也不能避免意外的复杂性：至少有四个解析器用于此类选项。QemuOpts、keyval、JSON解析器，以及一个被-cpu选项使用的定制解析器。四个解析器至少比应该有的多两个。</p>
+<p>命令选项是在QEMU命令行上指定的，但它通常也对应于可以在运行时调用的QMP命令之一。一个例子是在客户启动时不启动vCPU的选项（<code>qemu-kvm -S</code>命令行使用；<code>stop</code>在运行中使用），但是在启动的时候（通过QMP <code>cont</code>，表示 “继续”）。另一个例子是<code>-loadvm</code>，从一个保存有虚拟机文件中启动QEMU；或者trace，启用跟踪点（假设QEMU是用可用的跟踪后端构建的）。这些选项给QEMU的维护者带来了相对较小的负担；但Bonzini建议在添加新的命令行选项时保持较高的标准–在运行时从QMP接口调用这些选项会更容易。</p>
+<p>有了组合选项，”我们开始进入意外的复杂性地狱”：这些选项在一个命令行选项中同时创建设备的前端和后端。例如，QEMU的<code>-drive</code>选项在一个选项中创建了一个设备，如<code>virtio-blk</code>和一个虚拟机的磁盘镜像。更加粗略的选项变体对于普通用户来说已经很不方便了，所以组合选项确实有真正的用处，但它们的维护负担很重。解析代码很复杂，而且这些选项也往往会对代码的其他部分产生影响–包括后台代码和虚拟芯片组创建代码。这些选项使QEMU的代码不那么模块化，因此，如果不了解命令行的一些细节，就无法增加对主板的支持。</p>
+<p>快捷选项语法糖复杂性排在前三。例如，<code>-kernel path</code>是<code>-machine pc,kernel=path</code>的缩写。它们很方便–许多用户可能甚至没有意识到较长形式的存在–而且它们的维护负担很小，因为它们的实现完全在命令行解析代码中。然而，考虑到已经存在的大量选项，最好不要再增加。</p>
+<p>最后，对于传统的命令行选项，”我们跌到了谷底”。其中许多都是失败的实验（比如<code>-readconfig</code>和<code>-writeconfig</code>选项），或者根本就不应该出现在QEMU中的东西。例如，<code>-daemonize</code>在初始化后对QEMU进程进行守护，而libvirt等工具则为用户提供了更好的服务。这些东西的未来就是废弃并最终删除它们。</p>
+<h2 id="改进的方法"><a href="#改进的方法" class="headerlink" title="改进的方法"></a>改进的方法</h2><p>QEMU命令行带来了什么教训，开发者可以从中得到什么指导？他说：”不要在空白处设计”–要利用现有的基本复杂性。在开始添加一个新的命令行标志之前，问问自己是否有必要。也许可以使用QEMU中的一个现有的集成，如QEMU API和QMP命令。这样一来，就可以充分利用QEMU的子系统之间现有的互动。</p>
+<p>其次，Bonzini强调了补丁审查员的责任：理解复杂性的基本部分，不要把它误认为是意外–这是识别上升的意外复杂性的前提条件。而且不要让意外的复杂性占据项目。对于那些从事大型代码库重构的人，他鼓励学习Coccinelle。</p>
+<p>不完整的过渡期并不总是可怕的：从一个旧的API过渡到一个新的、更好的API是软件改进的一个自然部分。就QEMU而言，有时一个新功能无论如何都需要一个过渡期，因为它影响到命令行或管理工具，因此需要一个废弃周期。在这种情况下，利用不完整的过渡期，分阶段工作。找出可以被认为是改进的最小的工作块，并为以后的工作做计划。</p>
+<p>此外，确保执行一项开发任务或使用一项功能的新的、优雅的方法被记录下来 - “应该有一种明显的方法来完成一项任务。如果没有，也要有一个记录在案的方法。” 不完整的或零散的过渡不应该阻止人们对程序进行改进。评估重复代码和添加更多抽象概念之间的权衡。有些情况可能需要重复代码；但当事情变得更糟时，不要使情况恶化。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>构建本质上复杂且可维护的软件已经很困难了。如果这里讨论的意外复杂性的因素–不完整的过渡、过度的抽象、组件之间不明确的逻辑边界和工具的复杂性–不加以控制，问题就会随着时间的推移而变得复杂。从QEMU的经验中提炼出来的教训，为其他面临类似障碍的项目提供了充分的指导。</p>
+]]></content>
+      <categories>
+        <category>Virtualization</category>
+      </categories>
+      <tags>
+        <tag>Virtualization</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StratoVirt在x86_64下的初体验</title>
+    <url>/2020/11/13/virtualization_stratovirt_first_use_20201113/</url>
+    <content><![CDATA[<p><strong>实验环境</strong>：</p>
+<ul>
+<li>VMware  Workstation</li>
+<li>OS:  Centos8.0 虚拟机</li>
+<li>Kernel:  4.18.0</li>
+<li>Arch:  x86_64</li>
+</ul>
+<h2 id="StratoVirt简介"><a href="#StratoVirt简介" class="headerlink" title="StratoVirt简介"></a>StratoVirt简介</h2><p>StratoVirt 是计算产业中面向云数据中心的企业级虚拟化平台，实现了一套架构统一支持虚拟机、容器、Serverless 三种场景。StratoVirt 在轻量低噪、软硬协同、Rust 语言级安全等方面具备关键技术竞争优势。</p>
+<span id="more"></span>
+
+<p>StratoVirt 在保留传统虚拟化的隔离能力和安全能力的同时，降低了内存资源消耗，提高了虚拟机的启动速度。StratoVirt 可应用于微服务或无服务器场景，如函数计算。</p>
+<p>StratoVirt 预留了接口和设计来支持更多特性，未来甚至向标准虚拟化演进。</p>
+<p><strong>特性</strong>：</p>
+<ul>
+<li>强安全性与隔离性<br>采用内存安全语言Rust编写， 保证语言级安全性；<br>基于硬件辅助虚拟化实现安全多租户隔离，并通过seccomp进一步约束非必要的系统调用，减小系统攻击面；</li>
+<li>轻量低噪<br>轻量化场景下冷启动时间&lt;50ms，内存底噪&lt;4M；</li>
+<li>高速稳定的IO能力<br>具有精简的设备模型，并提供了稳定高速的IO能力；</li>
+<li>资源伸缩<br>具有ms级别的设备伸缩时延，为轻量化负载提供灵活的资源伸缩能力；</li>
+<li>全场景支持<br>完美支持X86和Arm平台：X86支持VT，鲲鹏支持Kunpeng-V，实现多体系硬件加速；<br>可完美集成于容器生态，与Kubernetes生态完美对接，在虚拟机、容器和serverless场景有广阔的应用空间；</li>
+<li>扩展性<br>架构设计完备，各个组件可灵活地配置和拆分；<br>设备模型可扩展，可扩展PCIe等复杂设备规范，实现标准虚拟机演进；</li>
+</ul>
+<p><strong>架构:</strong></p>
+<p><img src="https://openeuler.org/assets/img/StratoVirt-arch.e864ce10.png" alt="label"></p>
+<ul>
+<li>OCI兼容接口：兼容qmp协议，具有完备的OCI兼容能力。</li>
+<li>BootLoader：抛弃传统的BIOS + GRUB启动模式， 实现了更轻更快的BootLoader，并达到极限启动时延。</li>
+<li>MicroVM：充分利用软硬协同能力；精简化设备模型；低时延资源伸缩能力；</li>
+</ul>
+<h2 id="VMware-Workstation开启嵌套虚拟化"><a href="#VMware-Workstation开启嵌套虚拟化" class="headerlink" title="VMware  Workstation开启嵌套虚拟化"></a>VMware  Workstation开启嵌套虚拟化</h2><p><img src="https://img-blog.csdnimg.cn/20201024165759637.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hidXhpYW9mZWk=,size_16,color_FFFFFF,t_70#pic_center" alt="vmware"></p>
+<h2 id="下载并编译StratoVirt"><a href="#下载并编译StratoVirt" class="headerlink" title="下载并编译StratoVirt"></a>下载并编译StratoVirt</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># git clone https:&#x2F;&#x2F;gitee.com&#x2F;openeuler&#x2F;stratovirt.git</span><br><span class="line"># cd stratovirt</span><br><span class="line"># cargo build --release</span><br></pre></td></tr></table></figure>
+
+<h2 id="准备kernel及initrd"><a href="#准备kernel及initrd" class="headerlink" title="准备kernel及initrd"></a>准备kernel及initrd</h2><ul>
+<li><p>来源：<br>/boot/vmlinuz-4.18.0-80.el8.x86_64<br>/boot/initramfs-4.18.0-80.el8.x86_64.img</p>
+<p>  <strong>或者</strong></p>
+<p>  下载：<a href="https://download.csdn.net/download/hbuxiaofei/13081471">x86_64内核kernel4.19.152编译的vmlinux</a></p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># dd if&#x3D;&#x2F;boot&#x2F;vmlinuz-4.18.0-80.el8.x86_64 bs&#x3D;1 skip&#x3D;0018353 | zcat &gt; vmlinux     # 解压出 vmlinux</span><br><span class="line"># objcopy -O binary  vmlinux  vmlinux.bin</span><br><span class="line"># cp &#x2F;boot&#x2F;initramfs-4.18.0-80.el8.x86_64.img initramfs.img</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>解压vmlinux <code>skip=0018353</code>参数的计算参考：<a href="http://hbuxiaofei.gitee.io/hbuxiaofei/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113">将vmlinuz解压为vmlinux的方法</a></p>
+</blockquote>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> [ -e socket ] &amp;&amp; rm -f socket    // 记得每次删除socket文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ./stratovirt \</span></span><br><span class="line">    -m 1G \</span><br><span class="line">    -kernel vmlinux.bin \</span><br><span class="line">    -append &quot;rdinit=/bin/sh console=ttyS0 root=/dev/ram panic=1&quot; \</span><br><span class="line">    -initrd initramfs.img \</span><br><span class="line">    -api-channel unix:socket \</span><br><span class="line">    -serial stdio</span><br><span class="line"></span><br><span class="line">[    0.000000] Linux version 4.18.0-80.el8.x86_64 (mockbuild@kbuilder.bsys.centos.org) (gcc version 8.2.1 20180905 (Red Hat 8.2.1-3) (GCC)) #1 SMP Tue Jun 4 09:19:46 UTC 2019</span><br><span class="line">[    0.000000] Command line: rdinit=/bin/sh console=ttyS0 root=/dev/ram panic=1 virtio_mmio.device=4K@0xd0000000:5 virtio_mmio.device=4K@0xd0001000:6 virtio_mmio.device=4K@0xd0002000:7 virtio_mmio.device=4K@0xd0003000:8 virtio_mmio.device=4K@0xd0004000:9 virtio_mmio.device=4K@0xd0005000:10 virtio_mmio.device=4K@0xd0006000:11 virtio_mmio.device=4K@0xd0007000:12</span><br><span class="line">[    0.000000] x86/fpu: Supporting XSAVE feature 0x001: &#x27;x87 floating point registers&#x27;</span><br><span class="line">[    0.000000] x86/fpu: Supporting XSAVE feature 0x002: &#x27;SSE registers&#x27;</span><br><span class="line">[    0.000000] x86/fpu: Supporting XSAVE feature 0x004: &#x27;AVX registers&#x27;</span><br><span class="line">[    0.000000] x86/fpu: Supporting XSAVE feature 0x008: &#x27;MPX bounds registers&#x27;</span><br><span class="line">[    0.000000] x86/fpu: Supporting XSAVE feature 0x010: &#x27;MPX CSR&#x27;</span><br><span class="line">[    0.000000] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256</span><br><span class="line">[    0.000000] x86/fpu: xstate_offset[3]:  832, xstate_sizes[3]:   64</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Virtualization</category>
+      </categories>
+      <tags>
+        <tag>Virtualization</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VDUSE（vDPA Device in Userspace）技术简介</title>
+    <url>/2021/10/24/virtualization_vduse_introduction__20211024/</url>
+    <content><![CDATA[<h1 id="VDUSE简介"><a href="#VDUSE简介" class="headerlink" title="VDUSE简介"></a>VDUSE简介</h1><p>VDUSE（vDPA Device in Userspace）技术是字节跳动2020年10月向 Linux 内核社区正式开源的一项技术，通过VDUSE可以在一个用户进程实现一个软件定义的 vDPA 设备，并可以通过上述 vDPA 框架接入 virtio 或者 vhost 子系统，供容器或者虚机使用。此技术将在Linux 5.15 版本中首次引入。</p>
+<span id="more"></span>
+
+
+<p><img src="https://img-blog.csdnimg.cn/img_convert/3eb77592e0fcd81865e863680e4fadde.png" alt="3eb77592e0fcd81865e863680e4fadde.png"></p>
+<p>vDPA（virtio data path acceleration）设备是一个使用符合virtio规范的数据路径的设备，具有厂商特定的控制路径。vDPA设备既可以物理上位于硬件上，也可以通过软件模拟。VDUSE是一个框架，它使在用户空间实现软件仿真的vDPA设备成为可能。为了使设备仿真更加安全，仿真的vDPA设备的控制路径在内核中处理，只有数据路径在用户空间中实现。</p>
+<p>需要注意的是，现在VDUSE框架只支持virtio块设备，当实现数据路径的用户空间进程由非特权用户运行时，才可以减少安全风险。对其他设备类型的支持可以在将来相应设备驱动的安全问题得到修复后加入。</p>
+<h2 id="创建-删除VDUSE设备"><a href="#创建-删除VDUSE设备" class="headerlink" title="创建/删除VDUSE设备"></a>创建/删除VDUSE设备</h2><ul>
+<li>VDUSE设备的创建过程如下：</li>
+</ul>
+<ol>
+<li><p>通过 ioctl(VDUSE_CREATE_DEV) 在 /dev/vduse/control 上创建一个新的 VDUSE 实例。</p>
+</li>
+<li><p>在 /dev/vduse/$NAME 上通过 ioctl(VDUSE_VQ_SETUP) 设置每个 virtqueue。</p>
+</li>
+<li><p>开始处理来自 /dev/vduse/$NAME 的 VDUSE 消息。第一个消息将在将 VDUSE 实例附加到 vDPA 总线时到达。</p>
+</li>
+<li><p>发送 VDPA_CMD_DEV_NEW netlink 消息以将 VDUSE 实例连接到 vDPA 总线。</p>
+</li>
+</ol>
+<ul>
+<li>VDUSE设备的删除过程如下：</li>
+</ul>
+<ol>
+<li><p>发送 VDPA_CMD_DEV_DEL netlink 消息，将 VDUSE 实例从 vDPA 总线上分离。</p>
+</li>
+<li><p>关闭 /dev/vduse/$NAME 的文件描述符。</p>
+</li>
+<li><p>在 /dev/vduse/control 上通过 ioctl(VDUSE_DESTROY_DEV) 销毁 VDUSE 实例。</p>
+</li>
+</ol>
+<p>netlink信息可以通过iproute2中的vdpa工具发送，或者使用下面的示例代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">netlink_add_vduse</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">enum</span> vdpa_command cmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">nl_sock</span> *<span class="title">nlsock</span>;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">nl_msg</span> *<span class="title">msg</span>;</span></span><br><span class="line">        <span class="keyword">int</span> famid;</span><br><span class="line"></span><br><span class="line">        nlsock = nl_socket_alloc();</span><br><span class="line">        <span class="keyword">if</span> (!nlsock)</span><br><span class="line">                <span class="keyword">return</span> -ENOMEM;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (genl_connect(nlsock))</span><br><span class="line">                <span class="keyword">goto</span> free_sock;</span><br><span class="line"></span><br><span class="line">        famid = genl_ctrl_resolve(nlsock, VDPA_GENL_NAME);</span><br><span class="line">        <span class="keyword">if</span> (famid &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">goto</span> close_sock;</span><br><span class="line"></span><br><span class="line">        msg = nlmsg_alloc();</span><br><span class="line">        <span class="keyword">if</span> (!msg)</span><br><span class="line">                <span class="keyword">goto</span> close_sock;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, famid, <span class="number">0</span>, <span class="number">0</span>, cmd, <span class="number">0</span>))</span><br><span class="line">                <span class="keyword">goto</span> nla_put_failure;</span><br><span class="line"></span><br><span class="line">        NLA_PUT_STRING(msg, VDPA_ATTR_DEV_NAME, name);</span><br><span class="line">        <span class="keyword">if</span> (cmd == VDPA_CMD_DEV_NEW)</span><br><span class="line">                NLA_PUT_STRING(msg, VDPA_ATTR_MGMTDEV_DEV_NAME, <span class="string">&quot;vduse&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (nl_send_sync(nlsock, msg))</span><br><span class="line">                <span class="keyword">goto</span> close_sock;</span><br><span class="line"></span><br><span class="line">        nl_close(nlsock);</span><br><span class="line">        nl_socket_free(nlsock);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">nla_put_failure:</span><br><span class="line">        nlmsg_free(msg);</span><br><span class="line">close_sock:</span><br><span class="line">        nl_close(nlsock);</span><br><span class="line">free_sock:</span><br><span class="line">        nl_socket_free(nlsock);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="VDUSE工作原理"><a href="#VDUSE工作原理" class="headerlink" title="VDUSE工作原理"></a>VDUSE工作原理</h2><p>如上所述，VDUSE设备是由/dev/vduse/control的ioctl(VDUSE_CREATE_DEV)创建的。通过这个ioctl，用户空间可以为这个仿真设备指定一些基本配置，如设备名称（唯一标识VDUSE设备）、virtio特性、virtio配置空间、virtqueues的数量等等。然后，一个char设备接口（/dev/vduse/$NAME）被输出到用户空间用于设备仿真。用户空间可以在/dev/vduse/$NAME上使用VDUSE_VQ_SETUP ioctl来添加每个virtqueue的配置，如virtqueue的最大长度到设备上。</p>
+<p>在初始化之后，VDUSE设备可以通过VDPA_CMD_DEV_NEW网链消息连接到vDPA总线。用户空间需要在/dev/vduse/$NAME上read()/write()，以receive/replay 接收或者发送 VDUSE 内核模块的一些控制信息，如下所示。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">vduse_message_handler</span><span class="params">(<span class="keyword">int</span> dev_fd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">vduse_dev_request</span> <span class="title">req</span>;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">vduse_dev_response</span> <span class="title">resp</span>;</span></span><br><span class="line"></span><br><span class="line">        len = read(dev_fd, &amp;req, <span class="keyword">sizeof</span>(req));</span><br><span class="line">        <span class="keyword">if</span> (len != <span class="keyword">sizeof</span>(req))</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">        resp.request_id = req.request_id;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (req.type) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* handle different types of messages */</span></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        len = write(dev_fd, &amp;resp, <span class="keyword">sizeof</span>(resp));</span><br><span class="line">        <span class="keyword">if</span> (len != <span class="keyword">sizeof</span>(resp))</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>VDUSE框架现在引入了三种类型的消息：</p>
+<ul>
+<li><p>VDUSE_GET_VQ_STATE: 获取virtqueue的状态，用户空间应该为分裂的virtqueue返回可用索引，或者为设备/驱动环形包装计数器，为包装的virtqueue返回可用和已用索引。</p>
+</li>
+<li><p>VDUSE_SET_STATUS：设置设备状态，用户空间应该按照virtio spec: <a href="https://docs.oasis-open.org/virtio/virtio/v1.1/virtio-v1.1.html">https://docs.oasis-open.org/virtio/virtio/v1.1/virtio-v1.1.html</a> 来处理这个消息。例如，如果设备不能接受从VDUSE_DEV_GET_FEATURES ioctl得到的协商的virtio特性，就不能设置FEATURES_OK设备状态位。</p>
+</li>
+<li><p>VDUSE_UPDATE_IOTLB：通知用户空间更新指定IOVA范围的内存映射，用户空间应首先删除旧的映射，然后通过VDUSE_IOTLB_GET_FD ioctl设置新的映射。</p>
+</li>
+</ul>
+<p>在DRIVER_OK状态位通过VDUSE_SET_STATUS消息被设置后，用户空间能够开始数据平面的处理，如下所示。</p>
+<ol>
+<li> 通过VDUSE_VQ_GET_INFO ioctl获得指定虚拟队列的信息，包括大小、描述符表的IOVA、可用ring和已用ring 、状态和就绪状态。</li>
+<li>将上述IOVAs传递给VDUSE_IOTLB_GET_FD ioctl，以便这些IOVA区域可以被映射到用户空间。下面是一些示例代码。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">perm_to_prot</span><span class="params">(<span class="keyword">uint8_t</span> perm)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> prot = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (perm) &#123;</span><br><span class="line">        <span class="keyword">case</span> VDUSE_ACCESS_WO:</span><br><span class="line">                prot |= PROT_WRITE;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> VDUSE_ACCESS_RO:</span><br><span class="line">                prot |= PROT_READ;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> VDUSE_ACCESS_RW:</span><br><span class="line">                prot |= PROT_READ | PROT_WRITE;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> prot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> *<span class="title">iova_to_va</span><span class="params">(<span class="keyword">int</span> dev_fd, <span class="keyword">uint64_t</span> iova, <span class="keyword">uint64_t</span> *len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">void</span> *addr;</span><br><span class="line">        <span class="keyword">size_t</span> size;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">vduse_iotlb_entry</span> <span class="title">entry</span>;</span></span><br><span class="line"></span><br><span class="line">        entry.start = iova;</span><br><span class="line">        entry.last = iova;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Find the first IOVA region that overlaps with the specified</span></span><br><span class="line"><span class="comment">         * range [start, last] and return the corresponding file descriptor.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        fd = ioctl(dev_fd, VDUSE_IOTLB_GET_FD, &amp;entry);</span><br><span class="line">        <span class="keyword">if</span> (fd &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">        size = entry.last - entry.start + <span class="number">1</span>;</span><br><span class="line">        *len = entry.last - iova + <span class="number">1</span>;</span><br><span class="line">        addr = mmap(<span class="number">0</span>, size, perm_to_prot(entry.perm), MAP_SHARED,</span><br><span class="line">                    fd, entry.offset);</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">if</span> (addr == MAP_FAILED)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Using some data structures such as linked list to store</span></span><br><span class="line"><span class="comment">         * the iotlb mapping. The munmap(2) should be called for the</span></span><br><span class="line"><span class="comment">         * cached mapping when the corresponding VDUSE_UPDATE_IOTLB</span></span><br><span class="line"><span class="comment">         * message is received or the device is reset.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> addr + iova - entry.start;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>用VDUSE_VQ_SETUP_KICKFD ioctl为指定的虚拟队列设置kick eventfd。kick eventfd被VDUSE内核模块用来通知用户空间消耗可用的ring。这是可选的，因为用户空间可以选择轮询可用ring。</li>
+<li>监听kick事件fd（可选）并消耗可用的ring。描述符表中描述符所描述的缓冲区在访问前也应该通过VDUSE_IOTLB_GET_FD ioctl映射到用户空间。</li>
+<li>在使用的ring被填满后，通过VDUSE_INJECT_VQ_IRQ ioctl为特定的虚拟队列注入一个中断。</li>
+</ol>
+<p>关于uAPI的更多细节，请参见include/uapi/linux/vduse.h。</p>
+<ul>
+<li><p>参考：</p>
+<p><a href="https://blog.csdn.net/ByteDanceTech/article/details/120328988">浅谈Linux设备虚拟化技术的演进之路</a></p>
+<p><a href="https://www.kernel.org/doc/html/latest/userspace-api/vduse.html">VDUSE - “vDPA Device in Userspace”</a></p>
+<p><a href="https://lwn.net/Articles/856395/">Introduce VDUSE - vDPA Device in Userspace</a></p>
+<p><a href="https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.15-VDUSE-vDPA">Linux 5.15 Adds VDUSE For vDPA Devices In User-Space</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Virtualization</category>
+      </categories>
+      <tags>
+        <tag>Virtualization</tag>
+      </tags>
+  </entry>
+</search>
