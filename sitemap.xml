@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/</loc>
+    
+    <lastmod>2022-01-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.rayylee.xyz/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113/</loc>
     
     <lastmod>2022-01-29</lastmod>
@@ -255,6 +264,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://www.rayylee.xyz/tags/Rust/</loc>
+    <lastmod>2022-01-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -308,6 +324,13 @@
   
   <url>
     <loc>https://www.rayylee.xyz/categories/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
+    <lastmod>2022-01-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.rayylee.xyz/categories/Rust/</loc>
     <lastmod>2022-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

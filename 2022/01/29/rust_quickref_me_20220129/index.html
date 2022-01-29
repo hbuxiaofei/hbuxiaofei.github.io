@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CLGwJbU8jWqDUNV65d7JW65vqOgp2zSwbfCCVjhZcXo">
+  <meta name="baidu-site-verification" content="code-NqxVcgKLLc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.rayylee.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="From: https:&#x2F;&#x2F;quickref.me&#x2F;rust  Getting Started  {.cols-3}Hello_World.rs123fn main() &amp;#123;  println!(&quot;Hello, World!&quot;);&amp;#125;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust备忘录">
+<meta property="og:url" content="https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/index.html">
+<meta property="og:site_name" content="Rayy Lee">
+<meta property="og:description" content="From: https:&#x2F;&#x2F;quickref.me&#x2F;rust  Getting Started  {.cols-3}Hello_World.rs123fn main() &amp;#123;  println!(&quot;Hello, World!&quot;);&amp;#125;">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-01-29T09:43:50.000Z">
+<meta property="article:modified_time" content="2022-01-29T09:47:46.283Z">
+<meta property="article:author" content="Rayy Lee">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Rust备忘录 | Rayy Lee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rayy Lee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>书籍</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rust备忘录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-29 17:43:50 / 修改时间：17:47:46" itemprop="dateCreated datePublished" datetime="2022-01-29T17:43:50+08:00">2022-01-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Rust/" itemprop="url" rel="index"><span itemprop="name">Rust</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/01/29/rust_quickref_me_20220129/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/01/29/rust_quickref_me_20220129/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>From: <a target="_blank" rel="noopener" href="https://quickref.me/rust">https://quickref.me/rust</a></p>
+</blockquote>
+<h2 id="Getting-Started-cols-3"><a href="#Getting-Started-cols-3" class="headerlink" title="Getting Started  {.cols-3}"></a>Getting Started  {.cols-3}</h2><h3 id="Hello-World-rs"><a href="#Hello-World-rs" class="headerlink" title="Hello_World.rs"></a>Hello_World.rs</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="Compiling-and-Running"><a href="#Compiling-and-Running" class="headerlink" title="Compiling and Running"></a>Compiling and Running</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rustc Hello_World.rs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./Hello_World</span></span><br><span class="line">Hello, World!</span><br></pre></td></tr></table></figure>
+
+<h3 id="Primitive-types"><a href="#Primitive-types" class="headerlink" title="Primitive types"></a>Primitive types</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bool</code></td>
+<td>Boolean (<code>true</code> <em>/</em> <code>false</code>)</td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>character</td>
+</tr>
+<tr>
+<td><code>f32</code>, <code>f64</code></td>
+<td>32-bits, 64-bits floats</td>
+</tr>
+<tr>
+<td><code>i64</code>, <code>i32</code>, <code>i16</code>, <code>i8</code></td>
+<td>signed 16- … integers</td>
+</tr>
+<tr>
+<td><code>u64</code>, <code>u32</code>, <code>u16</code>, <code>u8</code></td>
+<td>unsigned 16-bits, …  integers</td>
+</tr>
+<tr>
+<td><code>isize</code></td>
+<td>pointer-sized signed integers</td>
+</tr>
+<tr>
+<td><code>usize</code></td>
+<td>pointer-sized unsigned integers</td>
+</tr>
+</tbody></table>
+<p>See: <a href="#rust-types">Rust Types</a></p>
+<h3 id="Formatting-row-span-2"><a href="#Formatting-row-span-2" class="headerlink" title="Formatting {.row-span-2}"></a>Formatting {.row-span-2}</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Single Placeholder</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Multiple Placeholder</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125; &#123;&#125;&quot;</span>, <span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Positional Arguments</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;0&#125; is &#123;1&#125; &#123;2&#125;, also &#123;0&#125; is a &#123;3&#125; programming language&quot;</span>, <span class="string">&quot;Rust&quot;</span>, <span class="string">&quot;cool&quot;</span>, <span class="string">&quot;language&quot;</span>, <span class="string">&quot;safe&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Named Arguments</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;country&#125; is an diverse nation with unity.&quot;</span>, country = <span class="string">&quot;India&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Placeholder traits :b for binary, :0x is for hex and :o is octal</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Let us print 76 is binary which is &#123;:b&#125; , and hex equivalent is &#123;:0x&#125; and octal equivalent is &#123;:o&#125;&quot;</span>, <span class="number">76</span>, <span class="number">76</span>, <span class="number">76</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Debug Trait</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Print whatever we want to here using debug trait &#123;:?&#125;&quot;</span>, (<span class="number">76</span>, <span class="string">&#x27;A&#x27;</span>, <span class="number">90</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// New Format Strings in 1.58</span></span><br><span class="line"><span class="keyword">let</span> x = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Hello &#123;x&#125;!&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Printing-Styles"><a href="#Printing-Styles" class="headerlink" title="Printing Styles"></a>Printing Styles</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Prints the output</span></span><br><span class="line"><span class="built_in">print!</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Appends a new line after printing</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Appending a new line&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints as an error</span></span><br><span class="line">eprint!(<span class="string">&quot;This is an error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints as an error with new line</span></span><br><span class="line">eprintln!(<span class="string">&quot;This is an error with new line&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initializing and declaring a variable</span></span><br><span class="line"><span class="keyword">let</span> some_variable = <span class="string">&quot;This_is_a_variable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Making a variable mutable</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mutable_variable = <span class="string">&quot;Mutable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assigning multiple variables</span></span><br><span class="line"><span class="keyword">let</span> (name, age) = (<span class="string">&quot;ElementalX&quot;</span>, <span class="number">20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// (Global) constant</span></span><br><span class="line"><span class="keyword">const</span> SCREAMING_SNAKE_CASE:<span class="built_in">i64</span> = <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Line Comments</span></span><br><span class="line"><span class="comment">/*.............Block Comments */</span></span><br><span class="line"><span class="comment">/// Outer doc comments</span></span><br><span class="line"><span class="comment">//! Inner doc comments</span></span><br></pre></td></tr></table></figure>
+<p>See: <a target="_blank" rel="noopener" href="https://doc.rust-lang.org/reference/comments.html">Comment</a></p>
+<h3 id="Functions"><a href="#Functions" class="headerlink" title="Functions"></a>Functions</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test</span></span>()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;This is a function!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  test();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>See: <a href="#rust-functions">Functions</a></p>
+<h2 id="Rust-Types-cols-3"><a href="#Rust-Types-cols-3" class="headerlink" title="Rust Types {.cols-3}"></a>Rust Types {.cols-3}</h2><h3 id="Integer"><a href="#Integer" class="headerlink" title="Integer"></a>Integer</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> a: <span class="built_in">u32</span> = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> b: <span class="built_in">u64</span> = <span class="number">877</span>;</span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">i64</span> = <span class="number">8999</span>;</span><br><span class="line"><span class="keyword">let</span> d = -<span class="number">90</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating-Point"></a>Floating-Point</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> sixty_bit_float: <span class="built_in">f64</span> = <span class="number">89.90</span>;</span><br><span class="line"><span class="keyword">let</span> thirty_two_bit_float: <span class="built_in">f32</span> = <span class="number">7.90</span>;</span><br><span class="line"><span class="keyword">let</span> just_a_float = <span class="number">69.69</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> true_val: <span class="built_in">bool</span> = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> false_val: <span class="built_in">bool</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">let</span> just_a_bool = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> is_true = <span class="number">8</span> &lt; <span class="number">5</span>;  <span class="comment">// =&gt; false</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Character"><a href="#Character" class="headerlink" title="Character"></a>Character</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> first_letter_of_alphabet = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> explicit_char: <span class="built_in">char</span> = <span class="string">&#x27;F&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> implicit_char = <span class="string">&#x27;8&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> emoji = <span class="string">&quot;\u&#123;1f600&#125;&quot;</span>;   <span class="comment">// =&gt; 😀</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="String-Literal"><a href="#String-Literal" class="headerlink" title="String Literal"></a>String Literal</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> community_name = <span class="string">&quot;AXIAL&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> no_of_members: &amp;<span class="built_in">str</span> = <span class="string">&quot;ten&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The name of the community is &#123;community_name&#125; and it has &#123;no_of_members&#125; members&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>See: <a href="#rust-strings">Strings</a></p>
+<h3 id="Arrays"><a href="#Arrays" class="headerlink" title="Arrays"></a>Arrays</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌─────┬─────┬─────┬─────┬─────┬─────┐</span><br><span class="line">| <span class="number">92</span>  | <span class="number">97</span>  | <span class="number">98</span>  | <span class="number">99</span>  | <span class="number">98</span>  | <span class="number">94</span>  |</span><br><span class="line">└─────┴─────┴─────┴─────┴─────┴─────┘</span><br><span class="line">   <span class="number">0</span>     <span class="number">1</span>     <span class="number">2</span>     <span class="number">3</span>     <span class="number">4</span>     <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [<span class="built_in">i64</span>; <span class="number">6</span>] = [<span class="number">92</span>,<span class="number">97</span>,<span class="number">98</span>,<span class="number">99</span>,<span class="number">98</span>,<span class="number">94</span>];</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Multi-Dimensional-Array-row-span-2"><a href="#Multi-Dimensional-Array-row-span-2" class="headerlink" title="Multi-Dimensional Array {.row-span-2}"></a>Multi-Dimensional Array {.row-span-2}</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">     j0   j1   j2   j3   j4   j5</span><br><span class="line">   ┌────┬────┬────┬────┬────┬────┐</span><br><span class="line">i0 | <span class="number">1</span>  | <span class="number">2</span>  | <span class="number">3</span>  | <span class="number">4</span>  | <span class="number">5</span>  | <span class="number">6</span>  |</span><br><span class="line">   ├────┼────┼────┼────┼────┼────┤</span><br><span class="line">i1 | <span class="number">6</span>  | <span class="number">5</span>  | <span class="number">4</span>  | <span class="number">3</span>  | <span class="number">2</span>  | <span class="number">1</span>  |</span><br><span class="line">   └────┴────┴────┴────┴────┴────┘</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [[<span class="built_in">i64</span>; <span class="number">6</span>] ;<span class="number">2</span>] = [</span><br><span class="line">            [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>],</span><br><span class="line">            [<span class="number">6</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>]];</span><br></pre></td></tr></table></figure>
+
+<h3 id="Mutable-Array"><a href="#Mutable-Array" class="headerlink" title="Mutable Array"></a>Mutable Array</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> array: [<span class="built_in">i32</span> ; <span class="number">3</span>] = [<span class="number">2</span>,<span class="number">6</span>,<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">array[<span class="number">1</span>] = <span class="number">4</span>;</span><br><span class="line">array[<span class="number">2</span>] = <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
+<p>Use the <code>mut</code> keyword to make it mutable.</p>
+<h3 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> array: [ <span class="built_in">i64</span>; <span class="number">4</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> slices: &amp;[<span class="built_in">i64</span>] = &amp;array[<span class="number">0</span>..<span class="number">3</span>] <span class="comment">// Lower range is inclusive and upper range is exclusive</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The elements of the slices are : &#123;slices:?&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Vectors"><a href="#Vectors" class="headerlink" title="Vectors"></a>Vectors</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> some_vector = <span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]; </span><br></pre></td></tr></table></figure>
+<p>A vector is declared using the <code>vec!</code> macro.</p>
+<h3 id="Tuples"><a href="#Tuples" class="headerlink" title="Tuples"></a>Tuples</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> tuple = (<span class="number">1</span>, <span class="string">&#x27;A&#x27;</span> , <span class="string">&quot;Cool&quot;</span>, <span class="number">78</span>, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Rust-Strings-cols-3"><a href="#Rust-Strings-cols-3" class="headerlink" title="Rust Strings {.cols-3}"></a>Rust Strings {.cols-3}</h2><h3 id="String-Literal-1"><a href="#String-Literal-1" class="headerlink" title="String Literal"></a>String Literal</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> cs:&amp;<span class="built_in">str</span> = <span class="string">&quot;cheat sheet&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; Share cheat sheet for developers</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Share &#123;cs&#125; for developers&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="String-Object"><a href="#String-Object" class="headerlink" title="String Object"></a>String Object</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Creating an empty string object</span></span><br><span class="line"><span class="keyword">let</span> my_string = <span class="built_in">String</span>::new;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Converting to a string object</span></span><br><span class="line"><span class="keyword">let</span> S_string = a_string.to_string()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Creating an initialized string object</span></span><br><span class="line"><span class="keyword">let</span> lang = <span class="built_in">String</span>::from(<span class="string">&quot;Rust&quot;</span>);  </span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;First language is &#123;lang&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="capacity"><a href="#capacity" class="headerlink" title=".capacity()"></a>.capacity()</h3> <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> rand = <span class="built_in">String</span>::from(<span class="string">&quot;Random String&quot;</span>);</span><br><span class="line">rand.capacity()  <span class="comment">// =&gt; 13</span></span><br></pre></td></tr></table></figure>
+<p>Calculates the capacity of the string in bytes.</p>
+<h3 id="contains"><a href="#contains" class="headerlink" title=".contains()"></a>.contains()</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="built_in">String</span>::from(<span class="string">&quot;ElementalX&quot;</span>);</span><br><span class="line">name.contains(<span class="string">&quot;Element&quot;</span>) <span class="comment">// =&gt; true</span></span><br></pre></td></tr></table></figure>
+<p>Checks if the substring is contained inside the original string or not.</p>
+<h3 id="Pushing-a-single-character"><a href="#Pushing-a-single-character" class="headerlink" title="Pushing a single character"></a>Pushing a single character</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> half_text = <span class="built_in">String</span>::from(<span class="string">&quot;Hal&quot;</span>);</span><br><span class="line">half_text.push(<span class="string">&#x27;f&#x27;</span>);    <span class="comment">// =&gt; Half</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Pushing-an-entire-String"><a href="#Pushing-an-entire-String" class="headerlink" title="Pushing an entire String"></a>Pushing an entire String</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> hi = <span class="built_in">String</span>::from(<span class="string">&quot;Hey there...&quot;</span>);</span><br><span class="line">hi.push_str(<span class="string">&quot;How are you doing??&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; Hey there...How are you doing??</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;hi&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Rust-Operators-cols-3"><a href="#Rust-Operators-cols-3" class="headerlink" title="Rust Operators {.cols-3}"></a>Rust Operators {.cols-3}</h2><h3 id="Comparison-Operators"><a href="#Comparison-Operators" class="headerlink" title="Comparison Operators"></a>Comparison Operators</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>e == f</code></td>
+<td><code>e</code> is equal to <code>f</code></td>
+</tr>
+<tr>
+<td><code>e != f</code></td>
+<td><code>e</code> is NOT equal to <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &lt; f</code></td>
+<td><code>e</code> is less than <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &gt; f</code></td>
+<td><code>e</code> is greater <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &lt;= f</code></td>
+<td><code>e</code> is less than or equal to <code>f</code></td>
+</tr>
+<tr>
+<td><code>e &gt;= f</code></td>
+<td><code>e</code> is greater or equal to <code>f</code></td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (e, f) = (<span class="number">1</span>, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greater = f &gt; e;        <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> less = f &lt; e;           <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> greater_equal = f &gt;= e; <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> less_equal = e &lt;= f;    <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> equal_to = e == f;      <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> not_equal_to = e != f;  <span class="comment">// =&gt; true</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Arithmetic-Operators"><a href="#Arithmetic-Operators" class="headerlink" title="Arithmetic Operators"></a>Arithmetic Operators</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>a +  b</code></td>
+<td><code>a</code> is added to <code>b</code></td>
+</tr>
+<tr>
+<td><code>a -  b</code></td>
+<td><code>b</code> is subtracted from <code>a</code></td>
+</tr>
+<tr>
+<td><code>a /  b</code></td>
+<td><code>a</code> is divided by <code>b</code></td>
+</tr>
+<tr>
+<td><code>a % b</code></td>
+<td>Gets remainder of <code>a</code> by dividing with <code>b</code></td>
+</tr>
+<tr>
+<td><code>a * b</code></td>
+<td><code>a</code> is multiplied with <code>b</code></td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (a, b) = (<span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> sum: <span class="built_in">i32</span> = a + b;            <span class="comment">// =&gt; 9</span></span><br><span class="line"><span class="keyword">let</span> subtractions: <span class="built_in">i32</span> = a - b;   <span class="comment">// =&gt; -1</span></span><br><span class="line"><span class="keyword">let</span> multiplication: <span class="built_in">i32</span> = a * b; <span class="comment">// =&gt; 20</span></span><br><span class="line"><span class="keyword">let</span> division: <span class="built_in">i32</span> = a / b;       <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> modulus: <span class="built_in">i32</span> = a % b;        <span class="comment">// =&gt; 4</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="Bitwise-Operators"><a href="#Bitwise-Operators" class="headerlink" title="Bitwise Operators"></a>Bitwise Operators</h3><table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>g &amp; h</code></td>
+<td>Binary AND</td>
+</tr>
+<tr>
+<td>`g</td>
+<td>h`</td>
+</tr>
+<tr>
+<td><code>g ^ h</code></td>
+<td>Binary XOR</td>
+</tr>
+<tr>
+<td><code>g ~ h</code></td>
+<td>Binary one’s complement</td>
+</tr>
+<tr>
+<td><code>g &lt;&lt; h</code></td>
+<td>Binary shift left</td>
+</tr>
+<tr>
+<td><code>g &gt;&gt; h</code></td>
+<td>Binary shift right</td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (g, h) = (<span class="number">0x1</span>, <span class="number">0x2</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bitwise_and = g &amp; h;  <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> bitwise_or = g | h;   <span class="comment">// =&gt; 3</span></span><br><span class="line"><span class="keyword">let</span> bitwise_xor = g ^ h;  <span class="comment">// =&gt; 3</span></span><br><span class="line"><span class="keyword">let</span> right_shift = g &gt;&gt; <span class="number">2</span>; <span class="comment">// =&gt; 0</span></span><br><span class="line"><span class="keyword">let</span> left_shift = h &lt;&lt; <span class="number">4</span>;  <span class="comment">// =&gt; 32 </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Logical-Operators"><a href="#Logical-Operators" class="headerlink" title="Logical Operators"></a>Logical Operators</h3><table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>c &amp;&amp; d</code></td>
+<td>Both are true <em>(AND)</em></td>
+</tr>
+<tr>
+<td><code>c OR d</code></td>
+<td>Either is true <em>(OR)</em></td>
+</tr>
+<tr>
+<td><code>!c</code></td>
+<td><code>c</code> is false <em>(NOT)</em></td>
+</tr>
+</tbody></table>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (c, d) = (<span class="literal">true</span>, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> and = c &amp;&amp; d;  <span class="comment">// =&gt; false</span></span><br><span class="line"><span class="keyword">let</span> or  = c || d;  <span class="comment">// =&gt; true</span></span><br><span class="line"><span class="keyword">let</span> not = !c;      <span class="comment">// =&gt; false</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Compound-Assignment-Operator"><a href="#Compound-Assignment-Operator" class="headerlink" title="Compound Assignment Operator"></a>Compound Assignment Operator</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> k = <span class="number">9</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> l = k;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>k += l</code></td>
+<td>Add a value and assign, then k=9</td>
+</tr>
+<tr>
+<td><code>k -= l</code></td>
+<td>Substrate a value and assign, then k=18</td>
+</tr>
+<tr>
+<td><code>k /= l</code></td>
+<td>Divide a value and assign, then k=9</td>
+</tr>
+<tr>
+<td><code>k *= l</code></td>
+<td>Multiply a value and assign, then k=81</td>
+</tr>
+<tr>
+<td>`k</td>
+<td>= l`</td>
+</tr>
+</tbody></table>
+<h2 id="Rust-Flow-Control-cols-3"><a href="#Rust-Flow-Control-cols-3" class="headerlink" title="Rust Flow Control {.cols-3}"></a>Rust Flow Control {.cols-3}</h2><h3 id="If-Expression"><a href="#If-Expression" class="headerlink" title="If Expression"></a>If Expression</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> case1: <span class="built_in">i32</span> = <span class="number">81</span>;</span><br><span class="line"><span class="keyword">let</span> case2: <span class="built_in">i32</span> = <span class="number">82</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> case1 &lt; case2 &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case1 is greater than case2&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="If…Else-Expression"><a href="#If…Else-Expression" class="headerlink" title="If…Else Expression"></a>If…Else Expression</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> case3 = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> case4 = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> case3 &gt;= case4 &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case3 is better than case4&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;case4 is greater than case3&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="If…Else…if…Else-Expression"><a href="#If…Else…if…Else-Expression" class="headerlink" title="If…Else…if…Else Expression"></a>If…Else…if…Else Expression</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">let</span> bar = <span class="number">13</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> foo == bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo is equal to bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> foo &lt; bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo less than bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> foo != bar &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;foo is not equal to bar&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Nothing&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="If…Let-Expression-row-span-3"><a href="#If…Let-Expression-row-span-3" class="headerlink" title="If…Let Expression {.row-span-3}"></a>If…Let Expression {.row-span-3}</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> arr1:[<span class="built_in">i64</span> ; <span class="number">3</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>[<span class="number">1</span>,<span class="number">2</span>,_] = arr1&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works with array&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> arr2:[&amp;<span class="built_in">str</span>; <span class="number">2</span>] = [<span class="string">&quot;one&quot;</span>, <span class="string">&quot;two&quot;</span>];</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>[<span class="string">&quot;Apple&quot;</span>, _] = arr2&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works with str array too&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> tuple_1 = (<span class="string">&quot;India&quot;</span>, <span class="number">7</span>, <span class="number">90</span>, <span class="number">90.432</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(_, <span class="number">7</span>, <span class="number">9</span>, <span class="number">78.99</span>) = tuple_1&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Works woth tuples too&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple_2 = ( <span class="number">9</span>, <span class="number">7</span>, <span class="number">89</span>, <span class="number">12</span>, <span class="string">&quot;Okay&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(<span class="number">9</span>, <span class="number">7</span>,<span class="number">89</span>, <span class="number">12</span>, blank) = tuple_2 &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Everything &#123;blank&#125; mate?&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple_3 = (<span class="number">89</span>, <span class="number">90</span>, <span class="string">&quot;Yes&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span>(<span class="number">9</span>, <span class="number">89</span>, <span class="string">&quot;Yes&quot;</span>) = tuple_3&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Pattern did match&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Pattern did not match&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Match-Expression-row-span-3"><a href="#Match-Expression-row-span-3" class="headerlink" title="Match Expression {.row-span-3}"></a>Match Expression {.row-span-3}</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> day_of_week = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">match</span> day_of_week &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;Its Monday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">2</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Tuesday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">3</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Wednesday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">4</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Thursday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">5</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Friday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">6</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Saturday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">7</span> =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;It&#x27;s Sunday my dudes&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    _ =&gt; &#123;</span><br><span class="line">      <span class="built_in">println!</span>(<span class="string">&quot;Default!&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Nested...If Expression</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">let</span> nested_conditions = <span class="number">89</span>;</span><br><span class="line"><span class="keyword">if</span> nested_conditions == <span class="number">89</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> just_a_value = <span class="number">98</span>;</span><br><span class="line">    <span class="keyword">if</span> just_a_value &gt;= <span class="number">97</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;Greater than 97&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### For Loop</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">for</span> <span class="keyword">mut</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">15</span> &#123;</span><br><span class="line">  i-=<span class="number">1</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The value of i is : &#123;i&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="While-Loop"><a href="#While-Loop" class="headerlink" title="While Loop"></a>While Loop</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> check =  <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> check &lt; <span class="number">11</span>&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Check is : &#123;check&#125;&quot;</span>);</span><br><span class="line">  check+=<span class="number">1</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;After incrementing: &#123;check&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> check == <span class="number">10</span>&#123;</span><br><span class="line">    <span class="keyword">break</span>; <span class="comment">// stop while</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Loop-keyword"><a href="#Loop-keyword" class="headerlink" title="Loop keyword"></a>Loop keyword</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;hello world forever!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The infinite loop indicated.</p>
+<h3 id="Break-Statement"><a href="#Break-Statement" class="headerlink" title="Break Statement"></a>Break Statement</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;i is &#123;i&#125;&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> i &gt; <span class="number">100</span> &#123;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  i *= <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Continue Statement</span><br><span class="line"></span><br><span class="line">```rust</span><br><span class="line"><span class="keyword">for</span> (v, c) <span class="keyword">in</span> (<span class="number">0</span>..<span class="number">10</span>+<span class="number">1</span>).enumerate()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The &#123;c&#125; number loop&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> v == <span class="number">9</span>&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Here we go continue?&quot;</span>);</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">println!</span>&#123;<span class="string">&quot;The value of v is : &#123;v&#125;&quot;</span>&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Rust-Functions-cols-3"><a href="#Rust-Functions-cols-3" class="headerlink" title="Rust Functions {.cols-3}"></a>Rust Functions {.cols-3}</h2><h3 id="Basic-function"><a href="#Basic-function" class="headerlink" title="Basic function"></a>Basic function</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_message</span></span>()&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Hello, QuickRef.ME!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="comment">//Invoking a function in Rust.</span></span><br><span class="line">  print_message();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pass-by-Value"><a href="#Pass-by-Value" class="headerlink" title="Pass by Value"></a>Pass by Value</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">let</span> x:<span class="built_in">u32</span> = <span class="number">10</span>;</span><br><span class="line">  <span class="keyword">let</span> y:<span class="built_in">u32</span> = <span class="number">20</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// =&gt; 200</span></span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;Calc: &#123;&#125;&quot;</span>, cal_rect(x, y));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">cal_rect</span></span>(x:<span class="built_in">u32</span>, y:<span class="built_in">u32</span>) -&gt; <span class="built_in">u32</span></span><br><span class="line">&#123;</span><br><span class="line">  x * y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pass-by-Reference"><a href="#Pass-by-Reference" class="headerlink" title="Pass by Reference"></a>Pass by Reference</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> by_ref = <span class="number">3</span>;      <span class="comment">// =&gt; 3</span></span><br><span class="line">  power_of_three(&amp;<span class="keyword">mut</span> by_ref);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;by_ref&#125;&quot;</span>);  <span class="comment">// =&gt; 9</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">power_of_three</span></span>(by_ref: &amp;<span class="keyword">mut</span> <span class="built_in">i32</span>)&#123;</span><br><span class="line">  <span class="comment">// de-referencing is important</span></span><br><span class="line">  *by_ref = *by_ref * *by_ref;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;by_ref&#125;&quot;</span>);  <span class="comment">// =&gt; 9</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Returns"><a href="#Returns" class="headerlink" title="Returns"></a>Returns</h3><figure class="highlight rust"><figcaption><span>&#123;.wrap&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> (<span class="keyword">mut</span> radius, <span class="keyword">mut</span> pi) = (<span class="number">3.0</span>, <span class="number">3.14</span>);</span><br><span class="line">  <span class="keyword">let</span>(area, _perimeter) = calculate (</span><br><span class="line">      &amp;<span class="keyword">mut</span> radius,</span><br><span class="line">      &amp;<span class="keyword">mut</span> pi</span><br><span class="line">  );</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The area and the perimeter of the circle are: &#123;area&#125; &amp; &#123;_perimeter&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">calculate</span></span>(radius : &amp;<span class="keyword">mut</span> <span class="built_in">f64</span>, pi: &amp;<span class="keyword">mut</span> <span class="built_in">f64</span>) -&gt; (<span class="built_in">f64</span>, <span class="built_in">f64</span>)&#123;</span><br><span class="line">  <span class="keyword">let</span> perimeter = <span class="number">2.0</span> * *pi * *radius;</span><br><span class="line">  <span class="keyword">let</span> area = *pi * *radius * *radius;</span><br><span class="line">  <span class="keyword">return</span> (area, perimeter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Arrays-as-Arguments"><a href="#Arrays-as-Arguments" class="headerlink" title="Arrays as Arguments"></a>Arrays as Arguments</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> array: [<span class="built_in">i32</span> ; <span class="number">5</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">6</span>];</span><br><span class="line">  print_arrays(array);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The elements: &#123;array:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_arrays</span></span>(<span class="keyword">mut</span> array:[<span class="built_in">i32</span>; <span class="number">5</span>]) &#123;</span><br><span class="line">  array[<span class="number">0</span>] = <span class="number">89</span>;</span><br><span class="line">  array[<span class="number">1</span>] = <span class="number">90</span>;</span><br><span class="line">  array[<span class="number">2</span>] = <span class="number">91</span>;</span><br><span class="line">  array[<span class="number">3</span>] = <span class="number">92</span>;</span><br><span class="line">  array[<span class="number">4</span>] = <span class="number">93</span>;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The elements: &#123;array:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Returning-Arrays"><a href="#Returning-Arrays" class="headerlink" title="Returning Arrays"></a>Returning Arrays</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>()&#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">mut</span> arr:[<span class="built_in">i32</span>; <span class="number">5</span>] = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>];</span><br><span class="line">  multiply(arr);</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;The array is : &#123;:?&#125;&quot;</span>, multiply(arr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">multiply</span> </span>(<span class="keyword">mut</span> arr: [<span class="built_in">i32</span> ; <span class="number">5</span>]) -&gt; [<span class="built_in">i32</span> ; <span class="number">5</span>]&#123;</span><br><span class="line">  arr[<span class="number">2</span>] = <span class="number">90</span>;</span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">mut</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">5</span> &#123;</span><br><span class="line">      arr[i] = arr[i] * arr[<span class="number">2</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Misc-cols-3"><a href="#Misc-cols-3" class="headerlink" title="Misc {.cols-3}"></a>Misc {.cols-3}</h2><h3 id="Type-Casting"><a href="#Type-Casting" class="headerlink" title="Type Casting"></a>Type Casting</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a_int = <span class="number">90</span>; <span class="comment">// int</span></span><br><span class="line"><span class="comment">// int to float</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> type_cast = (a_int <span class="keyword">as</span> <span class="built_in">f64</span>);</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> orginal: <span class="built_in">char</span> = <span class="string">&#x27;I&#x27;</span>;</span><br><span class="line"><span class="comment">// char to int =&gt; 73</span></span><br><span class="line"><span class="keyword">let</span> type_casted: <span class="built_in">i64</span> = orginal <span class="keyword">as</span> <span class="built_in">i64</span>;</span><br></pre></td></tr></table></figure>
+
+<p>To perform type-casting in Rust one must use the <code>as</code> keyword.</p>
+<h3 id="Borrowing"><a href="#Borrowing" class="headerlink" title="Borrowing"></a>Borrowing</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> foo = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> borrowed_foo = &amp;foo;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;borrowed_foo&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> bar = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mutable_borrowed_bar = &amp;<span class="keyword">mut</span> bar;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;mutable_borrowed_bar&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Here borrowed value borrows the value from value one using <code>&amp;</code> operator.</p>
+<h3 id="De-referencing"><a href="#De-referencing" class="headerlink" title="De-referencing"></a>De-referencing</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> borrow = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">let</span> deref = &amp;<span class="keyword">mut</span> borrow;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, *deref);</span><br></pre></td></tr></table></figure>
+
+<p>De-referencing in rust can be done using the <code>*</code> operator</p>
+<h3 id="Variable-Scope"><a href="#Variable-Scope" class="headerlink" title="Variable Scope"></a>Variable Scope</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// The scope limited to this braces</span></span><br><span class="line">  <span class="keyword">let</span> a_number = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;a_number&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>This will produce error as the scope of the variable <code>a_number</code> ends at the braces</p>
+<h2 id="Also-see"><a href="#Also-see" class="headerlink" title="Also see"></a>Also see</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://doc.rust-lang.org/book/ch00-00-introduction.html">The Rust Document</a> <em>(doc.rust-lang.org)</em></li>
+<li><a target="_blank" rel="noopener" href="https://doc.rust-lang.org/reference/introduction.html">The Rust Reference</a> <em>(doc.rust-lang.org)</em></li>
+<li><a target="_blank" rel="noopener" href="https://phaiax.github.io/rust-cheatsheet/">Rust Cheatsheet</a> <em>(phaiax.github.io)</em></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Rust/" rel="tag"># Rust</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/16/rpc_call_chains_20220116/" rel="prev" title="一种高效通信机制-RPC调用链">
+      <i class="fa fa-chevron-left"></i> 一种高效通信机制-RPC调用链
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-Started-cols-3"><span class="nav-number">1.</span> <span class="nav-text">Getting Started  {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hello-World-rs"><span class="nav-number">1.1.</span> <span class="nav-text">Hello_World.rs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Compiling-and-Running"><span class="nav-number">1.1.1.</span> <span class="nav-text">Compiling and Running</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Primitive-types"><span class="nav-number">1.2.</span> <span class="nav-text">Primitive types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Formatting-row-span-2"><span class="nav-number">1.3.</span> <span class="nav-text">Formatting {.row-span-2}</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Printing-Styles"><span class="nav-number">1.4.</span> <span class="nav-text">Printing Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variables"><span class="nav-number">1.5.</span> <span class="nav-text">Variables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Comments"><span class="nav-number">1.6.</span> <span class="nav-text">Comments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Functions"><span class="nav-number">1.7.</span> <span class="nav-text">Functions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-Types-cols-3"><span class="nav-number">2.</span> <span class="nav-text">Rust Types {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Integer"><span class="nav-number">2.1.</span> <span class="nav-text">Integer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Floating-Point"><span class="nav-number">2.2.</span> <span class="nav-text">Floating-Point</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boolean"><span class="nav-number">2.3.</span> <span class="nav-text">Boolean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Character"><span class="nav-number">2.4.</span> <span class="nav-text">Character</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-Literal"><span class="nav-number">2.5.</span> <span class="nav-text">String Literal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Arrays"><span class="nav-number">2.6.</span> <span class="nav-text">Arrays</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Dimensional-Array-row-span-2"><span class="nav-number">2.7.</span> <span class="nav-text">Multi-Dimensional Array {.row-span-2}</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mutable-Array"><span class="nav-number">2.8.</span> <span class="nav-text">Mutable Array</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Slices"><span class="nav-number">2.9.</span> <span class="nav-text">Slices</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vectors"><span class="nav-number">2.10.</span> <span class="nav-text">Vectors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuples"><span class="nav-number">2.11.</span> <span class="nav-text">Tuples</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-Strings-cols-3"><span class="nav-number">3.</span> <span class="nav-text">Rust Strings {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#String-Literal-1"><span class="nav-number">3.1.</span> <span class="nav-text">String Literal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-Object"><span class="nav-number">3.2.</span> <span class="nav-text">String Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#capacity"><span class="nav-number">3.3.</span> <span class="nav-text">.capacity()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contains"><span class="nav-number">3.4.</span> <span class="nav-text">.contains()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pushing-a-single-character"><span class="nav-number">3.5.</span> <span class="nav-text">Pushing a single character</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pushing-an-entire-String"><span class="nav-number">3.6.</span> <span class="nav-text">Pushing an entire String</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-Operators-cols-3"><span class="nav-number">4.</span> <span class="nav-text">Rust Operators {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Comparison-Operators"><span class="nav-number">4.1.</span> <span class="nav-text">Comparison Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Arithmetic-Operators"><span class="nav-number">4.2.</span> <span class="nav-text">Arithmetic Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bitwise-Operators"><span class="nav-number">4.3.</span> <span class="nav-text">Bitwise Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logical-Operators"><span class="nav-number">4.4.</span> <span class="nav-text">Logical Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Compound-Assignment-Operator"><span class="nav-number">4.5.</span> <span class="nav-text">Compound Assignment Operator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-Flow-Control-cols-3"><span class="nav-number">5.</span> <span class="nav-text">Rust Flow Control {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#If-Expression"><span class="nav-number">5.1.</span> <span class="nav-text">If Expression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#If%E2%80%A6Else-Expression"><span class="nav-number">5.2.</span> <span class="nav-text">If…Else Expression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#If%E2%80%A6Else%E2%80%A6if%E2%80%A6Else-Expression"><span class="nav-number">5.3.</span> <span class="nav-text">If…Else…if…Else Expression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#If%E2%80%A6Let-Expression-row-span-3"><span class="nav-number">5.4.</span> <span class="nav-text">If…Let Expression {.row-span-3}</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Match-Expression-row-span-3"><span class="nav-number">5.5.</span> <span class="nav-text">Match Expression {.row-span-3}</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#While-Loop"><span class="nav-number">5.6.</span> <span class="nav-text">While Loop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Loop-keyword"><span class="nav-number">5.7.</span> <span class="nav-text">Loop keyword</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Break-Statement"><span class="nav-number">5.8.</span> <span class="nav-text">Break Statement</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-Functions-cols-3"><span class="nav-number">6.</span> <span class="nav-text">Rust Functions {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-function"><span class="nav-number">6.1.</span> <span class="nav-text">Basic function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pass-by-Value"><span class="nav-number">6.2.</span> <span class="nav-text">Pass by Value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pass-by-Reference"><span class="nav-number">6.3.</span> <span class="nav-text">Pass by Reference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Returns"><span class="nav-number">6.4.</span> <span class="nav-text">Returns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Arrays-as-Arguments"><span class="nav-number">6.5.</span> <span class="nav-text">Arrays as Arguments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Returning-Arrays"><span class="nav-number">6.6.</span> <span class="nav-text">Returning Arrays</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Misc-cols-3"><span class="nav-number">7.</span> <span class="nav-text">Misc {.cols-3}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Type-Casting"><span class="nav-number">7.1.</span> <span class="nav-text">Type Casting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Borrowing"><span class="nav-number">7.2.</span> <span class="nav-text">Borrowing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#De-referencing"><span class="nav-number">7.3.</span> <span class="nav-text">De-referencing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variable-Scope"><span class="nav-number">7.4.</span> <span class="nav-text">Variable Scope</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Also-see"><span class="nav-number">8.</span> <span class="nav-text">Also see</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rayy Lee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Rayy Lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://beachboyy.blog.csdn.net/" title="CSDN → https:&#x2F;&#x2F;beachboyy.blog.csdn.net" rel="noopener" target="_blank"><i class="fab fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/hbuxiaofei" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;hbuxiaofei" rel="noopener" target="_blank"><i class="fab fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rayy Lee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '54xrQrftK3ognC5fpUdicEVY-gzGzoHsz',
+      appKey     : 'jNGhKta5gAoDO4cYs1hPORoH',
+      placeholder: "Add your comments",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
