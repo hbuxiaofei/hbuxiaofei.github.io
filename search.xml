@@ -1859,4 +1859,36 @@
         <tag>Rust</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Rust性能分析-迭代器的enumerate方法是否会影响程序性能</title>
+    <url>/2022/01/29/rust_enumerate_performance_analysis_20220129/</url>
+    <content><![CDATA[<p>Rust编程语言融合了多种编程法(programming paradigm)，其中的命令式编程(imperative programming)所用的循环和函数式编程(functional programming)所提供的迭代器(iterator)可以加强数组或是切片的访问性能。</p>
+<p>然而，在访问数组或是切片时，迭代器在每次迭代时只会回传元素的值或引用，而不会将索引值也跟着回传出来。这个问题虽然可以通过迭代器的<code>enumerate</code>方法来轻松解决，<code>enumerate</code>会让迭代器回传目前是第几次的迭代(从0开始数)，这个次数值可以当作是目前访问到的元素的索引值，只是这样的作法会对程序性能有什么不良的影响呢？</p>
+<span id="more"></span>
+
+<p>我们先来看看以下代码：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..array.len() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;array[&#123;&#125;] = &#123;&#125;&quot;</span>, i, array[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上程序，会利用for循环来遍历<code>array</code>这个存在于堆栈内的数组，并将其所有索引值所对应的元素值通通印在屏幕上。</p>
+<p>我们知道用for循环来遍历堆栈内的数组，性能跟和用for迭代器循环或是迭代器是一样的。那么如果现在我们是将以上程序改用for迭代器循环和<code>enumerate</code>方法来完成呢？程序如下：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> (i, &amp;n) <span class="keyword">in</span> array.iter().enumerate() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;array[&#123;&#125;] = &#123;&#125;&quot;</span>, i, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>enumerate</code>方法来枚举数组，会影响到性能吗？</p>
+<h3 id="性能实测"><a href="#性能实测" class="headerlink" title="性能实测"></a>性能实测</h3><p>直接实际写一段程序来测试运算性能吧！这段程序可以在GitHub上取得：</p>
+<blockquote>
+<p><a href="https://github.com/magiclen/rust-performance-measurement/blob/master/benches/iter_enumerate.rs">https://github.com/magiclen/rust-performance-measurement/blob/master/benches/iter_enumerate.rs</a></p>
+</blockquote>
+<p>根据测试结果，可以发现使用<code>enumerate</code>方法和使用for循环的性能是差不多的，所以可以放心使用～</p>
+<p><code>enumerate</code>枚举和原本迭代遍历只差在前者用<code>Enumerate</code>结构体包裹了后者，并且多了一个计数变量字段，在每次调用<code>next</code>方法时都会把该计数变量的值以元组(tuple)的方式与元素保存在一起，然后在计数变量加1后，回传该元组。<code>next</code>方法的代码如下：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">next</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="built_in">Option</span>&lt;(<span class="built_in">usize</span>, &lt;I <span class="keyword">as</span> <span class="built_in">Iterator</span>&gt;::Item)&gt; &#123;</span><br><span class="line">    <span class="keyword">self</span>.iter.next().map(|a| &#123;</span><br><span class="line">        <span class="keyword">let</span> ret = (<span class="keyword">self</span>.count, a);</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        ret</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以它的性能才会和for计数循环差不多。而如果遍历的对象不是堆栈内的数组，它的性能还会比for循环更好呢！</p>
+]]></content>
+      <categories>
+        <category>Rust</category>
+      </categories>
+      <tags>
+        <tag>Rust</tag>
+      </tags>
+  </entry>
 </search>

@@ -195,6 +195,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/29/rust_enumerate_performance_analysis_20220129/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/29/rust_enumerate_performance_analysis_20220129/" class="post-title-link" itemprop="url">Rust性能分析-迭代器的enumerate方法是否会影响程序性能</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-29 18:33:47 / 修改时间：18:28:22" itemprop="dateCreated datePublished" datetime="2022-01-29T18:33:47+08:00">2022-01-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Rust/" itemprop="url" rel="index"><span itemprop="name">Rust</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/01/29/rust_enumerate_performance_analysis_20220129/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/01/29/rust_enumerate_performance_analysis_20220129/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Rust编程语言融合了多种编程法(programming paradigm)，其中的命令式编程(imperative programming)所用的循环和函数式编程(functional programming)所提供的迭代器(iterator)可以加强数组或是切片的访问性能。</p>
+<p>然而，在访问数组或是切片时，迭代器在每次迭代时只会回传元素的值或引用，而不会将索引值也跟着回传出来。这个问题虽然可以通过迭代器的<code>enumerate</code>方法来轻松解决，<code>enumerate</code>会让迭代器回传目前是第几次的迭代(从0开始数)，这个次数值可以当作是目前访问到的元素的索引值，只是这样的作法会对程序性能有什么不良的影响呢？</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/01/29/rust_enumerate_performance_analysis_20220129/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1063,111 +1153,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/12/11/other_house_refurbish_guide_20201211/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Rayy Lee">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rayy Lee">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/11/other_house_refurbish_guide_20201211/" class="post-title-link" itemprop="url">新房装修指南</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-11 12:35:20" itemprop="dateCreated datePublished" datetime="2020-12-11T12:35:20+08:00">2020-12-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-29 17:01:33" itemprop="dateModified" datetime="2022-01-29T17:01:33+08:00">2022-01-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/12/11/other_house_refurbish_guide_20201211/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/11/other_house_refurbish_guide_20201211/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="1-第一期：精装房如何验收及施工方的选择"><a href="#1-第一期：精装房如何验收及施工方的选择" class="headerlink" title="1. 第一期：精装房如何验收及施工方的选择"></a>1. 第一期：精装房如何验收及施工方的选择</h2><p><strong>精装房的验收，两个小的细节：</strong></p>
-<ol>
-<li>要一份水电施工图纸</li>
-<li>顺便把冰箱、洗衣机尺寸量了</li>
-</ol>
-<p><strong>隐蔽工程：</strong></p>
-<ol>
-<li>防水测试</li>
-<li>地砖和墙砖的帖铺，拿硬币敲</li>
-<li>甲醛测试<br>精装房格局尽量不动，尽量在软装上找补</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/11/other_house_refurbish_guide_20201211/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1239,7 +1224,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
