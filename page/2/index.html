@@ -19,18 +19,18 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.rayylee.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.rayylee.site","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="Rayy Lee">
-<meta property="og:url" content="https://www.rayylee.xyz/page/2/index.html">
+<meta property="og:url" content="https://www.rayylee.site/page/2/index.html">
 <meta property="og:site_name" content="Rayy Lee">
 <meta property="og:locale">
 <meta property="article:author" content="Rayy Lee">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://www.rayylee.xyz/page/2/">
+<link rel="canonical" href="https://www.rayylee.site/page/2/">
 
 
 <script id="page-configurations">
@@ -196,7 +196,112 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/12/11/other_house_refurbish_guide_20201211/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/" class="post-title-link" itemprop="url">Linux-0.11内核学习-添加系统调用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-02 12:08:35" itemprop="dateCreated datePublished" datetime="2021-02-02T12:08:35+08:00">2021-02-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-29 17:02:02" itemprop="dateModified" datetime="2022-01-29T17:02:02+08:00">2022-01-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%86%85%E6%A0%B8/" itemprop="url" rel="index"><span itemprop="name">内核</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1、参考资料"><a href="#1、参考资料" class="headerlink" title="1、参考资料"></a>1、参考资料</h2><ul>
+<li>赵炯博士的网站<a target="_blank" rel="noopener" href="http://www.oldlinux.org/">oldlinux</a></li>
+<li><a target="_blank" rel="noopener" href="http://oldlinux.org/download/clk011c-1.9.5.pdf">Linux内核完全注释</a></li>
+<li>Linux0.11 <a target="_blank" rel="noopener" href="https://github.com/public-fork/ustc_os">源码</a></li>
+</ul>
+<h2 id="2、概要"><a href="#2、概要" class="headerlink" title="2、概要"></a>2、概要</h2><p>操作系统作为软件应用层和底层硬件之间的部分，向下提供服务，向上提供接口。系统调用便是操作系统向上层应用提供的操作底层硬件的和核心服务的接口，也就是API（Application Programming Interface）。我们知道一般API实现的方法是提供函数接口，只需要调用函数就可以实现相应的功能，底层的原理是程序地址的跳转。因为操作系统和用户程序同时存在于内存中，我们当然是不希望操作系统的数据被随意的篡改和访问，有可能造成十分严重的后果，所以操作系统对内存做了区分：</p>
+<ul>
+<li>内核态（0）</li>
+<li>服务态（1,2）</li>
+<li>用户态（3）</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/12/11/other_house_refurbish_guide_20201211/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -301,7 +406,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/11/27/tools_make_well_documented_20201127/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/11/27/tools_make_well_documented_20201127/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -397,7 +502,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/11/26/tools_links_collect_20201126/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/11/26/tools_links_collect_20201126/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -501,7 +606,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/11/22/grapheasy_basic_using_20201122/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/11/22/grapheasy_basic_using_20201122/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -602,7 +707,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/11/20/c_constructor_destructor_function/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/11/20/c_constructor_destructor_function/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -701,7 +806,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/11/13/virtualization_stratovirt_first_use_20201113/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/11/13/virtualization_stratovirt_first_use_20201113/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -803,7 +908,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -901,7 +1006,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/10/29/markdown_basic_grammar_20201029/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/10/29/markdown_basic_grammar_20201029/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -996,7 +1101,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2020/10/29/how_to_use_hexo_20201029/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/10/29/how_to_use_hexo_20201029/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -1158,7 +1263,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

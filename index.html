@@ -19,18 +19,18 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.rayylee.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.rayylee.site","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="Rayy Lee">
-<meta property="og:url" content="https://www.rayylee.xyz/index.html">
+<meta property="og:url" content="https://www.rayylee.site/index.html">
 <meta property="og:site_name" content="Rayy Lee">
 <meta property="og:locale">
 <meta property="article:author" content="Rayy Lee">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://www.rayylee.xyz/">
+<link rel="canonical" href="https://www.rayylee.site/">
 
 
 <script id="page-configurations">
@@ -196,7 +196,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/29/rust_enumerate_performance_analysis_20220129/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2022/02/15/cloudnative_distributed_system_20220215/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/cloudnative_distributed_system_20220215/" class="post-title-link" itemprop="url">云原生分布式系统设计</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-15 09:13:58 / 修改时间：11:06:51" itemprop="dateCreated datePublished" datetime="2022-02-15T09:13:58+08:00">2022-02-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">软件工程</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/02/15/cloudnative_distributed_system_20220215/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/15/cloudnative_distributed_system_20220215/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>系统学习分布式架构设计对于技术人的成长非常关键。对于云原生开发者而言，如何设计出符合云原生设计哲学的应用，往往离不开分布式系统知识与方法论的运用。如何设计出高弹性、可配置、可分布、高性能、高容错、更安全、更韧性、快交付的云原生应用往往是衡量开发者水准的重要参考。</p>
+<p>然而，分布式系统是一个很大的概念，从架构设计、研发流程、运维部署、工程效率等多个角度均有很深的知识可以挖掘，学习成本和难度相对较大。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/15/cloudnative_distributed_system_20220215/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2022/01/29/rust_enumerate_performance_analysis_20220129/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -286,7 +376,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2022/01/29/rust_quickref_me_20220129/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -378,7 +468,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/16/rpc_call_chains_20220116/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2022/01/16/rpc_call_chains_20220116/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -474,7 +564,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2022/01/16/software_architecture_patterns_20220116/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2022/01/16/software_architecture_patterns_20220116/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -570,7 +660,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/10/25/virtualization_kvmforum2021_focus_20211025/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/10/25/virtualization_kvmforum2021_focus_20211025/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -667,7 +757,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/10/24/virtualization_vduse_introduction__20211024/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/10/24/virtualization_vduse_introduction__20211024/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -762,7 +852,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/10/22/virtualization_qemu_study_complex_20211022/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/10/22/virtualization_qemu_study_complex_20211022/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -857,7 +947,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/03/13/data_structures_algorithm_14_common_model/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/03/13/data_structures_algorithm_14_common_model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -952,7 +1042,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/02/02/virtualization_qemu_kvm_summary_and_api_sample_20210202/">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/02/02/virtualization_qemu_kvm_summary_and_api_sample_20210202/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -1049,111 +1139,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.xyz/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Rayy Lee">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rayy Lee">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/" class="post-title-link" itemprop="url">Linux-0.11内核学习-添加系统调用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-02-02 12:08:35" itemprop="dateCreated datePublished" datetime="2021-02-02T12:08:35+08:00">2021-02-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-29 17:02:02" itemprop="dateModified" datetime="2022-01-29T17:02:02+08:00">2022-01-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%86%85%E6%A0%B8/" itemprop="url" rel="index"><span itemprop="name">内核</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="1、参考资料"><a href="#1、参考资料" class="headerlink" title="1、参考资料"></a>1、参考资料</h2><ul>
-<li>赵炯博士的网站<a target="_blank" rel="noopener" href="http://www.oldlinux.org/">oldlinux</a></li>
-<li><a target="_blank" rel="noopener" href="http://oldlinux.org/download/clk011c-1.9.5.pdf">Linux内核完全注释</a></li>
-<li>Linux0.11 <a target="_blank" rel="noopener" href="https://github.com/public-fork/ustc_os">源码</a></li>
-</ul>
-<h2 id="2、概要"><a href="#2、概要" class="headerlink" title="2、概要"></a>2、概要</h2><p>操作系统作为软件应用层和底层硬件之间的部分，向下提供服务，向上提供接口。系统调用便是操作系统向上层应用提供的操作底层硬件的和核心服务的接口，也就是API（Application Programming Interface）。我们知道一般API实现的方法是提供函数接口，只需要调用函数就可以实现相应的功能，底层的原理是程序地址的跳转。因为操作系统和用户程序同时存在于内存中，我们当然是不希望操作系统的数据被随意的篡改和访问，有可能造成十分严重的后果，所以操作系统对内存做了区分：</p>
-<ul>
-<li>内核态（0）</li>
-<li>服务态（1,2）</li>
-<li>用户态（3）</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1225,7 +1210,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

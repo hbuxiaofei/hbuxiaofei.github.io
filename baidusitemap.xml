@@ -1,79 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.rayylee.xyz/2022/01/29/rust_enumerate_performance_analysis_20220129/</loc>
+    <loc>https://www.rayylee.site/2022/02/15/cloudnative_distributed_system_20220215/</loc>
+    <lastmod>2022-02-15</lastmod>
+  </url>
+  <url>
+    <loc>https://www.rayylee.site/2022/01/29/rust_enumerate_performance_analysis_20220129/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2022/01/29/rust_quickref_me_20220129/</loc>
+    <loc>https://www.rayylee.site/2022/01/29/rust_quickref_me_20220129/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113/</loc>
+    <loc>https://www.rayylee.site/2020/11/13/kernel_convert_vmlinuz_to_vmlinux_20201113/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/</loc>
+    <loc>https://www.rayylee.site/2021/02/02/kernel_add_systemcall_for_linux0.11_20210202/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/12/11/other_house_refurbish_guide_20201211/</loc>
+    <loc>https://www.rayylee.site/2020/12/11/other_house_refurbish_guide_20201211/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/11/27/tools_make_well_documented_20201127/</loc>
+    <loc>https://www.rayylee.site/2020/11/27/tools_make_well_documented_20201127/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/10/29/markdown_basic_grammar_20201029/</loc>
+    <loc>https://www.rayylee.site/2020/10/29/markdown_basic_grammar_20201029/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/11/22/grapheasy_basic_using_20201122/</loc>
+    <loc>https://www.rayylee.site/2020/11/22/grapheasy_basic_using_20201122/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2021/10/24/virtualization_vduse_introduction__20211024/</loc>
+    <loc>https://www.rayylee.site/2021/10/24/virtualization_vduse_introduction__20211024/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/11/13/virtualization_stratovirt_first_use_20201113/</loc>
+    <loc>https://www.rayylee.site/2020/11/13/virtualization_stratovirt_first_use_20201113/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2021/10/22/virtualization_qemu_study_complex_20211022/</loc>
+    <loc>https://www.rayylee.site/2021/10/22/virtualization_qemu_study_complex_20211022/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2021/02/02/virtualization_qemu_kvm_summary_and_api_sample_20210202/</loc>
+    <loc>https://www.rayylee.site/2021/02/02/virtualization_qemu_kvm_summary_and_api_sample_20210202/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2021/10/25/virtualization_kvmforum2021_focus_20211025/</loc>
+    <loc>https://www.rayylee.site/2021/10/25/virtualization_kvmforum2021_focus_20211025/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/11/26/tools_links_collect_20201126/</loc>
+    <loc>https://www.rayylee.site/2020/11/26/tools_links_collect_20201126/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2022/01/16/software_architecture_patterns_20220116/</loc>
+    <loc>https://www.rayylee.site/2022/01/16/software_architecture_patterns_20220116/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2022/01/16/rpc_call_chains_20220116/</loc>
+    <loc>https://www.rayylee.site/2022/01/16/rpc_call_chains_20220116/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2021/03/13/data_structures_algorithm_14_common_model/</loc>
+    <loc>https://www.rayylee.site/2021/03/13/data_structures_algorithm_14_common_model/</loc>
     <lastmod>2022-01-29</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/11/20/c_constructor_destructor_function/</loc>
+    <loc>https://www.rayylee.site/2020/11/20/c_constructor_destructor_function/</loc>
     <lastmod>2022-01-26</lastmod>
   </url>
   <url>
-    <loc>https://www.rayylee.xyz/2020/10/29/how_to_use_hexo_20201029/</loc>
+    <loc>https://www.rayylee.site/2020/10/29/how_to_use_hexo_20201029/</loc>
     <lastmod>2022-01-26</lastmod>
   </url>
 </urlset> 
