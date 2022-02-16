@@ -6,7 +6,7 @@
   <link href="https://www.rayylee.site/atom.xml" rel="self"/>
   
   <link href="https://www.rayylee.site/"/>
-  <updated>2022-02-15T03:06:51.843Z</updated>
+  <updated>2022-02-16T13:07:16.388Z</updated>
   <id>https://www.rayylee.site/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Rust书籍推荐《Command-Line Rust》</title>
+    <link href="https://www.rayylee.site/2022/02/16/rust_book_command_line-rust_202202162058/"/>
+    <id>https://www.rayylee.site/2022/02/16/rust_book_command_line-rust_202202162058/</id>
+    <published>2022-02-16T13:02:32.000Z</published>
+    <updated>2022-02-16T13:07:16.388Z</updated>
+    
+    <content type="html"><![CDATA[<p>连续几年，Rust 在 Stack Overflow 的年度开发者调查中被评为“最喜爱的编程语言”。这种开源系统编程语言现在用于从游戏引擎和操作系统到浏览器组件和虚拟现实模拟引擎的所有事物。但 Rust 也是一种极其复杂的语言，其学习曲线非常困难。</p><span id="more"></span><p>本指南不是专注于整个语言，而是在每章中使用一个小型、完整、专注的程序来教授 Rust。作者 Ken Youens-Clark 向您展示了如何启动、编写和测试每个程序以创建成品。您将学习如何处理 Rust 中的错误、读写文件以及使用正则表达式、Rust 类型、结构等。</p><p><img src="0.png" alt="0"></p><p>包括：</p><ul><li>使用 Rust 的标准库和数据类型（例如字符串、向量、字典和集合）来创建系统程序</li><li>编写和测试 Rust 程序和函数</li><li>读写文件，包括标准输入、标准输出和标准错误</li><li>记录和验证命令行参数</li><li>编写优雅失败的程序</li><li>解析原始文本和分隔文本</li><li>使用和控制随机性</li></ul><blockquote><p>这本书是在实际场景中练习编写 Rust 的好方法。Ken 制定了一条途径来培养您在测试、使用板条箱和解决常见问题方面的技能。– Carol Nichols, Cofounder, Integer 32, co-author of 《The Rust Programming Language (NoStarch, 2018)》</p></blockquote><blockquote><p>者许多开始修补 Rust 的人都在努力知道如何将其应用到他们的日常工作中。 命令行 Rust 是一个很好的补救措施。它向您展示了如何构建可以向您和您的同事证明 Rust 值得学习的实用程序。 – Tim McNamara, author of 《Rust In Action (Manning, 2021)》</p></blockquote><p>这本书不是专注于整个语言，而是在每一章中使用一个小型、完整的程序来讲解 Rust。作者 Ken Youens-Clark 向你展示了如何启动、编写和测试每个程序以创建成品。你将学习如何处理 Rust 中的错误、读写文件以及使用正则表达式、Rust 类型、结构等等。</p><ul><li><p>本书链接<br><a href="https://www.oreilly.com/library/view/command-line-rust/9781098109424">https://www.oreilly.com/library/view/command-line-rust/9781098109424</a></p></li><li><p>Github<br><a href="https://github.com/kyclark/command-line-rust">https://github.com/kyclark/command-line-rust</a></p></li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;连续几年，Rust 在 Stack Overflow 的年度开发者调查中被评为“最喜爱的编程语言”。这种开源系统编程语言现在用于从游戏引擎和操作系统到浏览器组件和虚拟现实模拟引擎的所有事物。但 Rust 也是一种极其复杂的语言，其学习曲线非常困难。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Rust" scheme="https://www.rayylee.site/categories/Rust/"/>
+    
+    
+    <category term="Rust" scheme="https://www.rayylee.site/tags/Rust/"/>
+    
+  </entry>
   
   <entry>
     <title>云原生分布式系统设计</title>
@@ -477,27 +498,6 @@
     
     
     <category term="工具及收藏" scheme="https://www.rayylee.site/tags/%E5%B7%A5%E5%85%B7%E5%8F%8A%E6%94%B6%E8%97%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>怎样使用Hexo</title>
-    <link href="https://www.rayylee.site/2020/10/29/how_to_use_hexo_20201029/"/>
-    <id>https://www.rayylee.site/2020/10/29/how_to_use_hexo_20201029/</id>
-    <published>2020-10-29T00:37:28.000Z</published>
-    <updated>2022-01-26T11:32:36.988Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><span id="more"></span><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="0-Install-npm-and-hexo"><a href="#0-Install-npm-and-hexo" class="headerlink" title="0. Install npm and hexo"></a>0. Install npm and hexo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget https://nodejs.org/dist/v15.0.0/node-v15.0.0-linux-x64.tar.xz</span></span><br><span class="line"><span class="comment"># npm 7.0.2</span></span><br><span class="line"><span class="comment"># node v15.0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># cat ~/.npmrc</span></span><br><span class="line"><span class="comment"># registry =https://registry.npm.taobao.org</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># npm install -g hexo-cli</span></span><br><span class="line"><span class="comment"># npm i</span></span><br></pre></td></tr></table></figure><h3 id="1-Create-a-new-post"><a href="#1-Create-a-new-post" class="headerlink" title="1. Create a new post"></a>1. Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="2-Generate-static-files"><a href="#2-Generate-static-files" class="headerlink" title="2. Generate static files"></a>2. Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="3-Run-server"><a href="#3-Run-server" class="headerlink" title="3. Run server"></a>3. Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="3-Deploy-to-remote-sites"><a href="#3-Deploy-to-remote-sites" class="headerlink" title="3. Deploy to remote sites"></a>3. Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Hexo" scheme="https://www.rayylee.site/categories/Hexo/"/>
-    
-    
-    <category term="hexo" scheme="https://www.rayylee.site/tags/hexo/"/>
     
   </entry>
   

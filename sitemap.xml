@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.rayylee.site/2022/02/16/rust_book_command_line-rust_202202162058/</loc>
+    
+    <lastmod>2022-02-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.rayylee.site/2022/02/15/cloudnative_distributed_system_20220215/</loc>
     
     <lastmod>2022-02-15</lastmod>
@@ -220,7 +229,7 @@
 
   <url>
     <loc>https://www.rayylee.site/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -228,63 +237,63 @@
   
   <url>
     <loc>https://www.rayylee.site/tags/C/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/%E5%B7%A5%E5%85%B7%E5%8F%8A%E6%94%B6%E8%97%8F/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/hexo/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/%E5%86%85%E6%A0%B8/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/%E5%85%B6%E4%BB%96/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/Rust/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -293,63 +302,63 @@
   
   <url>
     <loc>https://www.rayylee.site/categories/C-C/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/%E5%B7%A5%E5%85%B7%E5%8F%8A%E6%94%B6%E8%97%8F/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/Hexo/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/%E5%86%85%E6%A0%B8/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/%E5%85%B6%E4%BB%96/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/Rust/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.rayylee.site/categories/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
-    <lastmod>2022-02-15</lastmod>
+    <lastmod>2022-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
