@@ -196,6 +196,101 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/03/13/data_structures_algorithm_14_common_model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/13/data_structures_algorithm_14_common_model/" class="post-title-link" itemprop="url">14种常用算法模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-13 21:53:12" itemprop="dateCreated datePublished" datetime="2021-03-13T21:53:12+08:00">2021-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-29 16:53:57" itemprop="dateModified" datetime="2022-01-29T16:53:57+08:00">2022-01-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/13/data_structures_algorithm_14_common_model/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/13/data_structures_algorithm_14_common_model/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>下面列出最常见的 14 种算法模式，它们可被用于解决常见的问题。另外还会说明如何识别每种模式，并会为每种模式提供一些问题示例。<br><a href="#1%EF%BC%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3">1．滑动窗口</a><br><a href="#2%EF%BC%8E%E4%BA%8C%E6%8C%87%E9%92%88%E6%88%96%E8%BF%AD%E4%BB%A3%E5%99%A8">2．二指针或迭代器</a><br><a href="#3%EF%BC%8E%E5%BF%AB%E9%80%9F%E5%92%8C%E6%85%A2%E9%80%9F%E6%8C%87%E9%92%88">3．快速和慢速指针</a><br><a href="#4%EF%BC%8E%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4">4．合并区间</a><br><a href="#5%EF%BC%8E%E5%BE%AA%E7%8E%AF%E6%8E%92%E5%BA%8F">5．循环排序</a><br><a href="#6%EF%BC%8E%E5%8E%9F%E5%9C%B0%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8">6．原地反转链表</a><br><a href="#7%EF%BC%8E%E6%A0%91%E7%9A%84%E5%AE%BD%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2">7．树的宽度优先搜索（Tree BFS）</a><br><a href="#8%EF%BC%8E%E6%A0%91%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2">8．树的深度优先搜索（Tree DFS）</a><br><a href="#9%EF%BC%8ETwoHeaps">9．Two Heaps</a><br><a href="#10%EF%BC%8E%E5%AD%90%E9%9B%86">10．子集</a><br><a href="#11%EF%BC%8E%E7%BB%8F%E8%BF%87%E4%BF%AE%E6%94%B9%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2">11．经过修改的二叉搜索</a><br><a href="#12%EF%BC%8E%E5%89%8DK%E4%B8%AA%E5%85%83%E7%B4%A0">12．前 K 个元素</a><br><a href="#13%EF%BC%8EK%E8%B7%AF%E5%90%88%E5%B9%B6">13．K 路合并</a><br><a href="#14%EF%BC%8E%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F">14．拓扑排序</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/03/13/data_structures_algorithm_14_common_model/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2021/02/02/virtualization_qemu_kvm_summary_and_api_sample_20210202/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1103,101 +1198,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2020/10/29/markdown_basic_grammar_20201029/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Rayy Lee">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rayy Lee">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/29/markdown_basic_grammar_20201029/" class="post-title-link" itemprop="url">Markdown基本语法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-29 12:30:10" itemprop="dateCreated datePublished" datetime="2020-10-29T12:30:10+08:00">2020-10-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-29 17:00:21" itemprop="dateModified" datetime="2022-01-29T17:00:21+08:00">2022-01-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7%E5%8F%8A%E6%94%B6%E8%97%8F/" itemprop="url" rel="index"><span itemprop="name">工具及收藏</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/10/29/markdown_basic_grammar_20201029/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/29/markdown_basic_grammar_20201029/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Markdown是一种纯文本格式的标记语言。通过简单的标记语法，它可以使普通文本内容具有一定的格式。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/29/markdown_basic_grammar_20201029/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1269,7 +1269,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

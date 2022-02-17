@@ -2330,4 +2330,50 @@
         <tag>Rust</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Linux读写缓存Page Cache</title>
+    <url>/2022/02/17/linux_page_cache_readahead_mmap_20220217/</url>
+    <content><![CDATA[<h2 id="一、-读写缓存Page-Cache"><a href="#一、-读写缓存Page-Cache" class="headerlink" title="一、 读写缓存Page Cache"></a>一、 读写缓存Page Cache</h2><p>Linux对文件读写并不是每次都进行磁盘IO，而是将对应的磁盘文件缓存到内存上，之后对该文件的操作实际上也是对内存的读写。</p>
+<p>缓存俗称页缓存(page cache)，而被修改过但还没写入磁盘的页缓存称为脏页(dirty page)。查看页缓存可以通过/proc/meminfo查看：页缓存为Cached，脏页为Dirty。</p>
+<span id="more"></span>
+
+<p><img src="0.png" alt="0"></p>
+<p>上图中，红色部分为 Page Cache。Page Cache 的本质是由 Linux 内核管理的内存区域。通过 mmap 以及 buffered I/O 将文件读取到内存空间实际上都是读取到 Page Cache 中。</p>
+<h2 id="二、-Linux中-Read、Write的过程"><a href="#二、-Linux中-Read、Write的过程" class="headerlink" title="二、 Linux中 Read、Write的过程"></a>二、 Linux中 Read、Write的过程</h2><ul>
+<li><p>Read<br>当我们使用read去读取文件时，操作系统会先从缓存中查找对应文件，如果没有找到则产生缺页中断，将文件读取到缓存中，同时用户read过程也会被阻塞。如果命中，则直接读取缓存内容。</p>
+</li>
+<li><p>Write<br>同理，write调用也会先将数据写入缓存，如果没有找到指定缓存则产生缺页中断，将磁盘文件读取到缓存，write再修改缓存内容。如果命中，则直接写入到缓存。</p>
+</li>
+</ul>
+<p><strong>磁盘回写</strong></p>
+<ul>
+<li>由pdflush进程定时将脏页写入磁盘，周期为<code>/proc/sys/vm/dirty_writeback_centisecs</code>，单位是(1/100)厘秒(centi seconds)</li>
+<li>调用fsync()进行回写，这时候系统会唤醒pdflush直到所有的脏页都已经写到磁盘为止</li>
+<li>内存不足或脏页过多，write系统调用会同样会唤醒pdflush回写</li>
+</ul>
+<h2 id="三、-预读取readahead及内存映射mmap"><a href="#三、-预读取readahead及内存映射mmap" class="headerlink" title="三、 预读取readahead及内存映射mmap"></a>三、 预读取readahead及内存映射mmap</h2><h3 id="1、-预读取readahead"><a href="#1、-预读取readahead" class="headerlink" title="1、 预读取readahead"></a>1、 预读取readahead</h3><p>readahead预读取，其实就是让操作系统将对应的文件读取到缓存，之后read就不会产生缺页中断。缺页中断时操作系统会将磁盘文件写入缓存，此时read过程被阻塞。</p>
+<p>如果读取数据量大，可以先进行预读写调用readahead，同时，可以先进行一些其他耗时操作，之后再进行read，那么读取到的文件信息都是已经缓存到内存中的，相当于内存的读取。</p>
+<p>操作系统为基于 Page Cache 的读缓存机制提供预读机制（PAGE_READAHEAD）：</p>
+<ul>
+<li>用户线程仅仅请求读取磁盘上文件 A 的 offset 为 0-3KB 范围内的数据，由于磁盘的基本读写单位为 block（4KB），于是操作系统至少会读 0-4KB 的内容，这恰好可以在一个 page 中装下</li>
+<li>但是操作系统出于局部性原理会选择将磁盘块 offset [4KB,8KB)、[8KB,12KB) 以及 [12KB,16KB) 都加载到内存，于是额外在内存中申请了 3 个 page</li>
+</ul>
+<p><img src="1.png" alt="1"></p>
+<p>上图中，应用程序利用 read 系统调动读取 4KB 数据，实际上内核使用 readahead 机制完成了 16KB 数据的读取。</p>
+<h3 id="2、-内存映射-mmap"><a href="#2、-内存映射-mmap" class="headerlink" title="2、 内存映射 mmap"></a>2、 内存映射 mmap</h3><p>通过内存映射的方式，将文件直接映射到进程的地址空间。之后对文件的读写就可以通过指针的方式读取映射的内存空间。</p>
+<p>当用户第一次读取文件时会产生缺页中断，操作系统将文件读取到缓存，之后读取就直接读取缓存，那缓存什么时候写回磁盘？这个不用管，操作系统会自动管理。</p>
+<p><img src="2.png" alt="2"></p>
+<p>上图中 mmap()系统调用原理：mmap的作用是映射文件描述符和指定文件的<code>(off_t off)</code>区域至调用进程的<code>(addr,addr *len)</code>的内存区域。</p>
+<p>优点：不用调用系统函数read、write减少系统调用开销；内存映射减少了一次内存拷贝，正常read操作是两次数据拷贝，第一次将磁盘写到缓存，第二次是将缓存写入read传递的buffer里。</p>
+<blockquote>
+<p>参考：<br><a href="https://blog.csdn.net/Tecinno4/article/details/108655390">Linux的文件读写缓存cache浅析，以及read优化</a><br><a href="https://github.com/spongecaptain/SimpleClearFileIO">文件 I/O 简明概述</a><br><a href="https://blog.csdn.net/hunanchenxingyu/article/details/19054791">pdflush的工作原理及cache介绍</a><br><a href="https://www.jianshu.com/p/096e1b58c678">共享内存之——mmap内存映射</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>内核</category>
+      </categories>
+      <tags>
+        <tag>内核</tag>
+      </tags>
+  </entry>
 </search>
