@@ -2313,7 +2313,7 @@
 <p>这本书是在实际场景中练习编写 Rust 的好方法。Ken 制定了一条途径来培养您在测试、使用板条箱和解决常见问题方面的技能。– Carol Nichols, Cofounder, Integer 32, co-author of 《The Rust Programming Language (NoStarch, 2018)》</p>
 </blockquote>
 <blockquote>
-<p>者许多开始修补 Rust 的人都在努力知道如何将其应用到他们的日常工作中。 命令行 Rust 是一个很好的补救措施。它向您展示了如何构建可以向您和您的同事证明 Rust 值得学习的实用程序。 – Tim McNamara, author of 《Rust In Action (Manning, 2021)》</p>
+<p>许多开始修补 Rust 的人都在努力知道如何将其应用到他们的日常工作中。 命令行 Rust 是一个很好的补救措施。它向您展示了如何构建可以向您和您的同事证明 Rust 值得学习的实用程序。 – Tim McNamara, author of 《Rust In Action (Manning, 2021)》</p>
 </blockquote>
 <p>这本书不是专注于整个语言，而是在每一章中使用一个小型、完整的程序来讲解 Rust。作者 Ken Youens-Clark 向你展示了如何启动、编写和测试每个程序以创建成品。你将学习如何处理 Rust 中的错误、读写文件以及使用正则表达式、Rust 类型、结构等等。</p>
 <ul>
