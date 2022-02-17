@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CLGwJbU8jWqDUNV65d7JW65vqOgp2zSwbfCCVjhZcXo">
+  <meta name="baidu-site-verification" content="code-NqxVcgKLLc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.rayylee.site","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="阅读kernel代码的时候，变量很多，尤其是读内存部分代码的时候，传来传去，常常把自己弄晕。改成什么样子了，内存布局到底变成什么了，利用qemu可以在线调试内核，如同用gdb调试app一样，打断点 打印变量值等等。qemu是个基于kvm的模拟器，说虚拟机也可以，android的模拟器，就是基于开源的qemu修改的，下面开始调试的旅程吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用qemu+gdb调试centos7内核">
+<meta property="og:url" content="https://www.rayylee.site/2022/02/17/qemu_debug_centos7_kernel_20220217/index.html">
+<meta property="og:site_name" content="Rayy Lee">
+<meta property="og:description" content="阅读kernel代码的时候，变量很多，尤其是读内存部分代码的时候，传来传去，常常把自己弄晕。改成什么样子了，内存布局到底变成什么了，利用qemu可以在线调试内核，如同用gdb调试app一样，打断点 打印变量值等等。qemu是个基于kvm的模拟器，说虚拟机也可以，android的模拟器，就是基于开源的qemu修改的，下面开始调试的旅程吧。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-02-17T01:15:51.000Z">
+<meta property="article:modified_time" content="2022-02-17T07:24:35.471Z">
+<meta property="article:author" content="Rayy Lee">
+<meta property="article:tag" content="内核">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.rayylee.site/2022/02/17/qemu_debug_centos7_kernel_20220217/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>使用qemu+gdb调试centos7内核 | Rayy Lee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Rayy Lee" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rayy Lee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>书籍</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.rayylee.site/2022/02/17/qemu_debug_centos7_kernel_20220217/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Rayy Lee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rayy Lee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用qemu+gdb调试centos7内核
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-17 09:15:51 / 修改时间：15:24:35" itemprop="dateCreated datePublished" datetime="2022-02-17T09:15:51+08:00">2022-02-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%86%85%E6%A0%B8/" itemprop="url" rel="index"><span itemprop="name">内核</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/02/17/qemu_debug_centos7_kernel_20220217/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/17/qemu_debug_centos7_kernel_20220217/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>阅读kernel代码的时候，变量很多，尤其是读内存部分代码的时候，传来传去，常常把自己弄晕。改成什么样子了，内存布局到底变成什么了，利用qemu可以在线调试内核，如同用gdb调试app一样，打断点 打印变量值等等。qemu是个基于kvm的模拟器，说虚拟机也可以，android的模拟器，就是基于开源的qemu修改的，下面开始调试的旅程吧。</p>
+<span id="more"></span>
+
+
+<h2 id="1-安装依赖"><a href="#1-安装依赖" class="headerlink" title="1.安装依赖"></a>1.安装依赖</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sed -e <span class="string">&#x27;s|^mirrorlist=|#mirrorlist=|g&#x27;</span> \</span><br><span class="line">        -e <span class="string">&#x27;s|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.tuna.tsinghua.edu.cn|g&#x27;</span> \</span><br><span class="line">        -i.bak \</span><br><span class="line">        /etc/yum.repos.d/CentOS-*.repo</span><br><span class="line">yum install -y vim wget lrzsz</span><br><span class="line">yum install -y gcc bc gcc-c++ ncurses ncurses-devel cmake elfutils-libelf-devel openssl-devel libgcrypt-devel glibc-static</span><br><span class="line">yum install -y qemu-kvm gdb net-tools texinfo</span><br><span class="line"></span><br><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl mask firewalld</span><br><span class="line">setenforce 0</span><br><span class="line">sed ‐i <span class="string">&#x27;/^SELINUX/s/=.*/=disabled/&#x27;</span> /etc/selinux/config</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-下载内核版本解压并进入解压目录"><a href="#2-下载内核版本解压并进入解压目录" class="headerlink" title="2.下载内核版本解压并进入解压目录"></a>2.下载内核版本解压并进入解压目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;vault.centos.org&#x2F;7.9.2009&#x2F;os&#x2F;Source&#x2F;SPackages&#x2F;kernel-3.10.0-1160.el7.src.rpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-清理内核源目录"><a href="#3-清理内核源目录" class="headerlink" title="3.清理内核源目录"></a>3.清理内核源目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make mrproper</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-使用make-menuconfig菜单来订制内核功能"><a href="#4-使用make-menuconfig菜单来订制内核功能" class="headerlink" title="4.使用make menuconfig菜单来订制内核功能"></a>4.使用make menuconfig菜单来订制内核功能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line">(</span><br><span class="line">  配置ext4、virtio为 Y</span><br><span class="line">  修改Makefile: -O2改为-O1; 删掉-Werror </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-编译内核"><a href="#5-编译内核" class="headerlink" title="5.编译内核"></a>5.编译内核</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make vmlinux -j 4</span><br><span class="line">make bzImage</span><br></pre></td></tr></table></figure>
+<h2 id="6-制作initramfs"><a href="#6-制作initramfs" class="headerlink" title="6. 制作initramfs"></a>6. 制作initramfs</h2><p>下载busybox</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;busybox.net&#x2F;downloads&#x2F;busybox-1.28.0.tar.bz2</span><br><span class="line">cd busybox-1.28.0</span><br></pre></td></tr></table></figure>
+<p>配置编译选项busybox，开启<code>Build static binary  (no shared libs)</code>选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line">(</span><br><span class="line">Settings  ---&gt; </span><br><span class="line">  --- Build Options</span><br><span class="line">  [*] Build static binary (no shared libs)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>编译busybox</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make -j 4</span><br><span class="line">make install // 编译安装文件在_install目录下</span><br></pre></td></tr></table></figure>
+
+<p>制作initramfs</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mkdir initramfs</span><br><span class="line"><span class="built_in">cd</span> initramfs</span><br><span class="line">cp ../_install/* -rf ./</span><br><span class="line"></span><br><span class="line">mkdir &#123;dev,proc,sys&#125;</span><br><span class="line"></span><br><span class="line">cp -a /dev/&#123;null,console,tty,tty1,tty2,tty3,tty4&#125; dev/</span><br><span class="line"></span><br><span class="line">rm linuxrc</span><br><span class="line"></span><br><span class="line">vim init </span><br><span class="line">(</span><br><span class="line"><span class="meta">#!/bin/busybox sh</span></span><br><span class="line">mount –t proc none /proc</span><br><span class="line">mount –t sysfs none /sys</span><br><span class="line"><span class="built_in">exec</span> /sbin/init</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">chmod a+x init</span><br><span class="line">find . -print0 | cpio --null -ov --format=newc | gzip -9 &gt; ../initramfs.cpio.gz</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-通过qemu-kvm调试内核"><a href="#7-通过qemu-kvm调试内核" class="headerlink" title="7. 通过qemu-kvm调试内核"></a>7. 通过qemu-kvm调试内核</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;libexec&#x2F;qemu-kvm -kernel arch&#x2F;x86&#x2F;boot&#x2F;bzImage -initrd initramfs.cpio.gz -s -S -append nokaslr -vnc :0</span><br></pre></td></tr></table></figure>
+<p><code>-kernel bzImage</code>：指定内核路径<br><code>-initrd file</code>:指定initramdisk路径<br><code>-s</code>:<code>-gdb tcp::1234</code>的缩写, 开启一个gdbserver, 可以通过TCP端口1234连接<br><code>-S</code>: 启动后立即暂停<br><code>-append nokaslr</code>: 指定内核参数<code>nokaslr</code>, 禁止内核地址随机化, 否则gdb打断点找不到地址<br><code>-vnc :0</code>: 开启vnc监听0端口</p>
+<blockquote>
+<p>PS:<br><code>--monitor stdio</code> 开启qmp交互</p>
+</blockquote>
+<p>打开另一个终端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gdb vmlinux </span><br><span class="line">或者</span><br><span class="line">gdb vmlinux --tui</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(gdb) target remote:1234</span><br><span class="line">Remote debugging using :1234</span><br><span class="line">0x0000000000000000 <span class="keyword">in</span> irq_stack_union ()</span><br><span class="line">(gdb) hb start_kernel      // 设置硬件断点</span><br><span class="line">Hardware assisted breakpoint 1 at 0xffffffff81d9ae44: file init/main.c, line 489.</span><br><span class="line">(gdb) info b</span><br><span class="line">Num     Type           Disp Enb Address            What</span><br><span class="line">1       hw breakpoint  keep y   0xffffffff81d9ae44 <span class="keyword">in</span> start_kernel at init/main.c:489</span><br><span class="line">  breakpoint already hit 1 time</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 1, start_kernel () at init/main.c:489</span><br><span class="line">489 &#123;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>小技巧： gdb可以直接添加command<br><code>gdb vmlinux -ex=&quot;target remote:1234&quot; -ex=&quot;hb start_kernel&quot; </code></p>
+</blockquote>
+<h2 id="8-遇到的问题"><a href="#8-遇到的问题" class="headerlink" title="8. 遇到的问题"></a>8. 遇到的问题</h2><h3 id="8-1-gdb-vmlinux会出现-“Remote-‘g’-packet-reply-is-too-long”错误"><a href="#8-1-gdb-vmlinux会出现-“Remote-‘g’-packet-reply-is-too-long”错误" class="headerlink" title="8.1 gdb vmlinux会出现 “Remote ‘g’ packet reply is too long”错误"></a>8.1 gdb vmlinux会出现 “Remote ‘g’ packet reply is too long”错误</h3><p><code>Remote &#39;g&#39; packet reply is too long: 0000000000000000d981ffffffff00000004000000000000001006000000000000040000000000000010060000000000903fc081ffffffff883fc081ffffffff0000000000000000130000000000000000000000000000000cc5130300000000ffffffff00000000200000000000000020a1d981ffffffff8e0000000000000044aed981ffffffff8200000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f0300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000801f0000</code></p>
+<h3 id="解决办法：-修改gdb源码-重新编译"><a href="#解决办法：-修改gdb源码-重新编译" class="headerlink" title="解决办法： 修改gdb源码, 重新编译"></a>解决办法： 修改gdb源码, 重新编译</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget ftp://sourceware.org/pub/gdb/releases/gdb-7.6.tar.gz</span><br><span class="line">tar -xvf gdb-7.6.tar.gz</span><br><span class="line"><span class="built_in">cd</span> gdb-7.6</span><br></pre></td></tr></table></figure>
+
+<p>注释掉：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (buf_len &gt; <span class="number">2</span> * rsa-&gt;sizeof_g_packet)</span><br><span class="line">    error (_(“Remote ‘g’ packet reply is too <span class="keyword">long</span>: %s”), rs-&gt;buf); </span><br></pre></td></tr></table></figure>
+<p>并在后面添加：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (buf_len &gt; <span class="number">2</span> * rsa-&gt;sizeof_g_packet) &#123;</span><br><span class="line">    rsa-&gt;sizeof_g_packet = buf_len;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; gdbarch_num_regs (gdbarch); i++) &#123;</span><br><span class="line">       <span class="keyword">if</span> (rsa-&gt;regs[i].pnum == <span class="number">-1</span>)</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (rsa-&gt;regs[i].offset &gt;= rsa-&gt;sizeof_g_packet)</span><br><span class="line">          rsa-&gt;regs[i].in_g_packet = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">else</span></span><br><span class="line">          rsa-&gt;regs[i].in_g_packet = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重新编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/gdb_7_6</span><br><span class="line">./configure --prefix=/opt/gdb_7_6</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;PATH=\$PATH:/opt/gdb_7_6/bin&quot;</span> &gt;&gt; /root/.bashrc</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://lihanlu.cn/qemu-gdb-kernel/">利用Qemu GDB调试Kernel</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/gdt_a20/article/details/7231652">利用qemu进行内核源码级调试</a></li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%86%85%E6%A0%B8/" rel="tag"># 内核</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/17/linux_page_cache_readahead_mmap_20220217/" rel="prev" title="Linux读写缓存Page Cache">
+      <i class="fa fa-chevron-left"></i> Linux读写缓存Page Cache
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">1.</span> <span class="nav-text">1.安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC%E8%A7%A3%E5%8E%8B%E5%B9%B6%E8%BF%9B%E5%85%A5%E8%A7%A3%E5%8E%8B%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">2.下载内核版本解压并进入解压目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%B8%85%E7%90%86%E5%86%85%E6%A0%B8%E6%BA%90%E7%9B%AE%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">3.清理内核源目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8make-menuconfig%E8%8F%9C%E5%8D%95%E6%9D%A5%E8%AE%A2%E5%88%B6%E5%86%85%E6%A0%B8%E5%8A%9F%E8%83%BD"><span class="nav-number">4.</span> <span class="nav-text">4.使用make menuconfig菜单来订制内核功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8"><span class="nav-number">5.</span> <span class="nav-text">5.编译内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%88%B6%E4%BD%9Cinitramfs"><span class="nav-number">6.</span> <span class="nav-text">6. 制作initramfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E9%80%9A%E8%BF%87qemu-kvm%E8%B0%83%E8%AF%95%E5%86%85%E6%A0%B8"><span class="nav-number">7.</span> <span class="nav-text">7. 通过qemu-kvm调试内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">8.</span> <span class="nav-text">8. 遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-gdb-vmlinux%E4%BC%9A%E5%87%BA%E7%8E%B0-%E2%80%9CRemote-%E2%80%98g%E2%80%99-packet-reply-is-too-long%E2%80%9D%E9%94%99%E8%AF%AF"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 gdb vmlinux会出现 “Remote ‘g’ packet reply is too long”错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95%EF%BC%9A-%E4%BF%AE%E6%94%B9gdb%E6%BA%90%E7%A0%81-%E9%87%8D%E6%96%B0%E7%BC%96%E8%AF%91"><span class="nav-number">8.2.</span> <span class="nav-text">解决办法： 修改gdb源码, 重新编译</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rayy Lee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Rayy Lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hbuxiaofei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hbuxiaofei" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/rayylee@foxmail.com" title="E-Mail → rayylee@foxmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://beachboyy.blog.csdn.net/" title="CSDN → https:&#x2F;&#x2F;beachboyy.blog.csdn.net" rel="noopener" target="_blank"><i class="fab fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/hbuxiaofei" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;hbuxiaofei" rel="noopener" target="_blank"><i class="fab fa-fw"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rayy Lee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '54xrQrftK3ognC5fpUdicEVY-gzGzoHsz',
+      appKey     : 'jNGhKta5gAoDO4cYs1hPORoH',
+      placeholder: "Add your comments",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
